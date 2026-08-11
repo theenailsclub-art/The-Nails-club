@@ -1,2 +1,2 @@
-# The Nails club 
-nails which elegant your looks
+# cataognails
+Acrylic • Gel • Custom Sets You ask we serve💅🏻 Your new nail obsession 👀

@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZLP08PTF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TDZLP08PTF');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Nails Club | Luxury Press-On Nails</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="tailwind.min.js"></script>
+<script src="designs-data.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#BC1423', gold: '#C6A35B', beige: '#F5F0ED', dark: '#322C2C', ivory: '#FAF8F5'
+      },
+      fontFamily: {
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        sans: ['"DM Sans"', 'system-ui', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+<script src="gsap.min.js"></script>
+<script src="ScrollTrigger.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: #fff; color: #322C2C; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Hamburger */
+.ham-line { display: block; width: 22px; height: 1.5px; background: #322C2C; transition: all 0.35s cubic-bezier(0.4,0,0.2,1); transform-origin: center; }
+#menu-btn.is-open .ham-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+#menu-btn.is-open .ham-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+#menu-btn.is-open .ham-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* Nav Overlay */
+#nav-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: #322C2C;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.45s cubic-bezier(0.4,0,0.2,1);
+}
+#nav-overlay.is-open { opacity: 1; pointer-events: all; }
+#nav-overlay .nav-link {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  color: #F5F0ED; line-height: 1.15; letter-spacing: -0.01em;
+  transition: color 0.25s ease; text-decoration: none; display: block;
+}
+#nav-overlay .nav-link:hover { color: #C6A35B; }
+/* hro section */
+.hero-section {
+        background-image: url('background image.jpg'); /* Path to your image */
+        background-size: cover;                 /* Make image cover the section */
+        background-position: center;            /* Center the image */
+        background-repeat: no-repeat;           /* Prevent tiling */
+        height: 400px;                           /* Set section height */
+        display: flex;                           /* For centering content */
+        align-items: center;
+        justify-content: center;
+        color: white;                            /* Text color */
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.7); /* Make text readable */
+        
+    }
+
+/* Filter buttons */
+.filter-btn {
+  padding: 8px 20px; border-radius: 9999px;
+  border: 1px solid rgba(50,44,44,0.2);
+  color: rgba(50,44,44,0.55); font-family: 'DM Sans', sans-serif;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer; white-space: nowrap;
+  transition: all 0.2s ease; background: transparent;
+}
+.filter-btn:hover { border-color: rgba(50,44,44,0.5); color: #322C2C; }
+.filter-btn.active { background: #BC1423; color: #fff; border-color: #BC1423; }
+
+/* ── Design Showcase Card ── */
+.design-card {
+  border-radius: 20px; overflow: hidden; background: #FAF8F5;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.design-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.13); }
+
+/* Slideshow inside card */
+.slide-wrap { position: relative; aspect-ratio: 4/3; overflow: hidden; background: #e8e0db; }
+.slide-wrap img, .slide-wrap video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transition: opacity 0.5s ease;
+}
+.slide-wrap img.active, .slide-wrap video.active { opacity: 1; }
+
+/* Slide dots */
+.slide-dots { display: flex; gap: 5px; justify-content: center; padding: 8px 0 4px; }
+.slide-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(50,44,44,0.2); border: none; cursor: pointer;
+  transition: background 0.2s ease; padding: 0;
+}
+.slide-dot.active { background: #BC1423; width: 14px; border-radius: 99px; }
+
+
+
+/* Video play badge */
+.video-badge {
+  position: absolute; top: 10px; right: 10px; z-index: 5;
+  background: rgba(50,44,44,0.6); color: #fff; border-radius: 99px;
+  font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 3px 8px; font-family: 'DM Sans', sans-serif;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* Reel card */
+.reel-card {
+  flex-shrink: 0; border-radius: 24px; overflow: hidden;
+  position: relative; background: #322C2C;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); cursor: pointer;
+}
+.reel-card:hover { transform: translateY(-8px); }
+.reel-card video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.reel-card .reel-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.3s ease;
+  background: rgba(50,44,44,0.12);
+}
+.reel-card:hover .reel-overlay { opacity: 1; }
+.reel-card .reel-meta {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 40px 20px 20px;
+  background: linear-gradient(to top, rgba(50,44,44,0.85) 0%, transparent 100%);
+}
+/* Instagram badge on reel cards */
+.ig-reel-badge {
+  position: absolute; top: 10px; left: 10px; z-index: 10;
+  background: rgba(255,255,255,0.18); backdrop-filter: blur(6px);
+  border-radius: 99px; padding: 5px 11px;
+  display: flex; align-items: center; gap: 5px;
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: 0.12em; color: #fff; text-decoration: none;
+  text-transform: uppercase; border: 1px solid rgba(255,255,255,0.3);
+  transition: background 0.2s ease;
+}
+.ig-reel-badge:hover { background: rgba(188,20,35,0.85); }
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: #322C2C; color: #fff;
+  padding: 12px 26px; border-radius: 999px;
+  font-size: 13px; opacity: 0; transition: all 0.3s ease;
+  z-index: 9999; pointer-events: none; white-space: nowrap;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Detail panel hidden state */
+#detail-panel.hidden { display: none !important; }
+@keyframes bounce-y { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+.bounce-arrow { animation: bounce-y 1.8s ease-in-out infinite; }
+.gs-up { opacity: 0; transform: translateY(40px); animation: gsup-fallback 0.8s ease forwards; }
+@keyframes gsup-fallback { to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- FIXED HEADER -->
+<header id="site-header" class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 md:px-10 py-3.5 bg-white/92 backdrop-blur-md border-b border-black/5 transition-shadow duration-300">
+  <a href="#hero" class="flex items-center shrink-0 rounded-xl overflow-hidden" style="background:transparent;padding:5px 4px;">
+    <img src="logo.png" alt="The Nails Club" class="h-8 md:h-9 w-auto object-contain block">
+  </a>
+  <nav class="hidden md:flex items-center gap-10">
+    <a href="#collection" class="font-sans text-[10px] tracking-[0.18em] uppercase text-dark/55 hover:text-dark transition-colors duration-200">Collection</a>
+    <a href="#reels" class="font-sans text-[10px] tracking-[0.18em] uppercase text-dark/55 hover:text-dark transition-colors duration-200">Reels</a>
+    <a href="#about" class="font-sans text-[10px] tracking-[0.18em] uppercase text-dark/55 hover:text-dark transition-colors duration-200">About</a>
+  </nav>
+  <div class="flex items-center gap-3">
+    <!-- User dropdown (shown when logged in) -->
+    <div id="auth-status" class="hidden relative" style="display:none;">
+      <button id="auth-avatar-btn" onclick="toggleUserDropdown()" style="display:flex;align-items:center;gap:9px;background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:99px;transition:background 0.2s;" onmouseenter="this.style.background='rgba(50,44,44,0.06)'" onmouseleave="this.style.background='none'">
+        <!-- Avatar circle -->
+        <div id="auth-avatar" style="width:34px;height:34px;border-radius:50%;background:#BC1423;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#fff;flex-shrink:0;"></div>
+        <div style="text-align:left;display:none;" class="md:block">
+          <p id="auth-user-name" style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:#322C2C;line-height:1.2;"></p>
+          <p id="auth-user-email" style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(50,44,44,0.45);line-height:1.2;"></p>
+        </div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#322C2C" stroke-width="2" stroke-linecap="round" class="hidden md:block"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <!-- Dropdown -->
+      <div id="user-dropdown" style="display:none;position:absolute;top:calc(100% + 10px);right:0;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.13);border:1px solid rgba(50,44,44,0.08);min-width:220px;overflow:hidden;z-index:999;">
+        <!-- Profile header -->
+        <div style="padding:16px 18px 14px;border-bottom:1px solid rgba(50,44,44,0.07);background:#FAF8F5;">
+          <p id="dd-name" style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:#322C2C;"></p>
+          <p id="dd-email" style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(50,44,44,0.5);margin-top:2px;"></p>
+        </div>
+        <!-- Menu items -->
+        <div style="padding:8px 0;">
+          <a href="#collection" style="display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:12px;color:#322C2C;text-decoration:none;transition:background 0.15s;" onmouseenter="this.style.background='#FAF8F5'" onmouseleave="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Browse Collection
+          </a>
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:12px;color:#322C2C;text-decoration:none;transition:background 0.15s;" onmouseenter="this.style.background='#FAF8F5'" onmouseleave="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            Order via Instagram
+          </a>
+          <a href="https://wa.me/919913091744" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:12px;color:#322C2C;text-decoration:none;transition:background 0.15s;" onmouseenter="this.style.background='#FAF8F5'" onmouseleave="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            WhatsApp Us
+          </a>
+        </div>
+        <!-- Logout -->
+        <div style="padding:8px 0;border-top:1px solid rgba(50,44,44,0.07);">
+          <button onclick="authLogout()" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:12px;color:#BC1423;background:none;border:none;cursor:pointer;text-align:left;transition:background 0.15s;" onmouseenter="this.style.background='#fff5f5'" onmouseleave="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="1.5" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Sign In button (shown when logged out) -->
+    <button id="auth-login-btn" onclick="openAuthModal('login')" class="hidden md:inline-flex items-center gap-2 px-4 py-2 border border-dark/20 rounded-full font-sans text-[10px] uppercase tracking-[0.14em] text-dark hover:bg-dark hover:text-white transition-all duration-200">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Sign In
+    </button>
+    <!-- Wishlist icon -->
+    <a href="wishlist.html" title="My Wishlist" style="position:relative;display:flex;align-items:center;color:rgba(50,44,44,0.55);transition:color 0.2s;" onmouseenter="this.style.color='#BC1423'" onmouseleave="this.style.color='rgba(50,44,44,0.55)'">
+      <svg id="header-wl-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span id="header-wl-count" style="position:absolute;top:-6px;right:-6px;background:#BC1423;color:#fff;font-size:9px;font-weight:700;font-family:'DM Sans',sans-serif;width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;pointer-events:none;"></span>
+    </a>
+    <button id="menu-btn" class="flex flex-col gap-[5px] p-2 cursor-pointer" aria-label="Open menu" onclick="toggleMenu()">
+      <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+    </button>
+  </div>
+</header>
+
+<!-- NAV OVERLAY -->
+<div id="nav-overlay" aria-modal="true" role="dialog">
+  <button class="absolute top-7 right-7 p-2 text-white/60 hover:text-white transition-colors" onclick="closeMenu()" aria-label="Close menu">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <ul class="text-center space-y-5 mb-14 list-none">
+    <li><a href="#hero"       class="nav-link" onclick="closeMenu()">Home</a></li>
+    <li><a href="#collection" class="nav-link" onclick="closeMenu()">Collection</a></li>
+    <li><a href="#reels"      class="nav-link" onclick="closeMenu()">Reels</a></li>
+    <li><a href="#about"      class="nav-link" onclick="closeMenu()">About</a></li>
+  </ul>
+  <div class="flex gap-8 text-[10px] tracking-[0.2em] uppercase text-white/35">
+    <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" class="hover:text-white/80 transition-colors">Instagram</a>
+    <span>&middot;</span>
+    <a href="https://wa.me/919913091744" target="_blank" class="hover:text-white/80 transition-colors">WhatsApp 1</a>
+    <span>&middot;</span>
+    <a href="https://wa.me/919016242187" target="_blank" class="hover:text-white/80 transition-colors">WhatsApp 2</a>
+    <span>&middot;</span>
+    <a href="admin-dashboard.html" class="hover:text-white/80 transition-colors">Studio</a>
+  </div>
+</div>
+
+<div id="toast">Inquiry sent &mdash; we'll DM you shortly! &#128…</div>
+
+<!-- SECTION 1 — HERO -->
+<section id="hero" class="relative flex flex-col items-center justify-center min-h-screen pt-16 overflow-hidden" style="background:#fff;">
+  <div class="absolute inset-0 pointer-events-none" style="background:url('Images/reels_bg.jpg') center center / cover no-repeat; opacity:0.30;"></div>
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 90% 80% at 50% 40%,rgba(245,240,237,0.72) 0%,rgba(255,255,255,0.88) 65%,rgba(255,255,255,1) 100%)"></div>
+  <div class="relative z-10 text-center flex flex-col items-center px-6">
+    <p class="gs-up font-sans text-[9px] md:text-[10px] tracking-[0.42em] uppercase text-dark/40 mb-8" style="animation-delay:0.1s">Handcrafted Press-On Nails</p>
+    <h1 class="gs-up font-serif text-[clamp(3rem,12vw,9rem)] tracking-tighter text-dark leading-[0.92] mb-6" style="font-weight:400;animation-delay:0.25s">The Nails Club</h1>
+    <p class="gs-up font-sans text-[10px] md:text-xs tracking-[0.32em] uppercase text-dark/50 mb-12" style="animation-delay:0.4s">Luxury Press-On Nails</p>
+    <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+       class="gs-up inline-flex items-center gap-3 px-8 py-4 border border-dark/22 rounded-full font-sans text-[10px] uppercase tracking-[0.18em] text-dark hover:bg-dark hover:text-white hover:border-dark transition-all duration-300">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      Order via Instagram DM
+    </a>
+  </div>
+  <div class="absolute bottom-10 flex flex-col items-center z-10 gap-2.5 cursor-pointer" onclick="document.getElementById('collection').scrollIntoView({behavior:'smooth'})">
+    <span class="font-sans text-[9px] tracking-[0.28em] uppercase text-dark/30">Explore</span>
+    <svg class="bounce-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+  </div>
+</section>
+
+<!-- SECTION 2 — COLLECTION (Category Cards) -->
+<section id="collection" class="bg-white pt-24 pb-20 px-5 md:px-10">
+  <div class="max-w-screen-xl mx-auto">
+    <div class="mb-10">
+      <div class="gs-up" style="animation-delay:0.1s">
+        <h2 class="font-serif text-[clamp(2.2rem,5vw,4rem)] text-dark mb-1" style="font-weight:400;">Our Collection</h2>
+        <p class="font-sans text-[10px] tracking-[0.22em] uppercase text-dark/40">Explore handcrafted nail art for every occasion</p>
+      </div>
+    </div>
+
+    <!-- Category Cards Grid — one card per category -->
+    <div id="cat-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5"></div>
+
+    <!-- See More — reveals every design from every category, right here -->
+    <div id="cat-see-more-wrap" style="display:flex;justify-content:center;margin-top:36px;">
+      <button onclick="showAllDesigns()" style="padding:13px 36px;border:1.5px solid rgba(50,44,44,0.2);border-radius:99px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#322C2C;cursor:pointer;background:transparent;transition:all 0.2s;" onmouseenter="this.style.borderColor='#BC1423';this.style.color='#BC1423';" onmouseleave="this.style.borderColor='rgba(50,44,44,0.2)';this.style.color='#322C2C';">See More</button>
+    </div>
+
+    <!-- Filtered designs panel (shown when category is clicked, or See More is clicked) -->
+    <div id="cat-filter-panel" style="display:none;margin-top:40px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <span id="cat-filter-label" style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:#322C2C;"></span>
+          <span id="cat-filter-count" style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(50,44,44,0.4);margin-left:10px;"></span>
+        </div>
+        <button onclick="closeCatFilter()" style="background:none;border:1.5px solid rgba(50,44,44,0.2);border-radius:99px;padding:7px 16px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#322C2C;cursor:pointer;">&#8592; Back</button>
+      </div>
+      <div id="cat-design-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
+      <div id="cat-load-more-wrap" style="display:none;justify-content:center;margin-top:28px;">
+        <button onclick="catLoadMore()" style="padding:12px 32px;border:1.5px solid rgba(50,44,44,0.2);border-radius:99px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#322C2C;cursor:pointer;background:transparent;">Load More</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 — REELS -->
+<section id="reels" class="pt-24 pb-16 px-5 md:px-10 overflow-hidden relative" style="background:linear-gradient(rgba(250,248,245,0.82),rgba(245,240,237,0.88)),url('Images/reels_bg.jpg') center center/cover no-repeat;background-color:#F5F0ED;">
+  <div class="max-w-screen-2xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+      <div class="gs-up">
+        <h2 class="font-serif text-[clamp(2.2rem,5vw,4rem)] text-dark mb-1" style="font-weight:400;">In Motion</h2>
+        <p class="font-sans text-[10px] tracking-[0.22em] uppercase text-dark/40">Behind the scenes &amp; featured sets</p>
+      </div>
+      <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+         class="gs-up inline-flex items-center gap-2 font-sans text-[10px] uppercase tracking-[0.2em] text-dark/50 hover:text-dark transition-colors border-b border-dark/15 pb-0.5">
+        View on Instagram
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <div id="reels-strip" class="flex gap-5 overflow-x-auto pb-4 no-scrollbar items-stretch">
+
+      <!-- Reel 1 -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/1_2.mp4" poster="Images/rose-gloss.jpg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Collection Preview</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">01 &middot; Preview</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram
+        </a>
+      </div>
+
+      <!-- Reel 2 -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/2nd reel.mp4" poster="Images/Floral/floral4.jpeg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Bridal Dreams</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">02 &middot; Bridal</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>
+      </div>
+
+      <!-- Reel 3 -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/Bridal2.mp4" poster="Images/Bridal/bridal1.jpg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Bridal Showcase</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">03 &middot; Bridal</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>
+      </div>
+
+      <!-- Reel 4 -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/chrome3.mp4" poster="Images/chrome/Chrome1.jpeg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Chrome Luxe</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">04 &middot; Chrome</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>
+      </div>
+
+      <!-- Reel 5 -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/Navrati.mp4" poster="Images/Festive/navrati vibe (1).JPG" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Navratri Festive</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">05 &middot; Navratri</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>
+      </div>
+
+      <!-- Reel 5b -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/Navrati2.mp4" poster="Images/Festive/navrati vibe 1 (1).JPG" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Navratri Special</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">05b &middot; Navratri</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>
+      </div>
+
+      <!-- Reel 6 -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/sea view.mp4" poster="Images/chrome/mirror-chrome.jpg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Sea View Chrome</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">06 &middot; Chrome</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>
+      </div>
+
+      <!-- Reel 7 -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/WhatsApp Video 2026-07-24 at 5.30.57 PM.mp4" poster="Images/Festive/pink-chrome-oval.jpg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Latest Drop</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">07 &middot; New</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>
+      </div>
+
+      <!-- Reel 8 -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/WhatsApp Video 2026-07-24 at 5.31.11 PM.mp4" poster="Images/CatEye/Cateye.jpg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Behind the Craft</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">08 &middot; Process</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>
+      </div>
+
+      <!-- Reel 9 — Polka -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/Polka.mp4" poster="Images/Polka/Polka1.JPG" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Polka Play</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">09 &middot; Polka</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>
+      </div>
+
+      <!-- Reel 10 — Polka (2) -->
+      <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+        <video src="videos/polka (2).mp4" poster="Images/Polka/Polka2.JPG" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Polka Dots</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">10 &middot; Polka</p>
+        </div>
+        <a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>
+      </div>
+
+      <div class="shrink-0 w-4"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4 — ABOUT -->
+<section id="about" class="bg-white min-h-screen flex flex-col md:flex-row pt-16 md:pt-0">
+  <div class="md:w-1/2 flex items-center justify-center p-10 md:p-20">
+    <div class="max-w-md">
+      <p class="font-sans text-[9px] tracking-[0.4em] uppercase text-dark/35 mb-6">Our Story</p>
+      <h2 class="font-serif text-[clamp(2rem,4vw,3.5rem)] text-dark mb-6 leading-tight" style="font-weight:400;">Crafted with<br><em>love &amp; precision</em></h2>
+      <p class="font-sans text-[13px] leading-relaxed text-dark/60 mb-8">
+        The Nails Club was born from a passion for wearable nail art. Every set is handcrafted — from bridal to festive, chrome to floral — designed to make you feel your most beautiful self, instantly.
+      </p>
+      <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+         class="inline-flex items-center gap-3 px-7 py-3.5 bg-dark text-white rounded-full font-sans text-[10px] uppercase tracking-[0.18em] hover:bg-primary transition-colors duration-300">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        @theenaiilsclub
+      </a>
+    </div>
+  </div>
+  <div class="md:w-1/2 relative min-h-[50vh] md:min-h-screen overflow-hidden">
+    <img src="about.jpeg" alt="The Nails Club" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0" style="background:linear-gradient(to right,rgba(255,255,255,0.3),transparent)"></div>
+  </div>
+</section>
+
+<!-- â•â•â• SECTION 5 — GOOGLE REVIEWS â•â•â• -->
+<section id="reviews" style="background:#FAF8F5;padding:80px 20px 80px;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:36px;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(50,44,44,0.35);margin-bottom:10px;">Real Reviews from Google</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:400;color:#322C2C;margin-bottom:16px;">What Our Clients Say</h2>
+      <!-- Google Rating Badge -->
+      <div style="display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid rgba(50,44,44,0.1);border-radius:99px;padding:10px 22px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        <div style="display:flex;gap:2px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#FBBC05"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#FBBC05"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#FBBC05"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#FBBC05"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#FBBC05"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <span style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#322C2C;">5.0</span>
+        <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(50,44,44,0.5);">on Google</span>
+      </div>
+    </div>
+
+    <!-- ═══ ELFSIGHT GOOGLE REVIEWS WIDGET — PASTE YOUR CODE HERE ═══
+         1. Go to https://elfsight.com/google-reviews-widget/ and create a free account.
+         2. Click "Create Widget" → connect it to your Google Business Profile
+            (search by business name/address, or use Place ID: ChIJ2T3z_Ni_XIQR6JMYZ2hbmZA).
+         3. Customize the layout/colors, then click "Add to Website for Free".
+         4. Copy the two things Elfsight gives you:
+              a) a <script src="https://static.elfsight.com/platform/platform.js" ...></script> tag
+              b) a <div class="elfsight-app-XXXXXXXX" ...></div> tag
+         5. Paste the <script> tag once, anywhere before </body> (e.g. right before the closing
+            </body> tag at the bottom of this file).
+         6. Paste the <div class="elfsight-app-..."> tag in place of the placeholder div directly
+            below. New Google reviews will then appear here automatically (Elfsight syncs roughly
+            every 24–72 hours), and visitors can also click "Write a review" inside the widget
+            itself, in addition to the button below.
+       ═══════════════════════════════════════════════════════════ -->
+    <div id="elfsight-google-reviews-widget" style="min-height:120px;margin-bottom:36px;">
+      <!-- Replace this comment with your elfsight-app-XXXXXXXX div once you have it -->
+    </div>
+
+    <!-- Live Google review cards (manual fallback) — populated by JS below.
+         Once the Elfsight widget above is live, you can delete this div and the
+         GOOGLE_REVIEWS script block further down the page if you no longer want
+         the manual list. Left in place for now so reviews still show if you
+         haven't set up Elfsight yet. -->
+    <div id="google-review-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-bottom:36px;"></div>
+
+    <!-- CTA row -->
+    <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+      <a href="https://maps.app.goo.gl/DWTpw8zSusofcP7A7" target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:8px;padding:13px 26px;background:#fff;border:1.5px solid rgba(50,44,44,0.18);border-radius:99px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#322C2C;text-decoration:none;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.05);"
+         onmouseenter="this.style.background='#322C2C';this.style.color='#fff'" onmouseleave="this.style.background='#fff';this.style.color='#322C2C'">
+        <svg width="14" height="14" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Read All Google Reviews
+      </a>
+      <a href="https://search.google.com/local/writereview?placeid=ChIJ2T3z_Ni_XIQR6JMYZ2hbmZA" target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:8px;padding:13px 26px;background:#BC1423;border:1.5px solid #BC1423;border-radius:99px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#fff;text-decoration:none;transition:background 0.2s;box-shadow:0 4px 14px rgba(188,20,35,0.25);"
+         onmouseenter="this.style.background='#9e1020'" onmouseleave="this.style.background='#BC1423'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Leave Us a Google Review &#8599;
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="bg-dark text-white" style="padding: 56px 40px 32px;">
+  <div style="max-width:1200px;margin:0 auto;">
+
+    <!-- Top row -->
+    <div style="display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;align-items:flex-start;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.08);">
+
+      <!-- Brand column -->
+      <div style="min-width:200px;flex:1;">
+        <a href="#hero" style="display:inline-flex;align-items:center;background:transparent;padding:5px 4px;border-radius:10px;margin-bottom:20px;">
+          <img src="logo.png" alt="The Nails Club" style="height:36px;width:auto;object-fit:contain;display:block;">
+        </a>
+        <p style="font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:rgba(255,255,255,0.45);max-width:240px;">
+          Handcrafted luxury press-on nails — bridal, festive, chrome &amp; more. Every set made with love.
+        </p>
+        <div style="display:flex;gap:14px;margin-top:20px;">
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+             style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#BC1423'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://wa.me/919913091744" target="_blank" rel="noopener"
+             style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#25D366'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          </a>
+          
+          <!-- Pinterest button -->
+          <a href="https://pin.it/7ibXsm1GV" target="_blank" rel="noopener" title="Pinterest"
+             style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#E60023'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div style="min-width:140px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">Navigate</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+          <li><a href="#hero"       style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Home</a></li>
+          <li><a href="#collection" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Collection</a></li>
+          <li><a href="#reels"      style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Reels</a></li>
+          <li><a href="#about"      style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">About</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div style="min-width:160px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">Contact</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+             style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">
+            @theenaiilsclub
+          </a>
+          <a href="https://wa.me/919913091744" target="_blank"
+             style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#25D366'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">
+            +91 99130 91744
+          </a>
+          <a href="https://wa.me/919016242187" target="_blank"
+             style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#25D366'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">
+            +91 90162 42187
+          </a>
+          <a href="https://pin.it/7ibXsm1GV" target="_blank" rel="noopener"
+             style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#E60023'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">&#128205; Pinterest
+          </a>
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+             style="display:inline-flex;align-items:center;gap:7px;margin-top:6px;background:#BC1423;color:#fff;border-radius:99px;padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            Order via DM
+          </a>
+        </div>
+      </div>
+
+      <!-- QR Code -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);">Scan to visit</p>
+        <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+           style="display:block;padding:10px;background:#fff;border-radius:16px;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='scale(1.04)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.3)'" onmouseleave="this.style.transform='scale(1)';this.style.boxShadow='none'">
+          <img src="theenaiilsclub_qr.png" alt="Scan QR to visit @theenaiilsclub on Instagram"
+               style="width:120px;height:120px;display:block;object-fit:contain;">
+        </a>
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(255,255,255,0.3);text-align:center;">Opens Instagram</p>
+      </div>
+
+    </div>
+
+    <!-- Bottom row -->
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding-top:24px;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.25);">&copy; 2025 The Nails Club. All rights reserved.</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,0.2);">Crafted with love &amp; precision</p>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// REEL TOGGLE (click to play/pause)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function toggleReel(card) {
+  const video = card.querySelector('video');
+  const overlay = card.querySelector('.reel-overlay');
+  if (!video) return;
+  if (video.paused) {
+    // Pause all other reels first
+    document.querySelectorAll('.reel-card video').forEach(v => {
+      if (v !== video) { v.pause(); v.closest('.reel-card').querySelector('.reel-overlay').style.opacity='1'; }
+    });
+    video.play();
+    overlay.style.opacity = '0';
+  } else {
+    video.pause();
+    overlay.style.opacity = '1';
+  }
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// DESIGN DATA (loaded from designs-data.js)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+// ─── Render category cards ───
+function renderCategoryCards() {
+  const grid = document.getElementById('cat-cards-grid');
+  if (!grid) return;
+  const cats = Object.keys(catLabels);
+  grid.innerHTML = cats.map(cat => {
+    const cover = catCovers[cat] || { img: '', sub: '' };
+    const count = DESIGNS.filter(d => d.cat === cat).length;
+    return `
+    <button onclick="setCatFilter('${cat}')" class="cat-card" style="position:relative;border-radius:18px;overflow:hidden;aspect-ratio:4/3;background:#e8e0db;cursor:pointer;border:none;padding:0;text-align:left;transition:transform 0.28s ease,box-shadow 0.28s ease;" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 14px 40px rgba(0,0,0,0.15)';" onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='none';">
+      <img src="${encodeImgPath(cover.img)}" alt="${catLabels[cat]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(50,44,44,0.82) 0%,rgba(50,44,44,0.12) 55%,transparent 100%);"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:14px 13px;">
+        <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:#fff;line-height:1.2;margin-bottom:4px;">${catLabels[cat]}</p>
+        <p style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">${cover.sub}</p>
+      </div>
+      <div style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.18);backdrop-filter:blur(4px);border-radius:99px;padding:3px 9px;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.1em;color:#fff;">${count}</div>
+    </button>`;
+  }).join('');
+}
+
+let catVisibleCount = 8;
+let currentCatFilter = '';
+
+function setCatFilter(cat) {
+  currentCatFilter = cat;
+  catVisibleCount = 8;
+  document.getElementById('cat-cards-grid').style.display = 'none';
+  document.getElementById('cat-see-more-wrap').style.display = 'none';
+  document.getElementById('cat-filter-panel').style.display = 'block';
+  document.getElementById('cat-filter-label').textContent = catLabels[cat] || cat;
+  renderCatDesigns();
+  document.getElementById('collection').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// "See More" — shows every design from every category, inline on the home page
+// (this replaces the old standalone collection.html page)
+function showAllDesigns() {
+  currentCatFilter = 'all';
+  catVisibleCount = 8;
+  document.getElementById('cat-cards-grid').style.display = 'none';
+  document.getElementById('cat-see-more-wrap').style.display = 'none';
+  document.getElementById('cat-filter-panel').style.display = 'block';
+  document.getElementById('cat-filter-label').textContent = 'All Designs';
+  renderCatDesigns();
+  document.getElementById('collection').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function closeCatFilter() {
+  document.getElementById('cat-cards-grid').style.display = '';
+  document.getElementById('cat-see-more-wrap').style.display = 'flex';
+  document.getElementById('cat-filter-panel').style.display = 'none';
+  currentCatFilter = '';
+}
+
+function catLoadMore() {
+  catVisibleCount += 8;
+  renderCatDesigns();
+}
+
+function renderCatDesigns() {
+  const grid = document.getElementById('cat-design-grid');
+  const filtered = currentCatFilter === 'all' ? DESIGNS : DESIGNS.filter(d => d.cat === currentCatFilter);
+  document.getElementById('cat-filter-count').textContent = filtered.length + ' designs';
+  grid.innerHTML = '';
+  filtered.slice(0, catVisibleCount).forEach(d => {
+    grid.insertAdjacentHTML('beforeend', buildCard(d, DESIGNS.indexOf(d)));
+  });
+  const wrap = document.getElementById('cat-load-more-wrap');
+  if (wrap) wrap.style.display = filtered.length > catVisibleCount ? 'flex' : 'none';
+}
+// ─── Build grid card ───
+function buildCard(design, idx) {
+  const thumb = encodeImgPath(design.photos[0]);
+  return `
+  <div class="design-card cursor-pointer" onclick="window.location.href='premium_product_page.html?design=${idx}'">
+    <div class="slide-wrap">
+      <img src="${thumb}" alt="${design.title}" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:1;" onerror="this.closest('.design-card').style.display='none'">
+      ${design.video ? `<div style="position:absolute;bottom:10px;right:10px;background:rgba(50,44,44,0.65);color:#fff;border-radius:99px;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;padding:3px 9px;font-family:DM Sans,sans-serif;display:flex;align-items:center;gap:4px;"><svg width="7" height="7" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>+Video</div>` : ''}
+    </div>
+    <div class="px-3 pb-4 pt-2">
+      <p class="font-sans text-[9px] tracking-[0.18em] uppercase text-dark/40 mb-0.5">${catLabels[design.cat]||design.cat}</p>
+      <p class="font-serif text-base text-dark leading-tight">${design.title}</p>
+      <p class="font-sans text-[11px] text-dark/50 mt-1 leading-snug" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${design.desc}</p>
+    </div>
+  </div>`;
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// DETAIL PANEL (Titan-style)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+let detailActiveIdx = 0;
+let detailDesign = null;
+
+function openDetail(designIdx) {
+  detailDesign = DESIGNS[designIdx];
+  detailActiveIdx = 0;
+  const panel = document.getElementById('detail-panel');
+  panel.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  renderDetail();
+}
+
+function closeDetail() {
+  const panel = document.getElementById('detail-panel');
+  panel.classList.add('hidden');
+  document.body.style.overflow = '';
+  // Pause any playing video
+  panel.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+}
+
+function renderDetail() {
+  if (!detailDesign) return;
+  const d = detailDesign;
+  const allMedia = [...d.photos];
+  if (d.video) allMedia.push({ type:'video', src:d.video });
+
+  // Thumbnail strip
+  const thumbStrip = document.getElementById('detail-thumbs');
+  thumbStrip.innerHTML = allMedia.map((m, i) => {
+    const isVideo = typeof m === 'object';
+    const border = i===0 ? '#BC1423' : 'transparent';
+    const inner = isVideo
+      ? '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#322C2C;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>'
+      : '<img src="' + m + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display=\'none\'">';
+    return '<button onclick="setDetailMedia(' + i + ')" class="detail-thumb" data-i="' + i + '" style="width:62px;height:72px;border-radius:8px;overflow:hidden;border:2px solid ' + border + ';flex-shrink:0;background:#e8e0db;cursor:pointer;transition:border-color 0.15s;">' + inner + '</button>';
+  }).join('');
+
+  setDetailMedia(0);
+
+  // Info panel
+  $setText('detail-cat',    catLabels[d.cat] || d.cat);
+  $setText('detail-title',  d.title);
+  $setText('detail-count',  `${d.photos.length} photo${d.photos.length>1?'s':''}${d.video?' + 1 video':''}`);
+  $setText('detail-design', d.design || '—');
+  $setText('detail-desc',   d.desc);
+
+  // Size chips — clickable selection
+  const sizes = (d.size || 'XS · S · M · L · XL').split('·').map(s => s.trim());
+  let selectedSize = '';
+  // All three buttons open the same confirm-your-order modal (with the
+  // product photo) — WhatsApp and Instagram DM links can't attach a
+  // photo on their own, so the modal keeps it in view either way.
+  function updateOrderLinks() {
+    const sizeText = selectedSize || '___';
+    const openModal = (waNumber) => openOrderModal({
+      title: d.title,
+      cat: catLabels[d.cat] || d.cat,
+      design: d.design,
+      size: sizeText,
+      price: d.price || 999,
+      img: d.photos[0],
+      waNumber: waNumber,
+      igLink: 'https://ig.me/m/theenaiilsclub'
+    });
+    const igBtn = document.getElementById('detail-ig-btn');
+    const waBtn = document.getElementById('detail-wa-btn');
+    const waBtn2 = document.getElementById('detail-wa-btn2');
+    if (igBtn) igBtn.onclick = (e) => { e.preventDefault(); openModal('919913091744'); };
+    if (waBtn) waBtn.onclick = (e) => { e.preventDefault(); openModal('919913091744'); };
+    if (waBtn2) waBtn2.onclick = (e) => { e.preventDefault(); openModal('919016242187'); };
+  }
+
+  document.getElementById('detail-size-chips').innerHTML = sizes.map(s =>
+    `<button onclick="selectSize(this,'${s}')" class="size-chip" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 12px;border:1.5px solid rgba(50,44,44,0.2);border-radius:99px;color:#322C2C;cursor:pointer;background:transparent;transition:all 0.18s ease;"
+      onmouseenter="if(!this.classList.contains('selected'))this.style.borderColor='rgba(50,44,44,0.5)'"
+      onmouseleave="if(!this.classList.contains('selected'))this.style.borderColor='rgba(50,44,44,0.2)'"
+    >${s}</button>`
+  ).join('');
+
+  // Contact links initial state (no size selected)
+  updateOrderLinks();
+  window._updateOrderLinks = updateOrderLinks;
+  window._setSelectedSize  = function(s) { selectedSize = s; };
+}
+
+function setDetailMedia(i) {
+  if (!detailDesign) return;
+  const d = detailDesign;
+  const allMedia = [...d.photos];
+  if (d.video) allMedia.push({ type:'video', src:d.video });
+
+  detailActiveIdx = i;
+  const m = allMedia[i];
+  const mainArea = document.getElementById('detail-main');
+  const isVideo = typeof m === 'object';
+
+  // Stop any playing video
+  mainArea.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+
+  if (isVideo) {
+    mainArea.innerHTML = '<video src="' + m.src + '" controls autoplay playsinline loop style="width:100%;height:100%;object-fit:cover;border-radius:0;background:#000;"></video>';
+  } else {
+    mainArea.innerHTML = '<img src="' + m + '" alt="' + d.title + '" style="width:100%;height:100%;object-fit:cover;border-radius:0;display:block;">';
+  }
+
+  // Update thumb borders
+  document.querySelectorAll('.detail-thumb').forEach((t, ti) => {
+    t.style.borderColor = ti === i ? '#BC1423' : 'transparent';
+  });
+}
+
+// ─── Detail nav arrows ───
+function detailNav(dir) {
+  if (!detailDesign) return;
+  const allMedia = [...detailDesign.photos];
+  if (detailDesign.video) allMedia.push({ type:'video', src:detailDesign.video });
+  const next = (detailActiveIdx + dir + allMedia.length) % allMedia.length;
+  setDetailMedia(next);
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// SIZE SELECTION
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function selectSize(btn, size) {
+  // Deselect all chips
+  document.querySelectorAll('.size-chip').forEach(c => {
+    c.classList.remove('selected');
+    c.style.background    = 'transparent';
+    c.style.borderColor   = 'rgba(50,44,44,0.2)';
+    c.style.color         = '#322C2C';
+  });
+  // Select clicked chip
+  btn.classList.add('selected');
+  btn.style.background  = '#BC1423';
+  btn.style.borderColor = '#BC1423';
+  btn.style.color       = '#fff';
+  // Update label
+  const lbl = document.getElementById('detail-selected-size-label');
+  if (lbl) lbl.textContent = 'Selected: ' + size;
+  // Update order links with selected size
+  if (window._setSelectedSize)  window._setSelectedSize(size);
+  if (window._updateOrderLinks) window._updateOrderLinks();
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// NAV
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function toggleMenu() {
+  document.getElementById('nav-overlay').classList.toggle('is-open');
+  document.getElementById('menu-btn').classList.toggle('is-open');
+}
+function closeMenu() {
+  document.getElementById('nav-overlay').classList.remove('is-open');
+  document.getElementById('menu-btn').classList.remove('is-open');
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// INIT
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+document.addEventListener('DOMContentLoaded', async () => {
+  // Wait for products from the database to merge into DESIGNS
+  // before rendering the collection, so newly-added items show up.
+  if (window.DESIGNS_READY) { try { await window.DESIGNS_READY; } catch(e) {} }
+  renderCategoryCards();
+  if (typeof currentCatFilter !== 'undefined' && currentCatFilter) renderCatDesigns();
+
+  // ── Intersection Observer for lazy image loading ──
+  const imgObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+        imgObserver.unobserve(img);
+      }
+    });
+  }, { rootMargin: '200px' });
+
+  function observeCards() {
+    document.querySelectorAll('img[data-src]').forEach(img => imgObserver.observe(img));
+  }
+  observeCards();
+
+  // Re-observe after render/filter/loadmore
+  window._observeAfterRender = observeCards;
+  if (window.gsap) {
+    gsap.to('.gs-up', { opacity:1, y:0, duration:1, stagger:0.15, ease:'power3.out', delay:0.2 });
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('site-header').style.boxShadow =
+      window.scrollY > 20 ? '0 4px 24px rgba(0,0,0,0.07)' : 'none';
+  });
+  // Close detail on backdrop click — safely handled in DOMContentLoaded below
+  // ESC to close
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+});
+</script>
+
+<!-- â•â•â• EMAIL POPUP â•â•â• -->
+<div id="email-popup" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(30,25,25,0.65);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#fff;border-radius:24px;width:100%;max-width:520px;overflow:hidden;display:flex;flex-direction:column;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.25);">
+    <!-- Close -->
+    <button onclick="closePopup()" style="position:absolute;top:14px;right:14px;z-index:10;background:rgba(50,44,44,0.08);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#322C2C" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- Top image strip -->
+    <div style="height:6px;background:linear-gradient(90deg,#BC1423,#C6A35B,#BC1423);"></div>
+
+    <!-- Content -->
+    <div style="padding:36px 32px 32px;text-align:center;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(50,44,44,0.4);margin-bottom:10px;">Exclusive for You</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,6vw,2.8rem);font-weight:400;color:#322C2C;line-height:1.1;margin-bottom:6px;">Get Early Access<br><em style="color:#BC1423;">& Special Offers</em></h2>
+      <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(50,44,44,0.55);margin-bottom:24px;line-height:1.6;">Be the first to know about new collections, festive drops &amp; exclusive deals.</p>
+
+      <!-- Email form -->
+      <div id="popup-form" style="display:flex;flex-direction:column;gap:10px;">
+        <input id="popup-email" type="email" placeholder="Enter your email address"
+          style="width:100%;padding:13px 16px;border:1.5px solid rgba(50,44,44,0.15);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='#BC1423'" onblur="this.style.borderColor='rgba(50,44,44,0.15)'"
+          onkeydown="if(event.key==='Enter')submitPopupEmail()">
+        <button onclick="submitPopupEmail()"
+          style="width:100%;padding:13px;background:#BC1423;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;font-weight:500;transition:background 0.2s;"
+          onmouseenter="this.style.background='#9e1020'" onmouseleave="this.style.background='#BC1423'">
+          Subscribe &amp; Get Notified
+        </button>
+        <button onclick="closePopup()"
+          style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(50,44,44,0.35);cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;text-decoration:underline;padding:4px;">
+          No thanks, I'll miss out
+        </button>
+      </div>
+
+      <!-- Success message (hidden) -->
+      <div id="popup-success" style="display:none;padding:20px 0 8px;">
+        <div style="font-size:32px;margin-bottom:10px;">💅</div>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#322C2C;margin-bottom:6px;">You're on the list!</p>
+        <p style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(50,44,44,0.55);">We'll send you exclusive deals and new collection alerts.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Email popup logic ──
+function showPopup() {
+  const p = document.getElementById('email-popup');
+  if (!p) return;
+  // Don't show if already subscribed
+  if (localStorage.getItem('tnc_subscribed')) return;
+  p.style.display = 'flex';
+}
+function closePopup() {
+  document.getElementById('email-popup').style.display = 'none';
+}
+
+// REPLACE THIS URL with your Google Apps Script Web App URL (see instructions below)
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxs4Oiak8MMNgfkqnmZUhdhd0770EF9BxIQ3onQfjigzUJf0fiCNvCH0VTrjgYKz0Xg/exec';
+
+function submitPopupEmail() {
+  const emailInput = document.getElementById('popup-email');
+  const email = emailInput.value.trim();
+  if (!email || !email.includes('@')) {
+    emailInput.style.borderColor = '#BC1423';
+    emailInput.placeholder = 'Please enter a valid email';
+    emailInput.focus();
+    return;
+  }
+  // Show success immediately (optimistic)
+  document.getElementById('popup-form').style.display = 'none';
+  document.getElementById('popup-success').style.display = 'block';
+  localStorage.setItem('tnc_subscribed', '1');
+
+  // Send to Google Sheet
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, source: 'popup', time: new Date().toISOString() })
+  }).catch(() => {}); // silent fail — success already shown
+
+  // Auto close after 3s
+  setTimeout(closePopup, 3000);
+}
+
+// Show popup after 3 seconds on page load
+window.addEventListener('load', () => {
+  setTimeout(showPopup, 3000);
+});
+</script>
+
+<!-- â•â•â• DETAIL PANEL — Nike/Comet Style â•â•â• -->
+<div id="detail-panel" class="hidden" style="position:fixed;inset:0;z-index:400;background:rgba(20,18,18,0.7);backdrop-filter:blur(6px);overflow-y:auto;">
+  <div style="min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px 16px 40px;">
+    <div style="background:#fff;border-radius:20px;width:100%;max-width:1100px;position:relative;overflow:hidden;">
+
+      <!-- Close button -->
+      <button onclick="closeDetail()" style="position:absolute;top:16px;right:16px;z-index:20;background:#322C2C;color:#fff;border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.18);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Main layout: Left gallery + Right info -->
+      <div style="display:flex;flex-wrap:wrap;min-height:600px;">
+
+        <!-- ── LEFT: Image Gallery ── -->
+        <div style="flex:1;min-width:300px;display:flex;gap:0;background:#F7F4F1;border-radius:20px 0 0 20px;overflow:hidden;">
+
+          <!-- Thumbnail column -->
+          <div id="detail-thumbs" style="display:flex;flex-direction:column;gap:6px;padding:14px 8px 14px 12px;overflow-y:auto;width:76px;flex-shrink:0;" class="no-scrollbar"></div>
+
+          <!-- Main image -->
+          <div id="detail-main" style="flex:1;position:relative;min-height:480px;background:#F0EBE6;overflow:hidden;">
+            <!-- Arrow prev -->
+            <button id="dp-prev" onclick="detailNav(-1)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.92);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.13);z-index:5;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#322C2C" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <!-- Arrow next -->
+            <button id="dp-next" onclick="detailNav(1)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.92);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.13);z-index:5;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#322C2C" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── RIGHT: Info Panel ── -->
+        <div style="width:340px;flex-shrink:0;padding:32px 28px 28px;display:flex;flex-direction:column;gap:0;overflow-y:auto;border-left:1px solid rgba(50,44,44,0.08);" class="no-scrollbar">
+
+          <!-- Badge + Category -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span id="detail-cat" style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(50,44,44,0.4);"></span>
+            <span id="detail-new-badge" style="display:none;background:#BC1423;color:#fff;font-family:'DM Sans',sans-serif;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;padding:2px 8px;border-radius:99px;">New</span>
+          </div>
+
+          <!-- Title -->
+          <h3 id="detail-title" style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:#322C2C;line-height:1.15;margin-bottom:6px;"></h3>
+
+          <!-- Star rating + review count -->
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
+            <div style="display:flex;gap:2px;" id="detail-stars">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#C6A35B"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#C6A35B"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#C6A35B"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#C6A35B"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#C6A35B"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span style="font-family:'DM Sans',sans-serif;font-size:11px;color:#BC1423;font-weight:500;">5.0</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(50,44,44,0.4);">· Handcrafted</span>
+          </div>
+
+          <!-- Divider -->
+          <div style="height:1px;background:rgba(50,44,44,0.08);margin-bottom:16px;"></div>
+
+          <!-- Design -->
+          <div style="margin-bottom:14px;">
+            <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(50,44,44,0.35);margin-bottom:4px;">Design Style</p>
+            <p id="detail-design" style="font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;font-weight:500;"></p>
+          </div>
+
+          <!-- Size selector -->
+          <div style="margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(50,44,44,0.35);">Select Size</p>
+              <span id="detail-selected-size-label" style="font-family:'DM Sans',sans-serif;font-size:10px;color:#BC1423;font-weight:500;"></span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;" id="detail-size-chips"></div>
+          </div>
+
+          <!-- Description -->
+          <div style="margin-bottom:16px;padding:12px 14px;background:#F7F4F1;border-radius:12px;">
+            <p id="detail-desc" style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(50,44,44,0.65);line-height:1.7;"></p>
+          </div>
+
+          <!-- Perks row -->
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">
+            <span style="font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(50,44,44,0.5);display:flex;align-items:center;gap:4px;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Handcrafted</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(50,44,44,0.5);display:flex;align-items:center;gap:4px;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Reusable</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(50,44,44,0.5);display:flex;align-items:center;gap:4px;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>All sizes</span>
+          </div>
+
+          <!-- Order buttons -->
+          <a id="detail-ig-btn" href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+             style="display:flex;align-items:center;justify-content:center;gap:8px;background:#BC1423;color:#fff;border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;margin-bottom:8px;font-weight:500;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            Order via Instagram DM
+          </a>
+          <a id="detail-wa-btn" href="https://wa.me/919913091744" target="_blank" rel="noopener"
+             style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;margin-bottom:8px;font-weight:500;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            +91 99130 91744
+          </a>
+          <a id="detail-wa-btn2" href="https://wa.me/919016242187" target="_blank" rel="noopener"
+             style="display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#25D366;border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;border:1.5px solid #25D366;font-weight:500;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            +91 90162 42187
+          </a>
+
+          <!-- Media count -->
+          <p id="detail-count" style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(50,44,44,0.3);margin-top:12px;text-align:center;"></p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â• AUTH MODAL â•â•â• -->
+<div id="auth-modal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(20,18,18,0.65);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#fff;border-radius:24px;width:100%;max-width:440px;position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.22);">
+    <!-- Top accent -->
+    <div style="height:4px;background:linear-gradient(90deg,#BC1423,#C6A35B,#BC1423);"></div>
+    <!-- Close -->
+    <button onclick="closeAuthModal()" style="position:absolute;top:14px;right:14px;background:rgba(50,44,44,0.08);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#322C2C" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div style="padding:32px 32px 28px;">
+      <!-- Tabs -->
+      <div style="display:flex;gap:0;border-bottom:1.5px solid rgba(50,44,44,0.1);margin-bottom:24px;">
+        <button id="tab-login" onclick="switchTab('login')" style="flex:1;padding:10px 0;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:#BC1423;border-bottom:2px solid #BC1423;margin-bottom:-1.5px;font-weight:500;">Sign In</button>
+        <button id="tab-signup" onclick="switchTab('signup')" style="flex:1;padding:10px 0;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:rgba(50,44,44,0.4);border-bottom:2px solid transparent;margin-bottom:-1.5px;">Create Account</button>
+      </div>
+      <!-- Logo + title -->
+      <div style="text-align:center;margin-bottom:22px;">
+        <h3 id="auth-modal-title" style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:#322C2C;">Welcome Back</h3>
+        <p id="auth-modal-sub" style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(50,44,44,0.45);margin-top:4px;">Sign in to your Nails Club account</p>
+      </div>
+      <!-- Form -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div id="auth-name-field" style="display:none;">
+          <input id="auth-name" type="text" placeholder="Your Name" style="width:100%;padding:12px 14px;border:1.5px solid rgba(50,44,44,0.15);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#BC1423'" onblur="this.style.borderColor='rgba(50,44,44,0.15)'">
+        </div>
+        <input id="auth-email" type="email" placeholder="Email Address" style="width:100%;padding:12px 14px;border:1.5px solid rgba(50,44,44,0.15);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#BC1423'" onblur="this.style.borderColor='rgba(50,44,44,0.15)'" onkeydown="if(event.key==='Enter')authSubmit()">
+        <input id="auth-password" type="password" placeholder="Password" style="width:100%;padding:12px 14px;border:1.5px solid rgba(50,44,44,0.15);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#BC1423'" onblur="this.style.borderColor='rgba(50,44,44,0.15)'" onkeydown="if(event.key==='Enter')authSubmit()">
+        <p id="auth-error" style="display:none;font-family:'DM Sans',sans-serif;font-size:11px;color:#BC1423;text-align:center;"></p>
+        <button onclick="authSubmit()" id="auth-submit-btn" style="width:100%;padding:13px;background:#BC1423;color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;font-weight:500;transition:background 0.2s;" onmouseenter="this.style.background='#9e1020'" onmouseleave="this.style.background='#BC1423'">Sign In</button>
+      </div>
+      <p style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(50,44,44,0.35);text-align:center;margin-top:14px;">
+        <span id="auth-switch-text">Don't have an account?</span>
+        <button id="auth-switch-btn" onclick="switchTab('signup')" style="background:none;border:none;color:#BC1423;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;text-decoration:underline;margin-left:4px;">Create one</button>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// AUTH SYSTEM
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+// REPLACE THIS with your Google Apps Script Web App URL after setup
+const AUTH_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxs4Oiak8MMNgfkqnmZUhdhd0770EF9BxIQ3onQfjigzUJf0fiCNvCH0VTrjgYKz0Xg/exec';
+
+let authMode = 'login'; // 'login' or 'signup'
+
+function openAuthModal(mode) {
+  authMode = mode || 'login';
+  document.getElementById('auth-modal').style.display = 'flex';
+  document.getElementById('auth-error').style.display = 'none';
+  document.getElementById('auth-email').value = '';
+  document.getElementById('auth-password').value = '';
+  if (document.getElementById('auth-name')) document.getElementById('auth-name').value = '';
+  switchTab(authMode);
+}
+
+function closeAuthModal() {
+  document.getElementById('auth-modal').style.display = 'none';
+}
+
+function switchTab(mode) {
+  authMode = mode;
+  const isLogin = mode === 'login';
+  // Tab styles
+  document.getElementById('tab-login').style.color = isLogin ? '#BC1423' : 'rgba(50,44,44,0.4)';
+  document.getElementById('tab-login').style.borderBottomColor = isLogin ? '#BC1423' : 'transparent';
+  document.getElementById('tab-signup').style.color = !isLogin ? '#BC1423' : 'rgba(50,44,44,0.4)';
+  document.getElementById('tab-signup').style.borderBottomColor = !isLogin ? '#BC1423' : 'transparent';
+  // Title
+  document.getElementById('auth-modal-title').textContent = isLogin ? 'Welcome Back' : 'Create Account';
+  document.getElementById('auth-modal-sub').textContent = isLogin ? 'Sign in to your Nails Club account' : 'Join The Nails Club family';
+  // Name field
+  document.getElementById('auth-name-field').style.display = isLogin ? 'none' : 'block';
+  // Button
+  document.getElementById('auth-submit-btn').textContent = isLogin ? 'Sign In' : 'Create Account';
+  // Switch link
+  document.getElementById('auth-switch-text').textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
+  document.getElementById('auth-switch-btn').textContent = isLogin ? 'Create one' : 'Sign in';
+  document.getElementById('auth-switch-btn').onclick = () => switchTab(isLogin ? 'signup' : 'login');
+  document.getElementById('auth-error').style.display = 'none';
+}
+
+function authSubmit() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const name = document.getElementById('auth-name') ? document.getElementById('auth-name').value.trim() : '';
+  const errEl = document.getElementById('auth-error');
+
+  if (!email || !email.includes('@')) { showAuthError('Please enter a valid email address.'); return; }
+  if (!password || password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
+  if (authMode === 'signup' && !name) { showAuthError('Please enter your name.'); return; }
+
+  const btn = document.getElementById('auth-submit-btn');
+  btn.textContent = authMode === 'login' ? 'Signing in...' : 'Creating account...';
+  btn.disabled = true;
+
+  if (authMode === 'signup') {
+    // Check if already registered locally
+    const users = JSON.parse(localStorage.getItem('tnc_users') || '[]');
+    if (users.find(u => u.email === email)) {
+      showAuthError('This email is already registered. Please sign in.');
+      btn.textContent = 'Create Account'; btn.disabled = false; return;
+    }
+    // Save locally
+    users.push({ name, email, password, joined: new Date().toISOString() });
+    localStorage.setItem('tnc_users', JSON.stringify(users));
+    // Save to Google Sheet
+    fetch(AUTH_SHEET_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'signup', name, email, time: new Date().toISOString() })
+    }).catch(() => {});
+    // Log in immediately
+    loginSuccess(name, email);
+  } else {
+    // Login — check localStorage
+    const users = JSON.parse(localStorage.getItem('tnc_users') || '[]');
+    const user = users.find(u => u.email === email && u.password === password);
+    if (user) {
+      loginSuccess(user.name, user.email);
+    } else {
+      showAuthError('Incorrect email or password.');
+      btn.textContent = 'Sign In'; btn.disabled = false;
+    }
+  }
+}
+
+function loginSuccess(name, email) {
+  localStorage.setItem('tnc_logged_in', JSON.stringify({ name, email }));
+  closeAuthModal();
+  updateAuthUI();
+}
+
+function toggleUserDropdown() {
+  const dd = document.getElementById('user-dropdown');
+  if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+}
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const btn = document.getElementById('auth-avatar-btn');
+  const dd = document.getElementById('user-dropdown');
+  if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) dd.style.display = 'none';
+});
+
+function authLogout() {
+  localStorage.removeItem('tnc_logged_in');
+  const dd = document.getElementById('user-dropdown');
+  if (dd) dd.style.display = 'none';
+  updateAuthUI();
+}
+
+function updateAuthUI() {
+  const user = JSON.parse(localStorage.getItem('tnc_logged_in') || 'null');
+  const statusEl = document.getElementById('auth-status');
+  const loginBtn = document.getElementById('auth-login-btn');
+  const nameEl = document.getElementById('auth-user-name');
+  const emailEl = document.getElementById('auth-user-email');
+  const avatarEl = document.getElementById('auth-avatar');
+  const ddName = document.getElementById('dd-name');
+  const ddEmail = document.getElementById('dd-email');
+  if (user) {
+    const displayName = user.name || user.email.split('@')[0];
+    const initial = displayName.charAt(0).toUpperCase();
+    if (statusEl) { statusEl.style.display = 'flex'; }
+    if (nameEl) nameEl.textContent = displayName;
+    if (emailEl) emailEl.textContent = user.email;
+    if (avatarEl) avatarEl.textContent = initial;
+    if (ddName) ddName.textContent = displayName;
+    if (ddEmail) ddEmail.textContent = user.email;
+    if (loginBtn) loginBtn.style.display = 'none';
+  } else {
+    if (statusEl) statusEl.style.display = 'none';
+    if (loginBtn) loginBtn.style.display = '';
+  }
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = 'block';
+  const btn = document.getElementById('auth-submit-btn');
+  btn.textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
+  btn.disabled = false;
+}
+
+// DOMContentLoaded — safe event bindings
+document.addEventListener('DOMContentLoaded', () => {
+  const detailPanel = $id('detail-panel');
+  if (detailPanel) detailPanel.addEventListener('click', function(e) {
+    if (e.target === this) closeDetail();
+  });
+  const authModalBackdrop = $id('auth-modal');
+  if (authModalBackdrop) authModalBackdrop.addEventListener('click', function(e) { if (e.target === this) closeAuthModal(); });
+  // ── Wishlist badge count ──
+  try {
+    const wl = JSON.parse(localStorage.getItem('tnc_wishlist') || '[]');
+    const badge = document.getElementById('header-wl-count');
+    const icon  = document.getElementById('header-wl-icon');
+    if (badge && wl.length > 0) {
+      badge.textContent = wl.length;
+      badge.style.display = 'flex';
+      if (icon) { icon.setAttribute('fill','#BC1423'); icon.setAttribute('stroke','#BC1423'); }
+    }
+  } catch(e) {}
+});
+
+// Check login state on load
+document.addEventListener('DOMContentLoaded', updateAuthUI);
+</script>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     DISCOUNT POPUP — shows after 10s, once per session
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="offer-popup-backdrop" style="
+  display:none; position:fixed; inset:0; z-index:10000;
+  background:rgba(0,0,0,0.55); backdrop-filter:blur(3px);
+  align-items:center; justify-content:center; padding:16px;">
+
+  <div id="offer-popup" style="
+    position:relative; display:flex; flex-direction:row;
+    width:100%; max-width:780px; border-radius:20px; overflow:hidden;
+    box-shadow:0 24px 80px rgba(0,0,0,0.35);
+    animation:popupIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;">
+
+    <!-- LEFT — form side -->
+    <div style="flex:1; background:#fff; padding:clamp(28px,5vw,52px); display:flex; flex-direction:column; justify-content:center; gap:0;">
+
+      <!-- Close button -->
+      <button id="offer-popup-close" aria-label="Close" style="
+        position:absolute; top:14px; right:14px; z-index:10;
+        width:32px; height:32px; border-radius:50%; border:none;
+        background:rgba(50,44,44,0.1); cursor:pointer; display:flex;
+        align-items:center; justify-content:center;
+        font-size:16px; color:#322C2C; transition:background 0.2s;">✕</button>
+
+      <!-- Countdown bar -->
+      <div style="margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <span style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(50,44,44,0.4);">Offer closes in</span>
+          <span id="popup-countdown" style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:#BC1423;">0:15</span>
+        </div>
+        <div style="height:3px;background:rgba(50,44,44,0.08);border-radius:99px;overflow:hidden;">
+          <div id="popup-timer-bar" style="height:100%;width:100%;background:linear-gradient(90deg,#BC1423,#e11d48);border-radius:99px;transition:width 1s linear;"></div>
+        </div>
+      </div>
+
+      <!-- Headline -->
+      <div id="offer-popup-form-side">
+        <p style="font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#BC1423;margin-bottom:10px;">Exclusive Offer</p>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,5vw,3.6rem);font-weight:500;color:#322C2C;line-height:1.0;margin-bottom:10px;">Get ₹100 Off<br>Your First Set</h2>
+        <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(50,44,44,0.55);line-height:1.6;margin-bottom:24px;">Sign up and get an exclusive discount code sent straight to your WhatsApp.</p>
+
+        <!-- Input -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <input id="popup-wa-input" type="tel" placeholder="Your WhatsApp number"
+            style="width:100%;padding:14px 16px;border:1.5px solid rgba(50,44,44,0.18);border-radius:12px;
+            font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;outline:none;
+            transition:border-color 0.2s;box-sizing:border-box;"
+            onfocus="this.style.borderColor='#BC1423'" onblur="this.style.borderColor='rgba(50,44,44,0.18)'"/>
+          <button id="popup-submit-btn" onclick="submitOfferPopup()" style="
+            width:100%;padding:15px;background:#BC1423;color:#fff;border:none;border-radius:12px;
+            font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;
+            font-weight:600;cursor:pointer;transition:background 0.2s;"
+            onmouseenter="this.style.background='#a01020'" onmouseleave="this.style.background='#BC1423'">
+            Get My ₹100 Off →
+          </button>
+        </div>
+
+        <!-- Decline -->
+        <button onclick="closeOfferPopup(true)" style="
+          display:block;width:100%;margin-top:14px;background:none;border:none;cursor:pointer;
+          font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
+          color:rgba(50,44,44,0.35);text-decoration:underline;text-underline-offset:3px;
+          transition:color 0.2s;"
+          onmouseenter="this.style.color='rgba(50,44,44,0.6)'" onmouseleave="this.style.color='rgba(50,44,44,0.35)'">
+          No thanks, I'll pay full price
+        </button>
+      </div>
+
+      <!-- Success state (hidden initially) -->
+      <div id="offer-popup-success" style="display:none;text-align:center;padding:12px 0;">
+        <div style="font-size:40px;margin-bottom:12px;">💅</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:500;color:#322C2C;margin-bottom:8px;">You're on the list!</h3>
+        <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(50,44,44,0.55);line-height:1.6;">We'll send your ₹100 discount code on WhatsApp within a few hours. Shop our collection in the meantime!</p>
+        <a href="#collection" style="display:inline-block;margin-top:18px;padding:12px 28px;background:#322C2C;color:#fff;border-radius:99px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;">Browse Collection</a>
+      </div>
+    </div>
+
+    <!-- RIGHT — image side (hidden on small screens) -->
+    <div style="width:42%;flex-shrink:0;display:flex;" class="offer-popup-img-side">
+      <img src="Images/Bridal/bridal1.jpg"
+        alt="The Nails Club"
+        style="width:100%;height:100%;object-fit:cover;display:block;"
+        onerror="this.parentElement.style.display='none'"/>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes popupIn {
+  from { opacity:0; transform:scale(0.88) translateY(24px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+@media (max-width:580px) {
+  .offer-popup-img-side { display:none !important; }
+  #offer-popup { max-width:96vw; }
+}
+</style>
+
+<script>
+(function() {
+  const POPUP_KEY = 'tnc_offer_popup_seen';
+  const DELAY_MS  = 10000; // show after 10 seconds
+  const TOTAL_SEC = 15;    // countdown duration
+
+  // Don't show if already submitted or dismissed today
+  if (localStorage.getItem(POPUP_KEY) === 'done') return;
+
+  let timerInterval = null;
+  let countdownInterval = null;
+  let secondsLeft = TOTAL_SEC;
+
+  function showOfferPopup() {
+    const backdrop = document.getElementById('offer-popup-backdrop');
+    if (!backdrop) return;
+    backdrop.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    startCountdown();
+  }
+
+  function startCountdown() {
+    secondsLeft = TOTAL_SEC;
+    updateCountdownUI();
+    countdownInterval = setInterval(function() {
+      secondsLeft--;
+      updateCountdownUI();
+      if (secondsLeft <= 0) {
+        clearInterval(countdownInterval);
+        closeOfferPopup(false); // auto-close when timer hits 0
+      }
+    }, 1000);
+  }
+
+  function updateCountdownUI() {
+    const bar = document.getElementById('popup-timer-bar');
+    const label = document.getElementById('popup-countdown');
+    if (bar) bar.style.width = ((secondsLeft / TOTAL_SEC) * 100) + '%';
+    if (label) label.textContent = '0:' + (secondsLeft < 10 ? '0' : '') + secondsLeft;
+  }
+
+  window.closeOfferPopup = function(permanent) {
+    clearInterval(countdownInterval);
+    const backdrop = document.getElementById('offer-popup-backdrop');
+    if (backdrop) backdrop.style.display = 'none';
+    document.body.style.overflow = '';
+    if (permanent) localStorage.setItem(POPUP_KEY, 'done');
+  };
+
+  window.submitOfferPopup = function() {
+    const input = document.getElementById('popup-wa-input');
+    const num = input ? input.value.trim() : '';
+    if (!num || num.length < 6) {
+      if (input) { input.style.borderColor = '#BC1423'; input.focus(); }
+      return;
+    }
+    clearInterval(countdownInterval);
+    // Send via WhatsApp to the business
+    const msg = encodeURIComponent('Hi The Nails Club! 💅 I\'d like my ₹100 discount code. My WhatsApp: ' + num);
+    window.open('https://wa.me/919913091744?text=' + msg, '_blank');
+    // Show success
+    const formSide = document.getElementById('offer-popup-form-side');
+    const successSide = document.getElementById('offer-popup-success');
+    if (formSide) formSide.style.display = 'none';
+    if (successSide) successSide.style.display = 'block';
+    localStorage.setItem(POPUP_KEY, 'done');
+    // Auto close after 4 seconds
+    setTimeout(function() { closeOfferPopup(false); }, 4000);
+  };
+
+  // Close on backdrop click
+  document.addEventListener('DOMContentLoaded', function() {
+    const backdrop = document.getElementById('offer-popup-backdrop');
+    const closeBtn = document.getElementById('offer-popup-close');
+    if (backdrop) backdrop.addEventListener('click', function(e) {
+      if (e.target === backdrop) closeOfferPopup(true);
+    });
+    if (closeBtn) closeBtn.addEventListener('click', function() { closeOfferPopup(true); });
+  });
+
+  // Trigger popup after delay
+  setTimeout(showOfferPopup, DELAY_MS);
+})();
+</script>
+
+<script>
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   GOOGLE REVIEWS — Real verified reviews from Google
+   These are your actual Google Business reviewers.
+   New reviews are added here manually after they appear
+   on Google. Each card links directly to your Google listing.
+
+   TO ADD A NEW REVIEW: copy a block in GOOGLE_REVIEWS
+   and fill in the details from the real Google review.
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+(function renderGoogleReviews() {
+  var GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/DWTpw8zSusofcP7A7';
+
+  var GOOGLE_REVIEWS = [
+    {
+      name: 'Rajvi Bharucha',
+      initial: 'R',
+      color: '#BC1423',
+      rating: 5,
+      when: '3 months ago',
+      text: 'I\'m honestly so happy with how my nails turned out! The design is even prettier in person — the soft blue tones and little 3D details make them look really unique without being too much. The shape is perfect and they feel really well done.',
+      meta: '1 photo'
+    },
+    {
+      name: 'Tisha Jariwala',
+      initial: 'T',
+      color: '#C6A35B',
+      rating: 5,
+      when: '1 month ago',
+      text: 'Great quality nails at a really good price — ₹500–1,000. Totally worth it!',
+      meta: null
+    },
+    {
+      name: 'Harsh Jariwala',
+      initial: 'H',
+      color: '#322C2C',
+      rating: 5,
+      when: '3 months ago',
+      text: 'Availed the nail extensions service — really happy with the results. Professional work and beautiful finish. Highly recommend!',
+      meta: '4 reviews · 1 photo'
+    },
+    {
+      name: 'Shruti K.',
+      initial: 'S',
+      color: '#BC1423',
+      rating: 5,
+      when: 'May 2026',
+      text: 'Ordered the floral set for my baby shower and it was perfect. The nails matched my outfit beautifully. Highly recommend!',
+      meta: null
+    }
+  ];
+
+  // Google G SVG logo inline
+  var googleG = '<svg width="12" height="12" viewBox="0 0 24 24" style="flex-shrink:0;">'
+    + '<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>'
+    + '<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>'
+    + '<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>'
+    + '<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>'
+    + '</svg>';
+
+  var star = '<svg width="12" height="12" viewBox="0 0 24 24" fill="#FBBC05"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  var starEmpty = '<svg width="12" height="12" viewBox="0 0 24 24" fill="#e0e0e0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+
+  var container = document.getElementById('google-review-cards');
+  if (!container) return;
+
+  container.innerHTML = GOOGLE_REVIEWS.map(function(r) {
+    var stars = '';
+    for (var i = 1; i <= 5; i++) stars += (i <= r.rating ? star : starEmpty);
+    var metaLine = 'Google Review' + (r.meta ? ' · ' + r.meta : '');
+    return '<a href="' + GOOGLE_MAPS_URL + '" target="_blank" rel="noopener" style="text-decoration:none;display:block;">'
+      + '<div style="background:#fff;border-radius:18px;padding:24px;box-shadow:0 2px 16px rgba(50,44,44,0.06);height:100%;transition:transform .2s,box-shadow .2s;" '
+      + 'onmouseenter="this.style.transform=\'translateY(-3px)\';this.style.boxShadow=\'0 10px 32px rgba(50,44,44,0.13)\'" '
+      + 'onmouseleave="this.style.transform=\'none\';this.style.boxShadow=\'0 2px 16px rgba(50,44,44,0.06)\'">'
+        + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">'
+          + '<div style="display:flex;gap:2px;">' + stars + '</div>'
+          + '<span style="font-family:\'DM Sans\',sans-serif;font-size:10px;color:rgba(50,44,44,0.35);">' + r.when + '</span>'
+        + '</div>'
+        + '<p style="font-family:\'Cormorant Garamond\',serif;font-size:16px;font-style:italic;color:#322C2C;line-height:1.65;margin-bottom:16px;">&ldquo;' + r.text + '&rdquo;</p>'
+        + '<div style="display:flex;align-items:center;gap:10px;">'
+          + '<div style="width:36px;height:36px;border-radius:50%;background:' + r.color + ';display:flex;align-items:center;justify-content:center;font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:600;color:#fff;flex-shrink:0;">' + r.initial + '</div>'
+          + '<div style="min-width:0;">'
+            + '<p style="font-family:\'DM Sans\',sans-serif;font-size:12px;font-weight:600;color:#322C2C;margin:0 0 3px;">' + r.name + '</p>'
+            + '<div style="display:flex;align-items:center;gap:5px;">' + googleG
+              + '<p style="font-family:\'DM Sans\',sans-serif;font-size:10px;color:rgba(50,44,44,0.45);margin:0;">' + metaLine + '</p>'
+            + '</div>'
+          + '</div>'
+        + '</div>'
+      + '</div>'
+    + '</a>';
+  }).join('');
+})();
+</script>
+</body>
+</html>
+

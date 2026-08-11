@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Nails Club — Studio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="chart.min.js"></script>
+<script src="designs-data.js"></script>
+<style>
+:root{
+  --ink:#2A2019; --ink-soft:#5B4C43; --muted:#93867C;
+  --cream:#FAF6F0; --panel:#FFFFFF; --panel-sunk:#F4EEE6;
+  --line:#E9DFD2; --line-soft:#F0E8DC;
+  --rosewood:#8C3A46; --rosewood-deep:#6E2C36; --rosewood-tint:#F5E4E2;
+  --gold:#B08A55; --gold-tint:#F1E6D3;
+  --sage:#6C7A5E; --sage-tint:#E8ECE1;
+  --rust:#B0553B; --rust-tint:#F5E1D8;
+  --blue:#3B6EA8; --blue-tint:#E0EAF5;
+  --purple:#6B4FA8; --purple-tint:#EDE8F5;
+  --radius-lg:20px; --radius-md:14px; --radius-sm:9px;
+  --shadow-soft:0 1px 2px rgba(42,32,25,.04),0 8px 24px -12px rgba(42,32,25,.10);
+  --shadow-pop:0 4px 8px rgba(42,32,25,.06),0 24px 48px -20px rgba(42,32,25,.22);
+  --sidebar-w:256px;
+  --font-display:'Fraunces',serif; --font-body:'Inter',sans-serif;
+}
+[data-theme="dark"]{
+  --ink:#F3EAE2; --ink-soft:#D8C9BC; --muted:#9C8C7F;
+  --cream:#211A16; --panel:#2A211C; --panel-sunk:#241C18;
+  --line:#3A2E27; --line-soft:#332822;
+  --rosewood:#D98A93; --rosewood-deep:#E7A6AC; --rosewood-tint:#3A2427;
+  --gold:#D8B685; --gold-tint:#3A2F1E;
+  --sage:#A5B490; --sage-tint:#26291F;
+  --rust:#D9926F; --rust-tint:#392419;
+  --blue:#7EB3E8; --blue-tint:#1A2A3A;
+  --purple:#B09AE8; --purple-tint:#2A2240;
+  --shadow-soft:0 1px 2px rgba(0,0,0,.2),0 8px 24px -12px rgba(0,0,0,.4);
+  --shadow-pop:0 4px 8px rgba(0,0,0,.3),0 24px 48px -20px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:var(--font-body);background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;}
+img{max-width:100%;display:block;}
+button{font-family:inherit;cursor:pointer;}
+input,textarea,select{font-family:inherit;}
+a{color:inherit;text-decoration:none;}
+::selection{background:var(--rosewood-tint);color:var(--rosewood-deep);}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:500;margin:0;color:var(--ink);}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--rosewood);font-weight:600;}
+.serif-num{font-family:var(--font-display);font-weight:500;}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;}
+::-webkit-scrollbar-track{background:transparent;}
+</style>
+<style>
+/* APP SHELL */
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:60;transition:transform .32s cubic-bezier(.4,0,.2,1),background .3s,border-color .3s;overflow-y:auto;}
+.sidebar-brand{padding:22px 20px 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line-soft);}
+.brand-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(155deg,var(--rosewood),var(--rosewood-deep));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.brand-mark svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.6;stroke-linecap:round;}
+.brand-text .brand-name{font-family:var(--font-display);font-size:16px;font-weight:600;line-height:1.1;}
+.brand-text .brand-sub{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
+.sidebar-nav{flex:1;padding:16px 12px;}
+.nav-group-label{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:14px 10px 7px;}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;color:var(--ink-soft);font-size:13.5px;font-weight:500;margin-bottom:2px;cursor:pointer;transition:background .15s,color .15s;}
+.nav-item svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;flex-shrink:0;stroke-linecap:round;stroke-linejoin:round;}
+.nav-item:hover{background:var(--panel-sunk);color:var(--ink);}
+.nav-item.active{background:var(--rosewood-tint);color:var(--rosewood-deep);}
+.nav-item.active svg{stroke:var(--rosewood-deep);}
+.sidebar-foot{padding:12px;border-top:1px solid var(--line-soft);position:relative;}
+.admin-card{display:flex;align-items:center;gap:10px;padding:9px;border-radius:12px;cursor:pointer;transition:background .15s;}
+.admin-card:hover{background:var(--panel-sunk);}
+.admin-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(155deg,var(--gold),var(--rosewood));color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:14px;font-weight:600;flex-shrink:0;}
+.admin-meta{flex:1;min-width:0;}
+.admin-meta .a-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.admin-meta .a-role{font-size:11px;color:var(--muted);}
+.admin-card>svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2;}
+.admin-menu{display:none;position:absolute;bottom:68px;left:12px;right:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-pop);overflow:hidden;z-index:70;}
+.admin-menu.open{display:block;}
+.admin-menu a,.admin-menu button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;padding:10px 13px;font-size:13px;color:var(--ink-soft);background:none;border:none;}
+.admin-menu a:hover,.admin-menu button:hover{background:var(--panel-sunk);}
+.admin-menu svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;}
+.admin-menu hr{border:none;border-top:1px solid var(--line-soft);margin:4px 0;}
+.admin-menu .danger{color:var(--rust);}
+.sidebar-scrim{display:none;position:fixed;inset:0;background:rgba(20,14,10,.4);z-index:55;}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;padding:15px 28px;background:rgba(250,246,240,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+[data-theme="dark"] .topbar{background:rgba(33,26,22,.9);}
+.menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:9px;width:36px;height:36px;align-items:center;justify-content:center;}
+.menu-btn svg{width:18px;height:18px;stroke:var(--ink);fill:none;stroke-width:1.8;stroke-linecap:round;}
+.topbar-title{font-family:var(--font-display);font-size:19px;font-weight:500;}
+.topbar-spacer{flex:1;}
+.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.icon-btn:hover{background:var(--panel-sunk);}
+.icon-btn svg{width:16px;height:16px;stroke:var(--ink-soft);fill:none;stroke-width:1.7;stroke-linecap:round;}
+.page{display:none;padding:26px 28px 60px;}
+.page.active{display:block;animation:fadein .3s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+</style>
+<style>
+/* SHARED UI */
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+.section-head h2{font-size:22px;}
+.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:11px;border:1px solid transparent;font-size:13.5px;font-weight:600;transition:all .15s;white-space:nowrap;cursor:pointer;}
+.btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
+.btn-primary{background:var(--rosewood);color:#fff;box-shadow:0 6px 16px -6px rgba(140,58,70,.45);}
+.btn-primary:hover{background:var(--rosewood-deep);}
+.btn-ghost{background:var(--panel);border-color:var(--line);color:var(--ink-soft);}
+.btn-ghost:hover{background:var(--panel-sunk);}
+.btn-outline{background:transparent;border-color:var(--rosewood);color:var(--rosewood);}
+.btn-outline:hover{background:var(--rosewood-tint);}
+.btn-text{background:none;border:none;color:var(--muted);font-size:12.5px;font-weight:500;padding:6px 4px;}
+.btn-text:hover{color:var(--rosewood);}
+.btn-sm{padding:7px 12px;font-size:12.5px;border-radius:9px;}
+.btn-danger{background:var(--rust);color:#fff;border-color:var(--rust);}
+.btn-danger:hover{background:#96442e;}
+.btn[disabled]{opacity:.45;pointer-events:none;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);}
+.pad-lg{padding:22px;}
+.pad-md{padding:16px;}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px 4px 8px;border-radius:100px;font-size:11.5px;font-weight:600;}
+.pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.pill-published,.pill-completed,.pill-paid,.pill-active{background:var(--sage-tint);color:var(--sage);}
+.pill-draft,.pill-cancelled{background:var(--panel-sunk);color:var(--muted);}
+.pill-processing,.pill-new{background:var(--blue-tint);color:var(--blue);}
+.pill-pending,.pill-unpaid{background:var(--rust-tint);color:var(--rust);}
+.pill-shipped,.pill-featured{background:var(--purple-tint);color:var(--purple);}
+.badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
+.badge-featured{background:var(--gold-tint);color:var(--gold);}
+.badge-new{background:var(--rosewood-tint);color:var(--rosewood-deep);}
+.input,.select,.textarea{width:100%;padding:10px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font-size:13.5px;transition:border-color .15s;}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--rosewood);}
+.textarea{resize:vertical;min-height:80px;line-height:1.5;}
+.field{margin-bottom:15px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;}
+.field .hint{font-size:11.5px;color:var(--muted);margin-top:4px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.search-wrap{position:relative;flex:1;min-width:180px;max-width:320px;}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2;}
+.search-wrap input{padding-left:34px;}
+.toggle{position:relative;width:40px;height:23px;border-radius:100px;background:var(--panel-sunk);border:1px solid var(--line);flex-shrink:0;transition:background .2s,border-color .2s;cursor:pointer;}
+.toggle::before{content:'';position:absolute;width:17px;height:17px;border-radius:50%;background:#fff;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s;}
+.toggle.on{background:var(--rosewood);border-color:var(--rosewood);}
+.toggle.on::before{transform:translateX(17px);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line-soft);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-row .t-title{font-size:13.5px;font-weight:600;}
+.toggle-row .t-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.chip{padding:7px 14px;border-radius:100px;border:1px solid var(--line);background:var(--panel);font-size:12.5px;font-weight:600;color:var(--ink-soft);transition:all .15s;cursor:pointer;}
+.chip.active{background:var(--ink);border-color:var(--ink);color:var(--cream);}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+.dropdown{position:relative;}
+.dropdown-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;min-width:190px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-pop);padding:6px;z-index:50;}
+.dropdown-menu.open{display:block;}
+.dropdown-menu button,.dropdown-menu a{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;padding:9px 10px;border-radius:8px;background:none;border:none;font-size:13px;color:var(--ink-soft);}
+.dropdown-menu button:hover,.dropdown-menu a:hover{background:var(--panel-sunk);color:var(--ink);}
+.dropdown-menu .sel{color:var(--rosewood);}
+</style>
+<style>
+/* KPI & CHARTS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.kpi-grid-6{grid-template-columns:repeat(6,1fr);}
+.kpi-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-md);padding:18px;position:relative;overflow:hidden;box-shadow:var(--shadow-soft);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent);}
+.kpi-label{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.02em;}
+.kpi-value{font-size:24px;margin-top:8px;letter-spacing:-.01em;font-family:var(--font-display);}
+.kpi-delta{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;margin-top:8px;}
+.kpi-delta svg{width:11px;height:11px;stroke-width:3;fill:none;stroke:currentColor;}
+.kpi-delta.up{color:var(--sage);}
+.kpi-delta.down{color:var(--rust);}
+.chart-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:16px;}
+.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-soft);}
+.chart-card h3{font-size:15px;}
+.chart-card .cc-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.chart-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13.2px;}
+thead th{text-align:left;padding:11px 14px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:13px 14px;border-bottom:1px solid var(--line-soft);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr{transition:background .12s;}
+tbody tr:hover{background:var(--panel-sunk);}
+.cell-strong{font-weight:600;color:var(--ink);}
+.cell-muted{color:var(--muted);}
+.row-avatar{width:30px;height:30px;border-radius:50%;background:var(--gold-tint);color:var(--gold);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:12px;font-weight:600;margin-right:9px;}
+/* PRODUCTS */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.toolbar .toolbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.view-toggle{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+.view-toggle button{padding:9px 11px;background:var(--panel);border:none;display:flex;}
+.view-toggle button svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2;}
+.view-toggle button.active{background:var(--rosewood-tint);}
+.view-toggle button.active svg{stroke:var(--rosewood-deep);}
+.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+.product-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-soft);transition:transform .2s,box-shadow .2s;}
+.product-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-pop);}
+.pc-media{position:relative;aspect-ratio:1/1.05;overflow:hidden;background:var(--panel-sunk);}
+.pc-media img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.product-card:hover .pc-media img{transform:scale(1.04);}
+.pc-tags{position:absolute;top:10px;left:10px;display:flex;gap:5px;}
+.pc-status{position:absolute;top:10px;right:10px;}
+.pc-status .pill{background:rgba(255,255,255,.9);backdrop-filter:blur(4px);}
+.pc-discount{position:absolute;bottom:10px;left:10px;background:var(--rosewood);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:7px;}
+.pc-body{padding:14px 16px 16px;}
+.pc-title{font-family:var(--font-display);font-size:15px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pc-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px;min-height:30px;}
+.pc-price{display:flex;align-items:baseline;gap:7px;margin-bottom:10px;}
+.pc-price .now{font-family:var(--font-display);font-size:17px;font-weight:600;}
+.pc-price .was{font-size:12px;color:var(--muted);text-decoration:line-through;}
+.pc-meta{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-bottom:12px;}
+.pc-meta svg{width:12px;height:12px;stroke:var(--muted);fill:none;stroke-width:1.8;vertical-align:-2px;margin-right:3px;}
+.pc-actions{display:flex;gap:8px;}
+.pc-actions .btn{flex:1;justify-content:center;}
+.product-list-row{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-md);padding:12px;margin-bottom:10px;}
+.plr-media{width:64px;height:64px;border-radius:11px;overflow:hidden;flex-shrink:0;background:var(--panel-sunk);}
+.plr-media img{width:100%;height:100%;object-fit:cover;}
+.plr-title{font-weight:600;font-size:13.5px;}
+.plr-desc{font-size:11.5px;color:var(--muted);}
+.plr-mid{flex:1;min-width:0;}
+.plr-price{width:110px;font-size:13px;}
+.plr-views{width:90px;font-size:12px;color:var(--muted);}
+.plr-status{width:110px;}
+.plr-actions{display:flex;gap:6px;}
+</style>
+<style>
+/* MODALS / DRAWERS */
+.overlay{position:fixed;inset:0;background:rgba(24,17,13,.44);backdrop-filter:blur(2px);z-index:80;display:none;align-items:stretch;justify-content:flex-end;}
+.overlay.open{display:flex;}
+.drawer{width:min(900px,100%);background:var(--cream);height:100%;overflow-y:auto;box-shadow:-16px 0 48px rgba(0,0,0,.18);animation:slidein .28s cubic-bezier(.4,0,.2,1) forwards;}
+@keyframes slidein{from{transform:translateX(30px);}to{transform:none;}}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:20px 26px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--cream);z-index:5;}
+.drawer-head h3{font-size:18px;}
+.drawer-close{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:center;}
+.drawer-close svg{width:15px;height:15px;stroke:var(--ink-soft);fill:none;stroke-width:1.8;stroke-linecap:round;}
+.drawer-body{padding:26px;}
+.editor-grid{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;}
+.upload-zone{border:1.5px dashed var(--line);border-radius:var(--radius-md);aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--panel-sunk);text-align:center;padding:20px;position:relative;overflow:hidden;transition:border-color .15s;cursor:pointer;}
+.upload-zone:hover{border-color:var(--rosewood);}
+.upload-zone svg{width:26px;height:26px;stroke:var(--muted);fill:none;stroke-width:1.5;stroke-linecap:round;}
+.upload-zone p{font-size:12.5px;color:var(--muted);margin:0;}
+.upload-zone p b{color:var(--rosewood);}
+.upload-zone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.upload-zone.has-img p,.upload-zone.has-img svg{display:none;}
+.upload-zone.uploading::after{content:'Uploading…';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.55);color:#fff;font-size:12px;font-weight:600;letter-spacing:.04em;z-index:2;}
+.preview-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px;}
+.live-preview{position:sticky;top:0;}
+.small-toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.small-toggle-row .t-title{font-size:13px;font-weight:600;}
+.drawer-foot{position:sticky;bottom:0;background:var(--cream);border-top:1px solid var(--line);padding:15px 26px;display:flex;justify-content:flex-end;gap:10px;}
+.modal{background:var(--panel);border-radius:var(--radius-lg);max-width:460px;width:94%;margin:auto;box-shadow:var(--shadow-pop);padding:26px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(24,17,13,.44);z-index:90;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-icon{width:46px;height:46px;border-radius:12px;background:var(--rust-tint);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.modal-icon svg{width:21px;height:21px;stroke:var(--rust);fill:none;stroke-width:1.8;stroke-linecap:round;}
+.modal h3{font-size:17px;margin-bottom:6px;}
+.modal p{font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 20px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+/* TABS */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px;}
+.tab-btn{padding:10px 4px;margin-right:20px;background:none;border:none;font-size:13.5px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;}
+.tab-btn.active{color:var(--rosewood-deep);border-color:var(--rosewood);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:fadein .28s ease;}
+/* SETTINGS */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.session-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft);}
+.session-row:last-child{border-bottom:none;}
+.session-ico{width:36px;height:36px;border-radius:9px;background:var(--panel-sunk);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.session-ico svg{width:16px;height:16px;stroke:var(--ink-soft);fill:none;stroke-width:1.7;}
+.session-title{font-size:13px;font-weight:600;}
+.session-sub{font-size:11.5px;color:var(--muted);}
+.session-now{margin-left:auto;font-size:11px;color:var(--sage);font-weight:700;}
+.role-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line-soft);font-size:13px;}
+.role-row:last-child{border-bottom:none;}
+.role-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;background:var(--gold-tint);color:var(--gold);}
+/* INTEGRATION CARDS */
+.integration-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.integration-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-md);padding:18px;display:flex;align-items:center;gap:14px;}
+.int-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;}
+.int-name{font-size:14px;font-weight:600;margin-bottom:2px;}
+.int-desc{font-size:12px;color:var(--muted);}
+.int-actions{margin-left:auto;flex-shrink:0;}
+/* TOAST */
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:200;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.toast{display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--cream);padding:12px 16px;border-radius:11px;font-size:13px;font-weight:500;box-shadow:var(--shadow-pop);animation:toastin .25s ease;pointer-events:none;}
+[data-theme="dark"] .toast{background:var(--panel);border:1px solid var(--line);}
+@keyframes toastin{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.toast svg{width:15px;height:15px;stroke:var(--sage);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;}
+/* MISC */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.mini-list{display:flex;flex-direction:column;}
+.mini-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line-soft);}
+.mini-row:last-child{border-bottom:none;}
+.mini-row img{width:38px;height:38px;border-radius:9px;object-fit:cover;flex-shrink:0;}
+.mini-row .mr-title{font-size:12.5px;font-weight:600;}
+.mini-row .mr-sub{font-size:11px;color:var(--muted);}
+.mini-row .mr-val{margin-left:auto;font-size:12.5px;font-weight:700;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:12.5px;}
+.bar-row .b-label{width:90px;color:var(--ink-soft);font-weight:600;flex-shrink:0;}
+.bar-track{flex:1;height:8px;background:var(--panel-sunk);border-radius:6px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;background:var(--rosewood);}
+.bar-row .b-val{width:50px;text-align:right;color:var(--muted);flex-shrink:0;}
+.skel{background:linear-gradient(100deg,var(--panel-sunk) 30%,var(--line-soft) 50%,var(--panel-sunk) 70%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;border-radius:8px;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+.skel-line{height:12px;margin-top:8px;}
+.date-select{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel);}
+.date-select button{padding:8px 13px;border:none;background:none;font-size:12.5px;font-weight:600;color:var(--muted);border-right:1px solid var(--line);cursor:pointer;}
+.date-select button:last-child{border-right:none;}
+.date-select button.active{background:var(--ink);color:var(--cream);}
+.state-block{display:flex;flex-direction:column;align-items:center;text-align:center;padding:60px 20px;color:var(--muted);}
+.state-icon{width:56px;height:56px;border-radius:50%;background:var(--panel-sunk);display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
+.state-icon svg{width:24px;height:24px;stroke:var(--muted);fill:none;stroke-width:1.6;}
+.state-icon.err{background:var(--rust-tint);}
+.state-icon.err svg{stroke:var(--rust);}
+.state-block h3{font-size:16px;color:var(--ink);margin-bottom:6px;}
+.state-block p{font-size:13px;max-width:300px;margin:0 0 16px;line-height:1.55;}
+/* LOGIN GATE */
+@keyframes loginShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+/* RESPONSIVE */
+@media(max-width:1180px){.kpi-grid{grid-template-columns:repeat(3,1fr);}.kpi-grid-6{grid-template-columns:repeat(3,1fr);}.chart-grid{grid-template-columns:1fr;}.editor-grid{grid-template-columns:1fr;}.product-grid{grid-template-columns:repeat(3,1fr);}.two-col,.three-col,.settings-grid{grid-template-columns:1fr;}.integration-grid{grid-template-columns:1fr;}}
+@media(max-width:900px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:none;}.sidebar-scrim.open{display:block;}.main{margin-left:0;}.menu-btn{display:flex;}.product-grid{grid-template-columns:repeat(2,1fr);}.kpi-grid,.kpi-grid-6{grid-template-columns:repeat(2,1fr);}.page{padding:18px 14px 50px;}.topbar{padding:13px 14px;}.drawer{width:100%;}}
+@media(max-width:560px){.field-row,.field-row-3{grid-template-columns:1fr;}.plr-mid,.plr-views{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â• LOGIN GATE â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="loginGate" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--cream);align-items:center;justify-content:center;flex-direction:column;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(140,58,70,.07) 0%,transparent 70%);pointer-events:none;"></div>
+  <div id="loginCard" style="position:relative;width:100%;max-width:420px;margin:16px;background:var(--panel);border-radius:24px;border:1px solid var(--line);box-shadow:var(--shadow-pop);padding:44px 38px 36px;text-align:center;">
+    <div style="width:52px;height:52px;border-radius:16px;background:var(--rosewood-tint);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--rosewood)" stroke-width="1.6" stroke-linecap="round"><path d="M12 2c2 3 5 6 5 10a5 5 0 0 1-10 0c0-4 3-7 5-10Z"/></svg>
+    </div>
+    <h1 style="font-family:var(--font-display);font-size:22px;font-weight:500;margin-bottom:4px;">The Nails Club</h1>
+    <p style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:30px;">Studio · Admin Dashboard</p>
+    <div style="position:relative;margin-bottom:11px;">
+      <input id="loginPasswordInput" type="password" placeholder="Enter admin password" autocomplete="current-password"
+        style="width:100%;padding:14px 48px 14px 18px;border:1.5px solid var(--line);border-radius:12px;font-size:14px;color:var(--ink);background:var(--panel-sunk);outline:none;transition:border-color .2s;box-sizing:border-box;"
+        onfocus="this.style.borderColor='var(--rosewood)'" onblur="this.style.borderColor='var(--line)'"/>
+      <button id="loginToggleEye" style="position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;display:flex;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <p id="loginError" style="display:none;font-size:12px;color:var(--rust);margin-bottom:11px;text-align:left;padding-left:4px;"></p>
+    <button id="loginBtn" onclick="window.attemptLogin()"
+      style="width:100%;padding:14px;background:var(--rosewood);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:600;letter-spacing:.05em;cursor:pointer;transition:background .2s;margin-bottom:18px;"
+      onmouseenter="this.style.background='var(--rosewood-deep)'" onmouseleave="this.style.background='var(--rosewood)'">Enter Dashboard</button>
+    <a href="index.html" style="font-size:12px;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:color .2s;" onmouseenter="this.style.color='var(--ink)'" onmouseleave="this.style.color='var(--muted)'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to website
+    </a>
+  </div>
+  <p style="font-size:11px;color:var(--muted);margin-top:18px;letter-spacing:.08em;">© 2025 The Nails Club · Authorised access only</p>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â• APP SHELL â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="appShell" style="display:none;">
+<div class="app">
+  <div class="sidebar-scrim" id="scrim" onclick="closeSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M12 2c2 3 5 6 5 10a5 5 0 0 1-10 0c0-4 3-7 5-10Z"/></svg></div>
+      <div class="brand-text"><div class="brand-name">The Nails Club</div><div class="brand-sub">Studio</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Overview</div>
+      <a class="nav-item active" data-page="overview" onclick="goPage('overview')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard
+      </a>
+      <div class="nav-group-label">Manage</div>
+      <a class="nav-item" data-page="products" onclick="goPage('products')">
+        <svg viewBox="0 0 24 24"><path d="M6 8V6a3 3 0 0 1 6 0v2"/><rect x="3.5" y="8" width="17" height="13" rx="2"/></svg>Products
+      </a>
+      <a class="nav-item" data-page="orders" onclick="goPage('orders')">
+        <svg viewBox="0 0 24 24"><path d="M3 7h18l-1.5 12.5a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5L3 7Z"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>Orders
+      </a>
+      <a class="nav-item" data-page="customers" onclick="goPage('customers')">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><path d="M16 5.2a3.2 3.2 0 0 1 0 6.2"/><path d="M21 20c0-3-1.9-5.3-4.5-5.9"/></svg>Customers
+      </a>
+      <div class="nav-group-label">Insights</div>
+      <a class="nav-item" data-page="analytics" onclick="goPage('analytics')">
+        <svg viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Analytics
+      </a>
+      <a class="nav-item" data-page="marketing" onclick="goPage('marketing')">
+        <svg viewBox="0 0 24 24"><path d="M3 11v2a1.5 1.5 0 0 0 1.5 1.5H6l4 4v-13L6 9.5H4.5A1.5 1.5 0 0 0 3 11Z"/><path d="M15 8.5c1.2 1 1.2 6 0 7"/></svg>Marketing
+      </a>
+      <div class="nav-group-label">System</div>
+      <a class="nav-item" data-page="settings" onclick="goPage('settings')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4.5a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.6V4.5a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.6 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg>Settings
+      </a>
+      <a class="nav-item" href="index.html" target="_blank" style="opacity:.65;">
+        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>View Website
+      </a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="admin-menu" id="adminMenu">
+        <a onclick="goPage('settings')"><span>Account settings</span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></a>
+        <a onclick="goPage('settings');document.querySelector('[data-tab=security]').click()"><span>Security</span><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/></svg></a>
+        <hr>
+        <button class="danger" onclick="doLogout()"><span>Log out</span><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></button>
+      </div>
+      <div class="admin-card" onclick="toggleAdminMenu()">
+        <div class="admin-avatar" id="sidebarAvatar">N</div>
+        <div class="admin-meta"><div class="a-name" id="sidebarName">Nishi</div><div class="a-role">Founder · Admin</div></div>
+        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <button class="menu-btn" onclick="openSidebar()"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-spacer"></div>
+      <button class="icon-btn" title="Toggle dark mode" onclick="toggleTheme()">
+        <svg id="themeIcon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <button class="icon-btn" title="Notifications">
+        <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+    </header>
+
+    <!-- â•â•â• OVERVIEW â•â•â• -->
+    <section class="page active" id="page-overview">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" id="overviewDate"></div>
+          <h2 id="welcomeMsg">Good morning, Nishi</h2>
+          <p>Here's how The Nails Club is performing.</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <div class="date-select" id="dateSelect">
+            <button data-range="today">Today</button>
+            <button data-range="7d" class="active">7 Days</button>
+            <button data-range="30d">30 Days</button>
+            <button data-range="90d">90 Days</button>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="goPage('products');openProductEditor()">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add Product
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="goPage('orders')">View Orders</button>
+          <button class="btn btn-outline btn-sm" onclick="openDiscountModal()">Create Discount</button>
+        </div>
+      </div>
+      <div class="kpi-grid" id="kpiGrid"></div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-head"><div><h3>Revenue</h3><div class="cc-sub" id="revenueSub">Last 7 days gross revenue</div></div></div><canvas id="chartRevenue" height="220"></canvas></div>
+        <div class="chart-card"><div class="chart-head"><div><h3>Traffic sources</h3><div class="cc-sub">Where visitors come from</div></div></div><canvas id="chartTraffic" height="220"></canvas></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-head"><div><h3>Orders over time</h3><div class="cc-sub" id="ordersSub">Order volume — last 7 days</div></div></div><canvas id="chartOrders" height="210"></canvas></div>
+        <div class="chart-card"><div class="chart-head"><div><h3>Top selling products</h3><div class="cc-sub">By views &amp; orders</div></div></div><div class="mini-list" id="topDesignsMini"></div></div>
+      </div>
+      <div class="section-head" style="margin-top:8px;"><div><h2>Recent Orders</h2><p>Last 5 transactions</p></div><button class="btn btn-ghost btn-sm" onclick="goPage('orders')">View all</button></div>
+      <div class="card"><div class="table-wrap"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Status</th></tr></thead><tbody id="recentOrdersBody"></tbody></table></div></div>
+    </section>
+
+    <!-- â•â•â• PRODUCTS â•â•â• -->
+    <section class="page" id="page-products">
+      <div class="section-head">
+        <div><h2>Products</h2><p>Manage your handcrafted nail collection</p></div>
+        <button class="btn btn-primary" onclick="openProductEditor()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add New Product</button>
+      </div>
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input class="input" id="productSearch" placeholder="Search products…" oninput="renderProducts()">
+        </div>
+        <div class="chip-row" id="productFilters">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="published">Active</button>
+          <button class="chip" data-filter="draft">Draft</button>
+          <button class="chip" data-filter="featured">Featured</button>
+          <button class="chip" data-filter="sale">On Sale</button>
+        </div>
+        <div class="toolbar-right">
+          <div class="dropdown" id="sortDropdown">
+            <button class="btn btn-ghost btn-sm" onclick="toggleDropdown('sortDropdown')">
+              <svg viewBox="0 0 24 24"><path d="M6 8h12M8 12h8M10 16h4"/></svg><span id="sortLabel">Newest</span>
+            </button>
+            <div class="dropdown-menu" id="sortMenu"></div>
+          </div>
+          <div class="view-toggle">
+            <button class="active" id="gridViewBtn" onclick="setProductView('grid')" title="Grid"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+            <button id="listViewBtn" onclick="setProductView('list')" title="List"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div id="productsContainer"></div>
+    </section>
+
+    <!-- â•â•â• ORDERS â•â•â• -->
+    <section class="page" id="page-orders">
+      <div class="section-head">
+        <div><h2>Orders</h2><p>Track and manage customer orders</p></div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div class="search-wrap" style="max-width:240px;">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input class="input" id="orderSearch" placeholder="Search order or customer…" oninput="renderOrders()">
+          </div>
+        </div>
+      </div>
+      <div class="chip-row" id="orderFilters" style="margin-bottom:16px;">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="pending">Pending</button>
+        <button class="chip" data-filter="processing">Processing</button>
+        <button class="chip" data-filter="shipped">Shipped</button>
+        <button class="chip" data-filter="completed">Delivered</button>
+        <button class="chip" data-filter="cancelled">Cancelled</button>
+      </div>
+      <div class="card" id="ordersCard">
+        <div class="table-wrap"><table><thead><tr>
+          <th>Order ID</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th></th>
+        </tr></thead><tbody id="ordersBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- â•â•â• CUSTOMERS â•â•â• -->
+    <section class="page" id="page-customers">
+      <div class="section-head"><div><h2>Customers</h2><p>Everyone who's ordered from The Nails Club</p></div></div>
+      <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;" id="customerKpis"></div>
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input class="input" id="customerSearch" placeholder="Search customers…" oninput="renderCustomers()">
+        </div>
+        <div class="chip-row" id="customerFilters">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="vip">VIP</button>
+          <button class="chip" data-filter="repeat">Repeat</button>
+          <button class="chip" data-filter="new">New</button>
+        </div>
+      </div>
+      <div class="card"><div class="table-wrap"><table><thead><tr>
+        <th>Customer</th><th>Email</th><th>Orders</th><th>Total Spent</th><th>Last Order</th><th>Status</th><th></th>
+      </tr></thead><tbody id="customersBody"></tbody></table></div></div>
+    </section>
+
+    <!-- â•â•â• ANALYTICS â•â•â• -->
+    <section class="page" id="page-analytics">
+      <div class="section-head">
+        <div><h2>Analytics</h2><p>Full picture of site performance</p></div>
+        <div class="date-select" id="analyticsDateSelect">
+          <button data-range="30d" class="active">30 Days</button><button data-range="90d">90 Days</button><button data-range="year">Year</button>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="website" onclick="switchTab('website',this)">Website</button>
+        <button class="tab-btn" data-tab="products-tab" onclick="switchTab('products-tab',this)">Products</button>
+        <button class="tab-btn" data-tab="marketing-tab" onclick="switchTab('marketing-tab',this)">Marketing</button>
+        <button class="tab-btn" data-tab="customer-tab" onclick="switchTab('customer-tab',this)">Customer</button>
+        <button class="tab-btn" data-tab="device-tab" onclick="switchTab('device-tab',this)">Device</button>
+        <button class="tab-btn" data-tab="geo-tab" onclick="switchTab('geo-tab',this)">Geographic</button>
+      </div>
+      <div class="tab-panel active" id="tab-website">
+        <div class="kpi-grid kpi-grid-6" id="websiteKpis"></div>
+        <div class="chart-grid">
+          <div class="chart-card"><h3>Visitors</h3><div class="cc-sub" style="margin-bottom:12px;">Unique site visitors per day</div><canvas id="chartVisitors" height="210"></canvas></div>
+          <div class="chart-card"><h3>Page views vs Product views</h3><div class="cc-sub" style="margin-bottom:12px;">Engagement depth</div><canvas id="chartPageviews" height="210"></canvas></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card"><h3>Conversion funnel</h3><div class="cc-sub" style="margin-bottom:12px;">Visitors → Orders</div><div id="conversionFunnel"></div></div>
+          <div class="chart-card"><h3>Revenue trend</h3><div class="cc-sub" id="revTrendSub" style="margin-bottom:12px;">30 day overview</div><canvas id="chartRevenueTrend" height="210"></canvas></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-products-tab">
+        <div class="two-col">
+          <div class="chart-card"><h3>Most viewed designs</h3><div class="mini-list" id="mostViewedList"></div></div>
+          <div class="chart-card"><h3>Top products by revenue</h3><div class="mini-list" id="topRevenueList"></div></div>
+        </div>
+        <div class="two-col" style="margin-top:16px;">
+          <div class="chart-card"><h3>Best performing</h3><div class="mini-list" id="bestPerformingList"></div></div>
+          <div class="chart-card"><h3>Low engagement</h3><div class="cc-sub" style="margin-bottom:10px;">Consider reworking</div><div class="mini-list" id="lowEngagementList"></div></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-marketing-tab">
+        <div class="chart-card">
+          <h3>Channel clicks</h3>
+          <div style="margin-top:16px;" id="channelClicks"></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-customer-tab">
+        <div class="three-col" id="customerAnalyticsKpis"></div>
+      </div>
+      <div class="tab-panel" id="tab-device-tab">
+        <div class="two-col">
+          <div class="chart-card"><h3>Device breakdown</h3><canvas id="chartDevice" height="230"></canvas></div>
+          <div class="chart-card"><h3>Browser breakdown</h3><canvas id="chartBrowser" height="230"></canvas></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-geo-tab">
+        <div class="card pad-lg">
+          <h3 style="margin-bottom:16px;">Geographic breakdown</h3>
+          <div class="table-wrap"><table><thead><tr><th>City / Region</th><th>Visitors</th><th>Orders</th><th>Revenue</th><th>Share</th></tr></thead><tbody id="geoBody"></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- â•â•â• MARKETING â•â•â• -->
+    <section class="page" id="page-marketing">
+      <div class="section-head"><div><h2>Marketing</h2><p>Discount codes, campaigns &amp; announcements</p></div></div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="discount-tab" onclick="switchTab('discount-tab',this)">Discount Codes</button>
+        <button class="tab-btn" data-tab="campaigns-tab" onclick="switchTab('campaigns-tab',this)">Email Campaigns</button>
+        <button class="tab-btn" data-tab="announcements-tab" onclick="switchTab('announcements-tab',this)">Announcements</button>
+        <button class="tab-btn" data-tab="perf-tab" onclick="switchTab('perf-tab',this)">Performance</button>
+      </div>
+      <div class="tab-panel active" id="tab-discount-tab">
+        <div class="section-head"><div><h3>Discount Codes</h3><p>Active and expired promotional codes</p></div><button class="btn btn-primary btn-sm" onclick="openDiscountModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Create Discount</button></div>
+        <div class="card"><div class="table-wrap"><table><thead><tr>
+          <th>Code</th><th>Type</th><th>Value</th><th>Usage</th><th>Expiry</th><th>Status</th><th></th>
+        </tr></thead><tbody id="discountBody"></tbody></table></div></div>
+      </div>
+      <div class="tab-panel" id="tab-campaigns-tab">
+        <div class="section-head"><div><h3>Email Campaigns</h3><p>Campaign performance overview</p></div><button class="btn btn-primary btn-sm" onclick="showToast('Campaign builder coming soon!')"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Create Campaign</button></div>
+        <div class="card"><div class="table-wrap"><table><thead><tr>
+          <th>Campaign</th><th>Status</th><th>Sent Date</th><th>Sent</th><th>Open Rate</th><th>Click Rate</th>
+        </tr></thead><tbody id="campaignsBody"></tbody></table></div></div>
+      </div>
+      <div class="tab-panel" id="tab-announcements-tab">
+        <div class="section-head"><div><h3>Homepage Banners</h3><p>Manage homepage announcements</p></div><button class="btn btn-primary btn-sm" onclick="showToast('Banner editor coming soon!')">+ New Banner</button></div>
+        <div class="card pad-lg" id="bannersContainer"></div>
+      </div>
+      <div class="tab-panel" id="tab-perf-tab">
+        <div class="three-col" style="margin-bottom:16px;">
+          <div class="card pad-lg"><div class="kpi-label">Total reach</div><div class="kpi-value serif-num">48.2K</div></div>
+          <div class="card pad-lg"><div class="kpi-label">Conversions</div><div class="kpi-value serif-num">312</div></div>
+          <div class="card pad-lg"><div class="kpi-label">Revenue from campaigns</div><div class="kpi-value serif-num">₹2,84,600</div></div>
+        </div>
+        <div class="chart-card"><h3>Reach over time</h3><canvas id="chartMarketing" height="200"></canvas></div>
+      </div>
+    </section>
+
+    <!-- â•â•â• SETTINGS â•â•â• -->
+    <section class="page" id="page-settings">
+      <div class="section-head"><div><h2>Settings</h2><p>Store configuration and admin preferences</p></div></div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="store" onclick="switchTab('store',this)">Store Info</button>
+        <button class="tab-btn" data-tab="account" onclick="switchTab('account',this)">Account</button>
+        <button class="tab-btn" data-tab="notifications" onclick="switchTab('notifications',this)">Notifications</button>
+        <button class="tab-btn" data-tab="integrations" onclick="switchTab('integrations',this)">Integrations</button>
+        <button class="tab-btn" data-tab="appearance" onclick="switchTab('appearance',this)">Appearance</button>
+        <button class="tab-btn" data-tab="security" data-tab-btn="security" onclick="switchTab('security',this)">Security</button>
+      </div>
+      <div class="tab-panel active" id="tab-store">
+        <div class="card pad-lg" style="max-width:640px;">
+          <div class="field"><label>Store name</label><input class="input" id="storeNameInput" value="The Nails Club"></div>
+          <div class="field"><label>Contact email</label><input class="input" id="storeEmailInput" value="hello@thenailsclub.in"></div>
+          <div class="field"><label>Store logo</label>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div id="storeLogoPreview" style="width:54px;height:54px;border-radius:14px;background:linear-gradient(155deg,var(--rosewood),var(--rosewood-deep));display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"><path d="M12 2c2 3 5 6 5 10a5 5 0 0 1-10 0c0-4 3-7 5-10Z"/></svg>
+              </div>
+              <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
+              <button class="btn btn-ghost btn-sm" id="replaceLogoBtn" onclick="document.getElementById('logoFileInput').click()">Replace logo</button>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Currency</label><select class="select" id="storeCurrencyInput"><option>INR (₹)</option><option>USD ($)</option></select></div>
+            <div class="field"><label>Timezone</label><select class="select" id="storeTimezoneInput"><option>Asia/Kolkata (GMT+5:30)</option></select></div>
+          </div>
+          <button class="btn btn-primary" onclick="saveStoreInfo()">Save changes</button>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-account">
+        <div class="card pad-lg" style="max-width:640px;">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px;">
+            <div id="accountPhotoPreview" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(155deg,var(--gold),var(--rosewood));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:26px;font-weight:600;color:#fff;flex-shrink:0;overflow:hidden;">R</div>
+            <input type="file" id="accountPhotoFileInput" accept="image/*" style="display:none" onchange="handleAccountPhotoUpload(event)">
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('accountPhotoFileInput').click()">Change photo</button>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Full name</label><input class="input" id="accountNameInput" value="Nishi Rana"></div>
+            <div class="field"><label>Email</label><input class="input" id="accountEmailInput" value="thenailsclub@gmail.com"></div>
+          </div>
+          <button class="btn btn-primary" onclick="saveAccountInfo()">Save changes</button>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-notifications">
+        <div class="card pad-lg" style="max-width:640px;">
+          <div class="toggle-row"><div><div class="t-title">New order</div><div class="t-desc">Email when a new order is placed</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div><div class="t-title">Low stock alert</div><div class="t-desc">Alert when a product stock is running low</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div><div class="t-title">New customer</div><div class="t-desc">Email when a new customer registers</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div><div class="t-title">Weekly summary</div><div class="t-desc">Get a weekly performance digest every Monday</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div><div class="t-title">Marketing reports</div><div class="t-desc">Monthly campaign performance report</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          <div style="margin-top:16px;"><button class="btn btn-primary" onclick="showToast('Notification preferences saved')">Save preferences</button></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-integrations">
+        <div class="integration-grid" id="integrationsGrid"></div>
+      </div>
+      <div class="tab-panel" id="tab-appearance">
+        <div class="card pad-lg" style="max-width:640px;">
+          <div class="toggle-row"><div><div class="t-title">Dark mode</div><div class="t-desc">Switch the whole dashboard to a dark theme</div></div><div class="toggle" id="darkToggle" onclick="toggleTheme()"></div></div>
+          <div class="toggle-row"><div><div class="t-title">Compact tables</div><div class="t-desc">Reduce row height in tables</div></div><div class="toggle"></div></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-security">
+
+        <!-- TEAM MEMBERS -->
+        <div class="card pad-lg" style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+            <div>
+              <h3 style="margin-bottom:3px;">Team Members</h3>
+              <p style="font-size:12.5px;color:var(--muted);">People who have access to this dashboard</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openInviteModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+              Invite Member
+            </button>
+          </div>
+          <!-- Role permissions legend -->
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;">
+            <div style="background:var(--gold-tint);border-radius:10px;padding:12px 14px;">
+              <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">👑 Owner</div>
+              <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.7;">Full access — products, orders, customers, settings, team management</div>
+            </div>
+            <div style="background:var(--sage-tint);border-radius:10px;padding:12px 14px;">
+              <div style="font-size:11px;font-weight:700;color:var(--sage);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">âœï¸ Editor</div>
+              <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.7;">Add, edit &amp; delete products · Update orders · View customers &amp; analytics</div>
+            </div>
+            <div style="background:var(--blue-tint);border-radius:10px;padding:12px 14px;">
+              <div style="font-size:11px;font-weight:700;color:var(--blue);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">ðŸ‘ Viewer</div>
+              <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.7;">View-only access — dashboard, orders, customers, analytics (no edits)</div>
+            </div>
+          </div>
+          <div id="teamMembersList"></div>
+        </div>
+
+        <div class="two-col">
+          <!-- Change Password -->
+          <div class="card pad-lg">
+            <h3 style="margin-bottom:4px;">Change Admin Password</h3>
+            <p style="font-size:12.5px;color:var(--muted);margin-bottom:18px;">Min. 8 characters. Default: <code style="font-size:11px;background:var(--panel-sunk);padding:2px 6px;border-radius:5px;">NailsClub@Admin2025</code></p>
+            <div class="field"><label>Current password</label><input class="input" type="password" id="secCurPassword" placeholder="••••••••"></div>
+            <div class="field-row">
+              <div class="field"><label>New password</label><input class="input" type="password" id="secNewPassword" placeholder="••••••••"></div>
+              <div class="field"><label>Confirm</label><input class="input" type="password" id="secConfirmPassword" placeholder="••••••••"></div>
+            </div>
+            <p id="secPwError" style="display:none;font-size:12px;color:var(--rust);margin-bottom:10px;"></p>
+            <p id="secPwOk" style="display:none;font-size:12px;color:var(--sage);margin-bottom:10px;">✓ Password updated!</p>
+            <button class="btn btn-primary btn-sm" onclick="changeAdminPassword()">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/></svg>
+              Update Password
+            </button>
+          </div>
+          <!-- Session Info -->
+          <div class="card pad-lg">
+            <h3 style="margin-bottom:12px;">Current Session</h3>
+            <div class="session-row"><div class="session-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg></div><div><div class="session-title">Browser · This device</div><div class="session-sub" id="sessionRoleLabel">Loading…</div></div><div class="session-now">Active</div></div>
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft);">
+              <div class="toggle-row" style="padding-top:0;border:none;"><div><div class="t-title">Two-factor authentication</div><div class="t-desc">Extra security at login</div></div><div class="toggle" onclick="this.classList.toggle('on');showToast('2FA setting saved')"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /main -->
+</div><!-- /app -->
+</div><!-- /appShell -->
+
+<!-- â•â•â• INVITE MEMBER MODAL â•â•â• -->
+<div class="modal-overlay" id="inviteOverlay">
+  <div class="modal" style="max-width:480px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h3>Invite Team Member</h3>
+      <button class="drawer-close" onclick="closeInviteModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="field">
+      <label>Member name</label>
+      <input class="input" id="inviteName" placeholder="e.g. Priya, Studio Assistant">
+    </div>
+    <div class="field">
+      <label>Role</label>
+      <select class="select" id="inviteRole">
+        <option value="editor">Editor — Can add, edit &amp; delete products, update orders</option>
+        <option value="viewer">Viewer — View-only, no editing</option>
+      </select>
+    </div>
+    <div style="background:var(--panel-sunk);border-radius:11px;padding:14px;margin-bottom:18px;">
+      <div style="font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:8px;">What this role can do:</div>
+      <div id="rolePermissionsPreview" style="font-size:12px;color:var(--muted);line-height:1.8;"></div>
+    </div>
+    <div class="field">
+      <label>Generated invite link</label>
+      <div style="display:flex;gap:8px;">
+        <input id="inviteLinkInput" class="input" readonly placeholder="Click Generate to create link" style="font-size:11.5px;background:var(--panel-sunk);flex:1;">
+        <button class="btn btn-ghost btn-sm" onclick="copyInviteLink()" id="copyInviteBtn" style="flex-shrink:0;display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
+        </button>
+      </div>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);margin-bottom:18px;">⚠ Link is valid for 24 hours · Single use only · The member logs in using the admin password</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeInviteModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="generateInviteLink()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Generate &amp; Copy Link
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â• REMOVE MEMBER MODAL â•â•â• -->
+<div class="modal-overlay" id="removeMemberOverlay">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" y1="2" x2="14" y2="10"/></svg></div>
+    <h3>Remove team member?</h3>
+    <p id="removeMemberText">This will revoke their dashboard access immediately.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeRemoveMemberModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmRemoveMember()">Remove member</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="editorOverlay">
+  <div class="drawer">
+    <div class="drawer-head"><h3 id="editorTitle">Add product</h3><button class="drawer-close" onclick="closeEditor()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="drawer-body">
+      <div class="editor-grid">
+        <div>
+          <div class="field"><label>Product image</label>
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+              <img id="uploadPreviewImg" style="display:none;">
+              <svg viewBox="0 0 24 24"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>
+              <p><b>Click to upload</b> or drag &amp; drop<br>PNG, JPG up to 10MB</p>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+          </div>
+          <div class="field"><label>Product title</label><input class="input" id="fTitle" placeholder="e.g. French Pearl" oninput="updateLivePreview()"></div>
+          <div class="field"><label>Description</label><textarea class="textarea" id="fDesc" placeholder="Short, elegant description…" oninput="updateLivePreview()"></textarea></div>
+          <div class="field"><label>Tags (comma separated)</label><input class="input" id="fTags" placeholder="e.g. bridal, minimal, chrome"></div>
+          <div class="field-row">
+            <div class="field"><label>Original price (₹)</label><input class="input" type="number" id="fOriginal" placeholder="1499" oninput="updateLivePreview()"></div>
+            <div class="field"><label>Sale price (₹)</label><input class="input" type="number" id="fDiscounted" placeholder="999" oninput="updateLivePreview()"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Stock quantity</label><input class="input" type="number" id="fStock" placeholder="50" min="0"></div>
+            <div class="field"><label>Category</label>
+              <select class="select" id="fCategory">
+                <option>Bridal</option><option>Festive</option><option>Chrome</option><option>Floral</option><option>Minimal</option><option>French</option><option>CatEye</option><option>Polka</option><option>Gloss</option><option>BabyShower</option><option>PressOn</option><option>Manicure</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label>Status</label>
+            <select class="select" id="fStatus" onchange="updateLivePreview()"><option value="published">Active</option><option value="draft">Draft</option></select>
+          </div>
+          <div class="small-toggle-row"><div class="toggle" id="fFeatured" onclick="toggleField(this)"></div><span class="t-title">Featured product</span></div>
+          <div class="small-toggle-row"><div class="toggle" id="fNew" onclick="toggleField(this)"></div><span class="t-title">Mark as new</span></div>
+        </div>
+        <div class="live-preview">
+          <div class="preview-label">Customer preview</div>
+          <div class="product-card" style="pointer-events:none;">
+            <div class="pc-media">
+              <img id="prevImg" src="Images/Bridal/bridal1.jpg" alt="">
+              <div class="pc-tags" id="prevTags"></div>
+              <div class="pc-status"><span class="pill pill-published" id="prevStatusPill">Active</span></div>
+              <div class="pc-discount" id="prevDiscount" style="display:none;"></div>
+            </div>
+            <div class="pc-body">
+              <div class="pc-title" id="prevTitle">Product title</div>
+              <div class="pc-desc" id="prevDesc">Short description goes here.</div>
+              <div class="pc-price"><span class="now" id="prevNow">₹999</span><span class="was" id="prevWas"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn btn-ghost" onclick="closeEditor()">Cancel</button>
+      <button class="btn btn-outline" onclick="saveProduct('draft')">Save as Draft</button>
+      <button class="btn btn-primary" onclick="saveProduct('publish')">Save &amp; Publish</button>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â• DELETE MODAL â•â•â• -->
+<div class="modal-overlay" id="deleteOverlay">
+  <div class="modal">
+    <div class="modal-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m-9 0 1 12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-12"/></svg></div>
+    <h3>Delete this product?</h3>
+    <p id="deleteText">This will permanently remove it from your storefront.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete product</button>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â• DISCOUNT MODAL â•â•â• -->
+<div class="modal-overlay" id="discountOverlay">
+  <div class="modal" style="max-width:520px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h3 id="discountModalTitle">Create Discount Code</h3>
+      <button class="drawer-close" onclick="closeDiscountModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="field"><label>Discount code</label><input class="input" id="dcCode" placeholder="e.g. NAVRATRI20" style="text-transform:uppercase;"></div>
+    <div class="field-row">
+      <div class="field"><label>Type</label><select class="select" id="dcType"><option value="percent">Percentage (%)</option><option value="fixed">Fixed amount (₹)</option></select></div>
+      <div class="field"><label>Value</label><input class="input" type="number" id="dcValue" placeholder="20"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Usage limit</label><input class="input" type="number" id="dcUsage" placeholder="100"></div>
+      <div class="field"><label>Expiry date</label><input class="input" type="date" id="dcExpiry"></div>
+    </div>
+    <div class="modal-actions" style="margin-top:6px;">
+      <button class="btn btn-ghost" onclick="closeDiscountModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveDiscount()">Create Code</button>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â• CUSTOMER DETAIL DRAWER â•â•â• -->
+<div class="overlay" id="customerOverlay">
+  <div class="drawer" style="width:min(560px,100%);">
+    <div class="drawer-head"><h3>Customer details</h3><button class="drawer-close" onclick="closeCustomerDrawer()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="drawer-body" id="customerDrawerBody"></div>
+  </div>
+</div>
+
+<!-- â•â•â• ORDER DETAIL DRAWER â•â•â• -->
+<div class="overlay" id="orderOverlay">
+  <div class="drawer" style="width:min(560px,100%);">
+    <div class="drawer-head"><h3>Order details</h3><button class="drawer-close" onclick="closeOrderDrawer()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="drawer-body" id="orderDrawerBody"></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ============================================================
+   MOCK DATA
+============================================================ */
+const PRODUCT_IMAGES = [
+  "Images/Bridal/bridal1.jpg","Images/chrome/Chrome1.jpeg","Images/Bridal/pearl-lace-bridal.jpg",
+  "Images/Festive/navrati vibe (1).JPG","Images/Festive/pink-chrome-oval.jpg",
+  "Images/chrome/silver-mirror-chrome.jpg","Images/Floral/floral-bloom.jpg","Images/Festive/pink-gloss-gems.jpg",
+];
+let PRODUCTS = [];
+let nextProductId = 1; // unused now that Supabase assigns real ids; kept for compatibility
+const CUSTOMERS = [
+  {id:1,name:"Tisha Jariwala",email:"tisha.j@gmail.com",orders:6,spent:6840,lastOrder:"3 Aug 2026",status:"vip"},
+  {id:2,name:"Shruti K.",email:"shruti.k@gmail.com",orders:2,spent:2198,lastOrder:"29 Jul 2026",status:"repeat"},
+  {id:3,name:"Harsh Jariwala",email:"harsh.j@gmail.com",orders:4,spent:4560,lastOrder:"1 Aug 2026",status:"repeat"},
+  {id:4,name:"Riya Mehta",email:"riya.mehta@gmail.com",orders:1,spent:999,lastOrder:"6 Aug 2026",status:"new"},
+  {id:5,name:"Ananya Shah",email:"ananya.shah@gmail.com",orders:8,spent:9420,lastOrder:"4 Aug 2026",status:"vip"},
+  {id:6,name:"Pooja Rao",email:"pooja.rao@gmail.com",orders:1,spent:799,lastOrder:"5 Aug 2026",status:"new"},
+];
+let ORDERS = [
+  {id:"TNC-1042",customer:"Tisha Jariwala",date:"6 Aug 2026",products:"French Pearl, Chrome Luxe",amount:2298,payment:"paid",status:"processing",address:"12 Rose Apt, Surat, GJ 395001",notes:"Gift wrap please"},
+  {id:"TNC-1041",customer:"Riya Mehta",date:"6 Aug 2026",products:"French Pearl",amount:999,payment:"paid",status:"pending",address:"44 Sunrise Colony, Ahmedabad, GJ",notes:""},
+  {id:"TNC-1040",customer:"Ananya Shah",date:"5 Aug 2026",products:"Bridal Bloom",amount:1399,payment:"paid",status:"completed",address:"8 Palm Ave, Mumbai, MH",notes:""},
+  {id:"TNC-1039",customer:"Pooja Rao",date:"5 Aug 2026",products:"Rose Gloss",amount:899,payment:"unpaid",status:"pending",address:"21 MG Road, Bangalore, KA",notes:""},
+  {id:"TNC-1038",customer:"Harsh Jariwala",date:"3 Aug 2026",products:"Festive Glam, Silver Mirror Chrome",amount:2048,payment:"paid",status:"shipped",address:"12 Rose Apt, Surat, GJ 395001",notes:""},
+  {id:"TNC-1037",customer:"Shruti K.",date:"1 Aug 2026",products:"Bridal Bloom",amount:1399,payment:"paid",status:"cancelled",address:"5 Hill View, Pune, MH",notes:"Changed mind"},
+  {id:"TNC-1036",customer:"Tisha Jariwala",date:"29 Jul 2026",products:"Silver Mirror Chrome",amount:949,payment:"paid",status:"completed",address:"12 Rose Apt, Surat, GJ 395001",notes:""},
+];
+let DISCOUNTS = [
+  {id:1,code:"NAVRATRI20",type:"percent",value:20,usage:34,limit:100,expiry:"25 Oct 2026",status:"active"},
+  {id:2,code:"BRIDAL15",type:"percent",value:15,usage:58,limit:50,expiry:"31 Dec 2026",status:"active"},
+  {id:3,code:"FIRST100",type:"fixed",value:100,usage:112,limit:200,expiry:"31 Aug 2026",status:"active"},
+  {id:4,code:"SUMMER10",type:"percent",value:10,usage:200,limit:200,expiry:"15 Jul 2026",status:"expired"},
+];
+const CAMPAIGNS = [
+  {name:"Navratri Drop — Reels",status:"sent",sentDate:"1 Oct 2025",sent:2840,openRate:"34.2%",clickRate:"8.6%"},
+  {name:"Bridal Season Blast",status:"sent",sentDate:"15 Sep 2025",sent:1920,openRate:"29.1%",clickRate:"6.4%"},
+  {name:"First Order ₹100 Off",status:"sent",sentDate:"1 Aug 2026",sent:3120,openRate:"41.8%",clickRate:"12.3%"},
+  {name:"August Collection Preview",status:"draft",sentDate:"—",sent:0,openRate:"—",clickRate:"—"},
+];
+const BANNERS = [
+  {id:1,text:"🎉 Free shipping on orders above ₹1,499",active:true},
+  {id:2,text:"✨ New Bridal Collection — Shop Now",active:false},
+  {id:3,text:"🪷 Navratri Special: 20% off festive sets",active:false},
+];
+const GEO_DATA = [
+  {city:"Surat, Gujarat",visitors:3200,orders:98,revenue:98400,share:32},
+  {city:"Mumbai, Maharashtra",visitors:2100,orders:64,revenue:72800,share:21},
+  {city:"Ahmedabad, Gujarat",visitors:1400,orders:42,revenue:46200,share:14},
+  {city:"Bangalore, Karnataka",visitors:980,orders:28,revenue:29400,share:10},
+  {city:"Pune, Maharashtra",visitors:760,orders:21,revenue:22050,share:7},
+  {city:"Delhi NCR",visitors:620,orders:16,revenue:17600,share:6},
+  {city:"Other",visitors:1360,orders:38,revenue:37800,share:10},
+];
+const INTEGRATIONS = [
+  {name:"Razorpay",desc:"Payment gateway",icon:"💳",connected:true},
+  {name:"Shiprocket",desc:"Shipping & logistics",icon:"📦",connected:false},
+  {name:"Google Analytics",desc:"Website analytics",icon:"📊",connected:true},
+  {name:"Mailchimp",desc:"Email marketing",icon:"📧",connected:false},
+  {name:"Instagram",desc:"Social commerce",icon:"📸",connected:true},
+  {name:"WhatsApp Business",desc:"Customer messaging",icon:"💬",connected:true},
+];
+</script>
+<script>
+/* ============================================================
+   DATA PERSISTENCE — products live in Supabase (real database),
+   so the home page and collection page see them for every visitor,
+   on any device, not just this browser.
+============================================================ */
+// Maps a Supabase row (snake_case) to the shape the dashboard UI expects.
+function fromDbProduct(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    desc: row.description,
+    original: Number(row.original),
+    discounted: Number(row.discounted),
+    status: row.status,
+    featured: !!row.featured,
+    isNew: !!row.is_new,
+    views: row.views || 0,
+    stock: row.stock || 0,
+    category: row.category,
+    tags: row.tags || '',
+    img: row.img || '',
+  };
+}
+// Maps the dashboard UI shape back to Supabase row (snake_case) columns.
+function toDbProduct(p) {
+  return {
+    title: p.title,
+    description: p.desc,
+    original: p.original,
+    discounted: p.discounted,
+    status: p.status,
+    featured: p.featured,
+    is_new: p.isNew,
+    category: p.category,
+    stock: p.stock,
+    tags: p.tags,
+    img: p.img,
+  };
+}
+async function loadProducts() {
+  const rows = await window.sbFetchAllProducts();
+  PRODUCTS = rows.map(fromDbProduct);
+}
+
+/* ============================================================
+   STORE SETTINGS + OWNER PROFILE — shared across every device
+   (Supabase), not just this browser.
+============================================================ */
+let STORE_SETTINGS = null;
+
+function avatarHTML(url, fallbackInitial) {
+  return url
+    ? `<img src="${url}" style="width:100%;height:100%;object-fit:cover;" alt="">`
+    : (fallbackInitial || '?');
+}
+
+async function loadStoreSettings() {
+  STORE_SETTINGS = await window.sbGetStoreSettings();
+  if (!STORE_SETTINGS) {
+    // Fallback so the UI still works if Supabase is unreachable
+    STORE_SETTINGS = { store_name:'The Nails Club', contact_email:'hello@thenailsclub.in', logo_url:null, currency:'INR (₹)', timezone:'Asia/Kolkata (GMT+5:30)', owner_name:'Nishi Rana', owner_email:'thenailsclub@gmail.com', owner_avatar_url:null };
+  }
+  applyStoreSettingsToUI();
+}
+
+function applyStoreSettingsToUI() {
+  const s = STORE_SETTINGS;
+  if (!s) return;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+  set('storeNameInput', s.store_name || '');
+  set('storeEmailInput', s.contact_email || '');
+  set('storeCurrencyInput', s.currency || 'INR (₹)');
+  set('storeTimezoneInput', s.timezone || 'Asia/Kolkata (GMT+5:30)');
+  set('accountNameInput', s.owner_name || '');
+  set('accountEmailInput', s.owner_email || '');
+
+  const logoEl = document.getElementById('storeLogoPreview');
+  if (logoEl && s.logo_url) logoEl.innerHTML = avatarHTML(s.logo_url);
+
+  const ownerInitial = (s.owner_name || '?').charAt(0).toUpperCase();
+  const photoEl = document.getElementById('accountPhotoPreview');
+  if (photoEl) photoEl.innerHTML = avatarHTML(s.owner_avatar_url, ownerInitial);
+
+  // Only overwrite the sidebar/greeting with the OWNER's identity when
+  // the current session actually is the owner — an invited editor/viewer
+  // keeps seeing their own name (applyRoleRestrictions handles that).
+  if (typeof getCurrentRole !== 'function' || getCurrentRole() === 'owner') {
+    const sideAvatar = document.getElementById('sidebarAvatar');
+    if (sideAvatar) sideAvatar.innerHTML = avatarHTML(s.owner_avatar_url, ownerInitial);
+    const sideName = document.getElementById('sidebarName');
+    if (sideName) sideName.textContent = (s.owner_name || 'Owner').split(' ')[0];
+  }
+
+  const wm = document.getElementById('welcomeMsg');
+  if (wm) {
+    const h = new Date().getHours();
+    const greet = h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+    wm.textContent = greet + ', ' + (s.owner_name || 'Owner').split(' ')[0];
+  }
+}
+
+async function handleLogoUpload(evt) {
+  const file = evt.target.files && evt.target.files[0];
+  if (!file) return;
+  const btn = document.getElementById('replaceLogoBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Uploading…'; }
+  try {
+    const url = await window.sbUploadBrandImage(file, 'branding');
+    STORE_SETTINGS = await window.sbSaveStoreSettings({ logo_url: url });
+    applyStoreSettingsToUI();
+    showToast('Logo updated');
+  } catch (e) {
+    console.warn('[TNC] Logo upload failed:', e);
+    showToast('Could not upload logo — try again');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Replace logo'; }
+    evt.target.value = '';
+  }
+}
+
+async function handleAccountPhotoUpload(evt) {
+  const file = evt.target.files && evt.target.files[0];
+  if (!file) return;
+  try {
+    const url = await window.sbUploadBrandImage(file, 'avatars');
+    STORE_SETTINGS = await window.sbSaveStoreSettings({ owner_avatar_url: url });
+    applyStoreSettingsToUI();
+    renderTeamMembers();
+    showToast('Photo updated');
+  } catch (e) {
+    console.warn('[TNC] Photo upload failed:', e);
+    showToast('Could not upload photo — try again');
+  } finally {
+    evt.target.value = '';
+  }
+}
+
+async function saveStoreInfo() {
+  const data = {
+    store_name: (document.getElementById('storeNameInput')||{}).value || '',
+    contact_email: (document.getElementById('storeEmailInput')||{}).value || '',
+    currency: (document.getElementById('storeCurrencyInput')||{}).value || '',
+    timezone: (document.getElementById('storeTimezoneInput')||{}).value || '',
+  };
+  try {
+    STORE_SETTINGS = await window.sbSaveStoreSettings(data);
+    applyStoreSettingsToUI();
+    showToast('Store settings saved');
+  } catch (e) {
+    console.warn('[TNC] Save store settings failed:', e);
+    showToast('Could not save — check your connection');
+  }
+}
+
+async function saveAccountInfo() {
+  const data = {
+    owner_name: (document.getElementById('accountNameInput')||{}).value || '',
+    owner_email: (document.getElementById('accountEmailInput')||{}).value || '',
+  };
+  try {
+    STORE_SETTINGS = await window.sbSaveStoreSettings(data);
+    applyStoreSettingsToUI();
+    renderTeamMembers();
+    showToast('Profile updated');
+  } catch (e) {
+    console.warn('[TNC] Save profile failed:', e);
+    showToast('Could not save — check your connection');
+  }
+}
+let state={page:'overview',dateRange:'7d',analyticsRange:'30d',productView:'grid',productFilter:'all',productSort:'newest',orderFilter:'all',customerFilter:'all',editingId:null,deleteTargetId:null,theme:'light',editingDiscountId:null};
+const fmtINR=n=>'₹'+Number(n).toLocaleString('en-IN');
+Chart.defaults.font.family="'Inter',sans-serif";
+Chart.defaults.color='#93867C';
+Chart.defaults.borderColor='#F0E8DC';
+let charts={};
+const pageTitles={overview:'Dashboard',products:'Products',orders:'Orders',customers:'Customers',analytics:'Analytics',marketing:'Marketing',settings:'Settings'};
+
+/* ── NAV ── */
+async function goPage(page){
+  state.page=page;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.page===page));
+  document.getElementById('topbarTitle').textContent=pageTitles[page];
+  closeSidebar();
+  if(page==='products'){ await loadProducts(); renderProducts(); } // re-fetch so edits from other devices show up
+  if(page==='orders')renderOrders();
+  if(page==='customers'){renderCustomerKpis();renderCustomers();}
+  if(page==='analytics'){initAnalyticsCharts();renderAnalyticsData();refreshAnalyticsCharts();}
+  if(page==='marketing'){renderDiscounts();renderCampaigns();renderBanners();}
+  if(page==='settings'){renderIntegrations();applyStoreSettingsToUI();await refreshTeamMembers();}
+}
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('scrim').classList.add('open');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('scrim').classList.remove('open');}
+function toggleAdminMenu(){document.getElementById('adminMenu').classList.toggle('open');}
+function toggleTheme(){
+  state.theme=state.theme==='light'?'dark':'light';
+  document.body.setAttribute('data-theme',state.theme);
+  const dt=document.getElementById('darkToggle');
+  if(dt)dt.classList.toggle('on',state.theme==='dark');
+  document.getElementById('themeIcon').innerHTML=state.theme==='dark'
+    ?'<circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>'
+    :'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>';
+}
+function switchTab(tab,btn){
+  const scope=btn.closest('.page')||btn.closest('.modal')||document.body;
+  scope.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  scope.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel=scope.querySelector('#tab-'+tab);
+  if(panel)panel.classList.add('active');
+}
+function toggleDropdown(id){
+  const menu=document.getElementById(id).querySelector('.dropdown-menu');
+  document.querySelectorAll('.dropdown-menu').forEach(m=>{if(m!==menu)m.classList.remove('open');});
+  menu.classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.admin-card')&&!e.target.closest('.admin-menu'))document.getElementById('adminMenu').classList.remove('open');
+  if(!e.target.closest('.dropdown'))document.querySelectorAll('.dropdown-menu').forEach(m=>m.classList.remove('open'));
+});
+
+/* ── TOAST ── */
+function showToast(msg){
+  const wrap=document.getElementById('toastWrap');
+  const t=document.createElement('div');
+  t.className='toast';
+  t.innerHTML='<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>'+msg+'</span>';
+  wrap.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300);},2800);
+}
+
+/* ── DATE SELECT ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  const ds=document.getElementById('dateSelect');
+  if(ds)ds.addEventListener('click',e=>{
+    const btn=e.target.closest('button');if(!btn)return;
+    ds.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    setDateRange(btn.dataset.range);
+  });
+  const ads=document.getElementById('analyticsDateSelect');
+  if(ads)ads.addEventListener('click',e=>{
+    const btn=e.target.closest('button');if(!btn)return;
+    ads.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    setAnalyticsRange(btn.dataset.range);
+  });
+});
+</script>
+<script>
+/* ============================================================
+   OVERVIEW PAGE
+============================================================ */
+const RANGE_DATA={
+  today:{
+    label:'Today',
+    kpis:[
+      {label:'Total Revenue',value:'₹18,450',delta:'+6.2%',up:true},
+      {label:'Total Orders',value:'9',delta:'+2 orders',up:true},
+      {label:'New Customers',value:'4',delta:'+1',up:true},
+      {label:'Conversion Rate',value:'2.9%',delta:'-0.3%',up:false},
+    ],
+    labels:['12am','4am','8am','12pm','4pm','8pm','Now'],
+    revenue:[0,320,2100,5400,4200,3900,2530],
+    orders:[0,1,2,3,2,1,0],
+  },
+  '7d':{
+    label:'Last 7 days',
+    kpis:[
+      {label:'Total Revenue',value:'₹2,84,600',delta:'+18.4%',up:true},
+      {label:'Total Orders',value:'214',delta:'+9.2%',up:true},
+      {label:'New Customers',value:'186',delta:'+12.6%',up:true},
+      {label:'Conversion Rate',value:'3.4%',delta:'-0.4%',up:false},
+    ],
+    labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    revenue:[32000,28500,41200,38900,52600,61200,45800],
+    orders:[18,22,26,24,31,38,29],
+  },
+  '30d':{
+    label:'Last 30 days',
+    kpis:[
+      {label:'Total Revenue',value:'₹9,86,400',delta:'+22.1%',up:true},
+      {label:'Total Orders',value:'742',delta:'+15.8%',up:true},
+      {label:'New Customers',value:'512',delta:'+19.3%',up:true},
+      {label:'Conversion Rate',value:'3.6%',delta:'+0.2%',up:true},
+    ],
+    labels:['Wk 1','Wk 2','Wk 3','Wk 4','Wk 5'],
+    revenue:[178000,205000,192000,238000,173400],
+    orders:[132,148,151,169,142],
+  },
+  '90d':{
+    label:'Last 90 days',
+    kpis:[
+      {label:'Total Revenue',value:'₹26,42,800',delta:'+31.7%',up:true},
+      {label:'Total Orders',value:'1,980',delta:'+24.5%',up:true},
+      {label:'New Customers',value:'1,340',delta:'+27.1%',up:true},
+      {label:'Conversion Rate',value:'3.8%',delta:'+0.6%',up:true},
+    ],
+    labels:['Jun','Jul','Aug'],
+    revenue:[742000,865000,1035800],
+    orders:[612,678,690],
+  },
+};
+function renderKpis(){
+  const kpis=RANGE_DATA[state.dateRange].kpis;
+  document.getElementById('kpiGrid').innerHTML=kpis.map(k=>`
+    <div class="kpi-card">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value serif-num">${k.value}</div>
+      <div class="kpi-delta ${k.up?'up':'down'}">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round">${k.up?'<path d="M6 15l6-6 6 6"/>':'<path d="M6 9l6 6 6-6"/>'}</svg>${k.delta}
+      </div>
+    </div>`).join('');
+}
+function renderTopDesignsMini(){
+  const top=[...PRODUCTS].sort((a,b)=>b.views-a.views).slice(0,5);
+  document.getElementById('topDesignsMini').innerHTML=top.map(p=>`
+    <div class="mini-row"><img src="${p.img}" alt="${p.title}"><div><div class="mr-title">${p.title}</div><div class="mr-sub">${p.category}</div></div><div class="mr-val">${p.views.toLocaleString('en-IN')} views</div></div>`).join('');
+}
+function renderRecentOrders(){
+  const body=document.getElementById('recentOrdersBody');
+  if(!body)return;
+  body.innerHTML=ORDERS.slice(0,5).map(o=>`
+    <tr>
+      <td class="cell-strong">${o.id}</td>
+      <td>${o.customer}</td>
+      <td class="cell-muted" style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.products}</td>
+      <td class="cell-strong">${fmtINR(o.amount)}</td>
+      <td><span class="pill pill-${o.status}">${o.status.charAt(0).toUpperCase()+o.status.slice(1)}</span></td>
+    </tr>`).join('');
+}
+function updateDate(){
+  const opts={weekday:'long',day:'numeric',month:'long'};
+  const d=document.getElementById('overviewDate');
+  if(d)d.textContent=new Date().toLocaleDateString('en-IN',opts);
+  const h=new Date().getHours();
+  const greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  const wm=document.getElementById('welcomeMsg');
+  const ownerFirst=((STORE_SETTINGS&&STORE_SETTINGS.owner_name)||'Nishi').split(' ')[0];
+  if(wm)wm.textContent=greet+', '+ownerFirst;
+}
+function skeletonBoot(){
+  const grid=document.getElementById('kpiGrid');
+  if(!grid)return;
+  grid.innerHTML=Array.from({length:4}).map(()=>`<div class="kpi-card"><div class="skel skel-line" style="width:60%"></div><div class="skel skel-line" style="width:80%;height:22px;margin-top:10px;"></div><div class="skel skel-line" style="width:40%"></div></div>`).join('');
+}
+
+/* ── OVERVIEW CHARTS ── */
+function initOverviewCharts(){
+  if(charts.revenue)return;
+  const d=RANGE_DATA[state.dateRange];
+  charts.revenue=new Chart(document.getElementById('chartRevenue'),{
+    type:'line',
+    data:{labels:d.labels,datasets:[{data:d.revenue,borderColor:'#8C3A46',backgroundColor:'rgba(140,58,70,.10)',fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},
+    options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'#F0E8DC'},ticks:{callback:v=>'₹'+(v/1000)+'k'}}}}
+  });
+  charts.traffic=new Chart(document.getElementById('chartTraffic'),{
+    type:'doughnut',
+    data:{labels:['Instagram','Direct','Google','WhatsApp','Other'],datasets:[{data:[42,21,17,14,6],backgroundColor:['#8C3A46','#B08A55','#6C7A5E','#B0553B','#D8C9BC'],borderWidth:0}]},
+    options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,padding:14,font:{size:11.5}}}}}
+  });
+  charts.orders=new Chart(document.getElementById('chartOrders'),{
+    type:'bar',
+    data:{labels:d.labels,datasets:[{data:d.orders,backgroundColor:'#B08A55',borderRadius:6,maxBarThickness:28}]},
+    options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'#F0E8DC'}}}}
+  });
+  updateOverviewSubtitles();
+}
+function refreshOverviewCharts(){
+  const d=RANGE_DATA[state.dateRange];
+  if(charts.revenue){
+    charts.revenue.data.labels=d.labels;
+    charts.revenue.data.datasets[0].data=d.revenue;
+    charts.revenue.update();
+  }
+  if(charts.orders){
+    charts.orders.data.labels=d.labels;
+    charts.orders.data.datasets[0].data=d.orders;
+    charts.orders.update();
+  }
+  updateOverviewSubtitles();
+}
+function updateOverviewSubtitles(){
+  const sub=RANGE_DATA[state.dateRange].label;
+  const revSub=document.getElementById('revenueSub');
+  if(revSub)revSub.textContent=sub+' gross revenue';
+  const ordSub=document.getElementById('ordersSub');
+  if(ordSub)ordSub.textContent='Order volume — '+sub.toLowerCase();
+}
+function setDateRange(range){
+  if(!RANGE_DATA[range]||state.dateRange===range)return;
+  state.dateRange=range;
+  renderKpis();
+  refreshOverviewCharts();
+  showToast('Showing: '+RANGE_DATA[range].label);
+}
+</script>
+<script>
+/* ============================================================
+   PRODUCTS PAGE
+============================================================ */
+const SORT_OPTIONS=[{k:'newest',l:'Newest'},{k:'oldest',l:'Oldest'},{k:'price-low',l:'Price: Low to High'},{k:'price-high',l:'Price: High to Low'},{k:'views',l:'Most Viewed'},{k:'popular',l:'Featured first'}];
+
+function initSortMenu(){
+  const menu=document.getElementById('sortMenu');
+  if(!menu)return;
+  menu.innerHTML=SORT_OPTIONS.map(o=>`<button onclick="setSort('${o.k}',event)" class="${state.productSort===o.k?'sel':''}">${o.l}</button>`).join('');
+}
+function setSort(k,event){
+  state.productSort=k;
+  document.getElementById('sortLabel').textContent=SORT_OPTIONS.find(o=>o.k===k).l;
+  document.querySelectorAll('#sortMenu button').forEach(b=>b.classList.remove('sel'));
+  if(event&&event.target)event.target.classList.add('sel');
+  toggleDropdown('sortDropdown');
+  renderProducts();
+}
+function setProductView(v){
+  state.productView=v;
+  document.getElementById('gridViewBtn').classList.toggle('active',v==='grid');
+  document.getElementById('listViewBtn').classList.toggle('active',v==='list');
+  renderProducts();
+}
+function getFilteredProducts(){
+  let list=[...PRODUCTS];
+  const q=(document.getElementById('productSearch')||{}).value||'';
+  if(q.trim())list=list.filter(p=>p.title.toLowerCase().includes(q.toLowerCase())||p.desc.toLowerCase().includes(q.toLowerCase()));
+  if(state.productFilter==='published')list=list.filter(p=>p.status==='published');
+  if(state.productFilter==='draft')list=list.filter(p=>p.status==='draft');
+  if(state.productFilter==='featured')list=list.filter(p=>p.featured);
+  if(state.productFilter==='sale')list=list.filter(p=>p.discounted<p.original);
+  switch(state.productSort){
+    case'newest':list.sort((a,b)=>b.id-a.id);break;
+    case'oldest':list.sort((a,b)=>a.id-b.id);break;
+    case'price-low':list.sort((a,b)=>a.discounted-b.discounted);break;
+    case'price-high':list.sort((a,b)=>b.discounted-a.discounted);break;
+    case'views':list.sort((a,b)=>b.views-a.views);break;
+    case'popular':list.sort((a,b)=>(b.featured-a.featured)||(b.views-a.views));break;
+  }
+  return list;
+}
+function renderProducts(){
+  initSortMenu();
+  const container=document.getElementById('productsContainer');
+  const list=getFilteredProducts();
+  if(!list.length){
+    const searching=(document.getElementById('productSearch')||{}).value||state.productFilter!=='all';
+    container.innerHTML=searching?emptyStateHTML('search','No products found','Try a different search or filter.','<button class="btn btn-ghost btn-sm" onclick="clearProductFilters()">Clear filters</button>'):emptyStateHTML('box','No products yet','Start building your collection.','<button class="btn btn-primary" onclick="openProductEditor()">+ Add Product</button>');
+    return;
+  }
+  container.innerHTML=state.productView==='grid'?`<div class="product-grid">${list.map(productCardHTML).join('')}</div>`:list.map(productListRowHTML).join('');
+}
+function clearProductFilters(){
+  const ps=document.getElementById('productSearch');if(ps)ps.value='';
+  state.productFilter='all';
+  document.querySelectorAll('#productFilters .chip').forEach(c=>c.classList.toggle('active',c.dataset.filter==='all'));
+  renderProducts();
+}
+function productCardHTML(p){
+  const disc=p.original>p.discounted?Math.round((1-p.discounted/p.original)*100):0;
+  return`<div class="product-card">
+    <div class="pc-media"><img src="${p.img}" alt="${p.title}" onerror="this.src='Images/Bridal/bridal1.jpg'">
+      <div class="pc-tags">${p.featured?'<span class="badge badge-featured">Featured</span>':''}${p.isNew?'<span class="badge badge-new">New</span>':''}</div>
+      <div class="pc-status"><span class="pill ${p.status==='published'?'pill-published':'pill-draft'}">${p.status==='published'?'Active':'Draft'}</span></div>
+      ${disc>0?`<div class="pc-discount">${disc}% OFF</div>`:''}
+    </div>
+    <div class="pc-body">
+      <div class="pc-title">${p.title}</div>
+      <div class="pc-desc">${p.desc}</div>
+      <div class="pc-price"><span class="now">${fmtINR(p.discounted)}</span>${p.original>p.discounted?`<span class="was">${fmtINR(p.original)}</span>`:''}</div>
+      <div class="pc-meta">
+        <span><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>${p.views.toLocaleString('en-IN')} views</span>
+        <span>Stock: ${p.stock}</span>
+      </div>
+      <div class="pc-actions">
+        <button class="btn btn-outline btn-sm" onclick="openProductEditor(${p.id})">Edit</button>
+        <div class="dropdown" id="moreDrop${p.id}">
+          <button class="btn btn-ghost btn-sm" onclick="toggleDropdown('moreDrop${p.id}')"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
+          <div class="dropdown-menu">
+            <button onclick="toggleStatus(${p.id})">${p.status==='published'?'Unpublish':'Publish'}</button>
+            <button onclick="duplicateProduct(${p.id})">Duplicate</button>
+            <button onclick="askDelete(${p.id})" style="color:var(--rust)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function productListRowHTML(p){
+  return`<div class="product-list-row">
+    <div class="plr-media"><img src="${p.img}" alt="${p.title}" onerror="this.src='Images/Bridal/bridal1.jpg'"></div>
+    <div class="plr-mid"><div class="plr-title">${p.title} ${p.featured?'<span class="badge badge-featured">Featured</span>':''} ${p.isNew?'<span class="badge badge-new">New</span>':''}</div><div class="plr-desc">${p.desc}</div></div>
+    <div class="plr-price"><span class="now">${fmtINR(p.discounted)}</span>${p.original>p.discounted?`<span class="was">${fmtINR(p.original)}</span>`:''}</div>
+    <div class="plr-views">${p.views.toLocaleString('en-IN')} views</div>
+    <div class="plr-status"><span class="pill ${p.status==='published'?'pill-published':'pill-draft'}">${p.status==='published'?'Active':'Draft'}</span></div>
+    <div class="plr-actions"><button class="btn btn-outline btn-sm" onclick="openProductEditor(${p.id})">Edit</button><button class="btn btn-ghost btn-sm" onclick="askDelete(${p.id})" style="color:var(--rust)">Delete</button></div>
+  </div>`;
+}
+async function toggleStatus(id){
+  const p=PRODUCTS.find(p=>p.id===id);
+  const newStatus=p.status==='published'?'draft':'published';
+  try{
+    await window.sbUpdateProduct(id,{status:newStatus});
+    p.status=newStatus;
+    showToast(p.title+' is now '+(p.status==='published'?'active':'a draft'));
+  }catch(e){showToast('Could not update status — check your connection');}
+  renderProducts();
+}
+async function duplicateProduct(id){
+  const p=PRODUCTS.find(p=>p.id===id);
+  const copy={...p,title:p.title+' (Copy)',status:'draft',views:0};
+  delete copy.id;
+  try{
+    const row=await window.sbInsertProduct(toDbProduct(copy));
+    PRODUCTS.unshift(fromDbProduct(row));
+    showToast('Duplicated '+p.title);
+  }catch(e){showToast('Could not duplicate — check your connection');}
+  renderProducts();
+}
+function askDelete(id){state.deleteTargetId=id;const p=PRODUCTS.find(p=>p.id===id);document.getElementById('deleteText').textContent='"'+p.title+'" will be permanently removed. This can\'t be undone.';document.getElementById('deleteOverlay').classList.add('open');}
+function closeDeleteModal(){document.getElementById('deleteOverlay').classList.remove('open');state.deleteTargetId=null;}
+async function confirmDelete(){
+  const id=state.deleteTargetId;
+  try{
+    await window.sbDeleteProduct(id);
+    PRODUCTS=PRODUCTS.filter(p=>p.id!==id);
+    showToast('Product deleted');
+  }catch(e){showToast('Could not delete — check your connection');}
+  closeDeleteModal();renderProducts();
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('productFilters').addEventListener('click',e=>{
+    const chip=e.target.closest('.chip');if(!chip)return;
+    document.querySelectorAll('#productFilters .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');state.productFilter=chip.dataset.filter;renderProducts();
+  });
+});
+</script>
+<script>
+/* ============================================================
+   PRODUCT EDITOR
+============================================================ */
+let uploadedImage=null;
+function openProductEditor(id){
+  state.editingId=id||null;uploadedImage=null;
+  document.getElementById('editorTitle').textContent=id?'Edit product':'Add product';
+  const uz=document.getElementById('uploadZone');uz.classList.remove('has-img');
+  document.getElementById('uploadPreviewImg').style.display='none';
+  if(id){
+    const p=PRODUCTS.find(p=>p.id===id);
+    document.getElementById('fTitle').value=p.title;
+    document.getElementById('fDesc').value=p.desc;
+    document.getElementById('fOriginal').value=p.original;
+    document.getElementById('fDiscounted').value=p.discounted;
+    document.getElementById('fStatus').value=p.status;
+    document.getElementById('fCategory').value=p.category;
+    document.getElementById('fStock').value=p.stock||0;
+    document.getElementById('fTags').value=p.tags||'';
+    document.getElementById('fFeatured').classList.toggle('on',p.featured);
+    document.getElementById('fNew').classList.toggle('on',p.isNew);
+    uploadedImage=p.img;
+    const pi=document.getElementById('uploadPreviewImg');pi.src=p.img;pi.style.display='block';uz.classList.add('has-img');
+  }else{
+    ['fTitle','fDesc','fOriginal','fDiscounted','fTags'].forEach(id=>{document.getElementById(id).value='';});
+    document.getElementById('fStock').value='';
+    document.getElementById('fStatus').value='published';
+    document.getElementById('fCategory').value='Bridal';
+    document.getElementById('fFeatured').classList.remove('on');
+    document.getElementById('fNew').classList.remove('on');
+  }
+  updateLivePreview();
+  document.getElementById('editorOverlay').classList.add('open');
+}
+function closeEditor(){document.getElementById('editorOverlay').classList.remove('open');}
+function toggleField(el){el.classList.toggle('on');updateLivePreview();}
+function handleImageUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  // Show an instant local preview while the real file uploads in the background
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const pi=document.getElementById('uploadPreviewImg');pi.src=ev.target.result;pi.style.display='block';
+    document.getElementById('uploadZone').classList.add('has-img');updateLivePreview();
+  };reader.readAsDataURL(file);
+
+  const zone=document.getElementById('uploadZone');
+  zone.classList.add('uploading');
+  window.sbUploadImage(file).then(url=>{
+    uploadedImage=url; // real hosted URL — this is what gets saved to the product
+    zone.classList.remove('uploading');
+  }).catch(err=>{
+    zone.classList.remove('uploading');
+    showToast('Image upload failed — check your connection');
+    console.warn('[TNC] Image upload failed:', err);
+  });
+}
+function updateLivePreview(){
+  const title=document.getElementById('fTitle').value||'Product title';
+  const desc=document.getElementById('fDesc').value||'Short description goes here.';
+  const original=parseFloat(document.getElementById('fOriginal').value)||0;
+  const discounted=parseFloat(document.getElementById('fDiscounted').value)||original;
+  const status=document.getElementById('fStatus').value;
+  const featured=document.getElementById('fFeatured').classList.contains('on');
+  const isNew=document.getElementById('fNew').classList.contains('on');
+  document.getElementById('prevTitle').textContent=title;
+  document.getElementById('prevDesc').textContent=desc;
+  document.getElementById('prevNow').textContent=fmtINR(discounted||0);
+  const pw=document.getElementById('prevWas');pw.style.display=original>discounted?'inline':'none';pw.textContent=fmtINR(original);
+  const sp=document.getElementById('prevStatusPill');sp.textContent=status==='published'?'Active':'Draft';sp.className='pill '+(status==='published'?'pill-published':'pill-draft');
+  const disc=original>discounted&&original>0?Math.round((1-discounted/original)*100):0;
+  const de=document.getElementById('prevDiscount');de.style.display=disc>0?'block':'none';de.textContent=disc+'% OFF';
+  document.getElementById('prevTags').innerHTML=(featured?'<span class="badge badge-featured">Featured</span>':'')+(isNew?'<span class="badge badge-new">New</span>':'');
+  if(uploadedImage)document.getElementById('prevImg').src=uploadedImage;
+}
+async function saveProduct(mode){
+  const title=document.getElementById('fTitle').value.trim();
+  if(!title){showToast('Please add a product title');return;}
+  if(document.getElementById('uploadZone').classList.contains('uploading')){showToast('Image is still uploading — one moment');return;}
+  const data={title,desc:document.getElementById('fDesc').value.trim()||'Handcrafted press-on nail set.',original:parseFloat(document.getElementById('fOriginal').value)||999,discounted:parseFloat(document.getElementById('fDiscounted').value)||parseFloat(document.getElementById('fOriginal').value)||999,status:mode==='publish'?'published':'draft',featured:document.getElementById('fFeatured').classList.contains('on'),isNew:document.getElementById('fNew').classList.contains('on'),category:document.getElementById('fCategory').value,stock:parseInt(document.getElementById('fStock').value)||0,tags:document.getElementById('fTags').value,img:uploadedImage||PRODUCT_IMAGES[Math.floor(Math.random()*PRODUCT_IMAGES.length)]};
+  const saveBtn=document.querySelector(mode==='publish'?'.btn-primary':'.btn-outline');
+  try{
+    if(state.editingId){
+      const row=await window.sbUpdateProduct(state.editingId,toDbProduct(data));
+      const idx=PRODUCTS.findIndex(p=>p.id===state.editingId);
+      PRODUCTS[idx]=fromDbProduct(row);
+      showToast('Product updated');
+    }else{
+      const row=await window.sbInsertProduct(toDbProduct({...data,views:0}));
+      PRODUCTS.unshift(fromDbProduct(row));
+      showToast(mode==='publish'?'Product published':'Saved as draft');
+    }
+    closeEditor();renderProducts();renderTopDesignsMini();
+  }catch(e){
+    showToast('Could not save — check your connection');
+    console.warn('[TNC] saveProduct failed:', e);
+  }
+}
+</script>
+<script>
+/* ============================================================
+   ORDERS PAGE
+============================================================ */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('orderFilters').addEventListener('click',e=>{
+    const chip=e.target.closest('.chip');if(!chip)return;
+    document.querySelectorAll('#orderFilters .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');state.orderFilter=chip.dataset.filter;renderOrders();
+  });
+});
+function renderOrders(){
+  let list=[...ORDERS];
+  const q=(document.getElementById('orderSearch')||{}).value||'';
+  if(q.trim())list=list.filter(o=>o.id.toLowerCase().includes(q.toLowerCase())||o.customer.toLowerCase().includes(q.toLowerCase()));
+  if(state.orderFilter!=='all')list=list.filter(o=>o.status===state.orderFilter);
+  const body=document.getElementById('ordersBody');
+  if(!list.length){body.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted);">No orders match your filter.</td></tr>`;return;}
+  body.innerHTML=list.map(o=>`
+    <tr style="cursor:pointer;" onclick="openOrderDrawer('${o.id}')">
+      <td class="cell-strong">${o.id}</td>
+      <td>${o.customer}</td>
+      <td class="cell-muted">${o.date}</td>
+      <td class="cell-muted" style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.products}</td>
+      <td class="cell-strong">${fmtINR(o.amount)}</td>
+      <td><span class="pill ${o.payment==='paid'?'pill-paid':'pill-unpaid'}">${o.payment==='paid'?'Paid':'Unpaid'}</span></td>
+      <td><span class="pill pill-${o.status}">${o.status.charAt(0).toUpperCase()+o.status.slice(1)}</span></td>
+      <td><button class="btn-text" onclick="event.stopPropagation();openOrderDrawer('${o.id}')">View</button></td>
+    </tr>`).join('');
+}
+function openOrderDrawer(id){
+  const o=ORDERS.find(o=>o.id===id);if(!o)return;
+  const statusColors={pending:'rust',processing:'blue',shipped:'purple',completed:'sage',cancelled:'muted'};
+  const sc=statusColors[o.status]||'muted';
+  document.getElementById('orderDrawerBody').innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px;">
+      <div style="flex:1;"><div style="font-family:var(--font-display);font-size:20px;font-weight:600;">${o.id}</div><div style="font-size:12px;color:var(--muted);">${o.date}</div></div>
+      <span class="pill pill-${o.status}">${o.status.charAt(0).toUpperCase()+o.status.slice(1)}</span>
+    </div>
+    <div class="three-col" style="margin-bottom:20px;">
+      <div class="card pad-md"><div class="kpi-label">Amount</div><div class="kpi-value serif-num" style="font-size:18px;">${fmtINR(o.amount)}</div></div>
+      <div class="card pad-md"><div class="kpi-label">Payment</div><div class="kpi-value serif-num" style="font-size:18px;">${o.payment==='paid'?'✓ Paid':'✗ Unpaid'}</div></div>
+      <div class="card pad-md"><div class="kpi-label">Items</div><div class="kpi-value serif-num" style="font-size:18px;">${o.products.split(',').length}</div></div>
+    </div>
+    <div class="card pad-md" style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">Items Ordered</div>
+      ${o.products.split(',').map(item=>`<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line-soft);"><div style="width:40px;height:40px;border-radius:9px;background:var(--panel-sunk);overflow:hidden;flex-shrink:0;">${findProductImg(item.trim())}</div><div style="font-size:13px;font-weight:600;">${item.trim()}</div></div>`).join('')}
+    </div>
+    <div class="card pad-md" style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Customer &amp; Shipping</div>
+      <div style="font-size:13px;font-weight:600;">${o.customer}</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">${o.address||'Address not provided'}</div>
+      ${o.notes?`<div style="font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--line-soft);">Note: ${o.notes}</div>`:''}
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      ${o.status==='pending'?`<button class="btn btn-primary btn-sm" onclick="updateOrderStatus('${o.id}','processing')">Mark Processing</button>`:''}
+      ${o.status==='processing'?`<button class="btn btn-primary btn-sm" onclick="updateOrderStatus('${o.id}','shipped')">Mark Shipped</button>`:''}
+      ${o.status==='shipped'?`<button class="btn btn-primary btn-sm" onclick="updateOrderStatus('${o.id}','completed')">Mark Delivered</button>`:''}
+      ${['pending','processing'].includes(o.status)?`<button class="btn btn-danger btn-sm" onclick="updateOrderStatus('${o.id}','cancelled')">Cancel Order</button>`:''}
+    </div>`;
+  document.getElementById('orderOverlay').classList.add('open');
+}
+function findProductImg(title){const p=PRODUCTS.find(p=>p.title.toLowerCase()===title.toLowerCase());return p?`<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`:'';}
+function updateOrderStatus(id,status){const o=ORDERS.find(o=>o.id===id);if(!o)return;o.status=status;showToast('Order '+id+' marked as '+status);closeOrderDrawer();renderOrders();}
+function closeOrderDrawer(){document.getElementById('orderOverlay').classList.remove('open');}
+
+/* ============================================================
+   CUSTOMERS PAGE
+============================================================ */
+function renderCustomerKpis(){
+  const totalSpent=CUSTOMERS.reduce((s,c)=>s+c.spent,0);
+  const totalOrders=CUSTOMERS.reduce((s,c)=>s+c.orders,0);
+  const kpis=[
+    {label:'Total Customers',value:CUSTOMERS.length},
+    {label:'New This Month',value:CUSTOMERS.filter(c=>c.status==='new').length},
+    {label:'Returning Customers',value:CUSTOMERS.filter(c=>c.status==='repeat'||c.status==='vip').length},
+    {label:'Avg. Order Value',value:fmtINR(Math.round(totalSpent/totalOrders))},
+  ];
+  document.getElementById('customerKpis').innerHTML=kpis.map(k=>`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value serif-num">${k.value}</div></div>`).join('');
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('customerFilters').addEventListener('click',e=>{
+    const chip=e.target.closest('.chip');if(!chip)return;
+    document.querySelectorAll('#customerFilters .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');state.customerFilter=chip.dataset.filter;renderCustomers();
+  });
+});
+function renderCustomers(){
+  let list=[...CUSTOMERS];
+  const q=(document.getElementById('customerSearch')||{}).value||'';
+  if(q.trim())list=list.filter(c=>c.name.toLowerCase().includes(q.toLowerCase())||c.email.toLowerCase().includes(q.toLowerCase()));
+  if(state.customerFilter!=='all')list=list.filter(c=>c.status===state.customerFilter);
+  const statusL={vip:'VIP',repeat:'Repeat',new:'New'};
+  document.getElementById('customersBody').innerHTML=list.length?list.map(c=>`
+    <tr style="cursor:pointer;" onclick="openCustomerDrawer(${c.id})">
+      <td><span class="row-avatar">${c.name.charAt(0)}</span><span class="cell-strong">${c.name}</span></td>
+      <td class="cell-muted">${c.email}</td>
+      <td>${c.orders}</td>
+      <td class="cell-strong">${fmtINR(c.spent)}</td>
+      <td class="cell-muted">${c.lastOrder}</td>
+      <td><span class="pill ${c.status==='vip'?'pill-published':c.status==='new'?'pill-processing':'pill-paid'}">${statusL[c.status]}</span></td>
+      <td><button class="btn-text" onclick="event.stopPropagation();openCustomerDrawer(${c.id})">View</button></td>
+    </tr>`).join(''):`<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">No customers found.</td></tr>`;
+}
+function openCustomerDrawer(id){
+  const c=CUSTOMERS.find(c=>c.id===id);if(!c)return;
+  const cos=ORDERS.filter(o=>o.customer===c.name);
+  document.getElementById('customerDrawerBody').innerHTML=`
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
+      <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(155deg,var(--gold),var(--rosewood));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:600;color:#fff;flex-shrink:0;">${c.name.charAt(0)}</div>
+      <div><div style="font-family:var(--font-display);font-size:18px;font-weight:600;">${c.name}</div><div style="font-size:12.5px;color:var(--muted);">${c.email}</div></div>
+    </div>
+    <div class="three-col" style="margin-bottom:22px;">
+      <div class="card pad-md"><div class="kpi-label">Orders</div><div class="kpi-value serif-num" style="font-size:18px;">${c.orders}</div></div>
+      <div class="card pad-md"><div class="kpi-label">Total spent</div><div class="kpi-value serif-num" style="font-size:18px;">${fmtINR(c.spent)}</div></div>
+      <div class="card pad-md"><div class="kpi-label">Last order</div><div class="kpi-value serif-num" style="font-size:14px;">${c.lastOrder}</div></div>
+    </div>
+    <h4 style="font-size:13px;color:var(--ink-soft);margin-bottom:8px;">Order history</h4>
+    <div class="card">
+      ${cos.length?cos.map(o=>`<div style="display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line-soft);font-size:13px;"><div><div class="cell-strong">${o.id}</div><div class="cell-muted" style="font-size:11.5px;">${o.date} · ${o.products}</div></div><div style="text-align:right;"><div class="cell-strong">${fmtINR(o.amount)}</div><span class="pill pill-${o.status}" style="margin-top:4px;">${o.status}</span></div></div>`).join(''):`<div style="padding:20px;color:var(--muted);font-size:13px;">No orders recorded.</div>`}
+    </div>
+    <div class="field" style="margin-top:18px;"><label>Notes</label><textarea class="textarea" placeholder="Add private notes about this customer…" rows="3"></textarea></div>`;
+  document.getElementById('customerOverlay').classList.add('open');
+}
+function closeCustomerDrawer(){document.getElementById('customerOverlay').classList.remove('open');}
+</script>
+<script>
+/* ============================================================
+   ANALYTICS PAGE
+============================================================ */
+/* ── ANALYTICS DATE RANGES ── */
+const ANALYTICS_RANGE_DATA={
+  '30d':{
+    label:'Last 30 Days',revenueSubLabel:'30 day overview',multiplier:1,
+    labels:['Wk 1','Wk 2','Wk 3','Wk 4','Wk 5'],
+    visitors:[1850,2140,1980,2450,2020],
+    pageviews:[6200,7100,6800,7980,6540],
+    productViews:[2100,2450,2280,3170,2390],
+    revenueTrend:[178000,205000,192000,238000,173400],
+    wKpis:[{label:'Visitors',value:'8,420'},{label:'Sessions',value:'11,204'},{label:'Page Views',value:'26,880'},{label:'Product Views',value:'24,800'},{label:'Clicks',value:'6,140'},{label:'Conv. Rate',value:'3.4%'}],
+    funnel:[{label:'Visitors',val:8420,pct:100},{label:'Product Views',val:4210,pct:50},{label:'Enquiries',val:842,pct:10},{label:'Orders',val:214,pct:2.5}],
+    channels:[{label:'Instagram',val:4120,pct:88,color:'var(--rosewood)'},{label:'WhatsApp',val:2840,pct:61,color:'var(--sage)'},{label:'Google',val:2050,pct:44,color:'var(--gold)'},{label:'Direct',val:1540,pct:33,color:'var(--rust)'}],
+    customers:[{label:'New customers',value:'186',delta:'+18.2%',up:true},{label:'Returning customers',value:'94',delta:'+6.4%',up:true},{label:'Newsletter signups',value:'312',delta:'+24.1%',up:true}],
+    device:[71,24,5],browser:[54,31,8,7],
+  },
+  '90d':{
+    label:'Last 90 Days',revenueSubLabel:'90 day overview',multiplier:2.9,
+    labels:['Jun','Jul','Aug'],
+    visitors:[7100,8250,9680],
+    pageviews:[23400,26800,31200],
+    productViews:[8900,10200,12100],
+    revenueTrend:[742000,865000,1035800],
+    wKpis:[{label:'Visitors',value:'24,830'},{label:'Sessions',value:'32,940'},{label:'Page Views',value:'78,400'},{label:'Product Views',value:'72,600'},{label:'Clicks',value:'18,020'},{label:'Conv. Rate',value:'3.7%'}],
+    funnel:[{label:'Visitors',val:24830,pct:100},{label:'Product Views',val:12600,pct:51},{label:'Enquiries',val:2680,pct:10.8},{label:'Orders',val:648,pct:2.6}],
+    channels:[{label:'Instagram',val:12100,pct:92,color:'var(--rosewood)'},{label:'WhatsApp',val:8340,pct:64,color:'var(--sage)'},{label:'Google',val:6120,pct:47,color:'var(--gold)'},{label:'Direct',val:4380,pct:34,color:'var(--rust)'}],
+    customers:[{label:'New customers',value:'512',delta:'+19.3%',up:true},{label:'Returning customers',value:'268',delta:'+11.2%',up:true},{label:'Newsletter signups',value:'894',delta:'+27.6%',up:true}],
+    device:[69,26,5],browser:[52,32,9,7],
+  },
+  year:{
+    label:'This Year',revenueSubLabel:'Year overview',multiplier:9.5,
+    labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    visitors:[4100,4350,4600,4900,5250,5600,6050,6480,6900,7350,7800,8320],
+    pageviews:[13200,14100,14900,15800,16900,18100,19500,20900,22300,23800,25300,27000],
+    productViews:[4900,5250,5600,6000,6450,6950,7500,8100,8700,9350,10050,10800],
+    revenueTrend:[612000,658000,701000,749000,812000,878000,952000,1035000,1112000,1198000,1289000,1386000],
+    wKpis:[{label:'Visitors',value:'80,600'},{label:'Sessions',value:'1,06,900'},{label:'Page Views',value:'2,52,000'},{label:'Product Views',value:'2,33,600'},{label:'Clicks',value:'58,400'},{label:'Conv. Rate',value:'3.9%'}],
+    funnel:[{label:'Visitors',val:80600,pct:100},{label:'Product Views',val:41800,pct:51.9},{label:'Enquiries',val:8870,pct:11},{label:'Orders',val:2180,pct:2.7}],
+    channels:[{label:'Instagram',val:39200,pct:96,color:'var(--rosewood)'},{label:'WhatsApp',val:27100,pct:66,color:'var(--sage)'},{label:'Google',val:19800,pct:48,color:'var(--gold)'},{label:'Direct',val:14200,pct:35,color:'var(--rust)'}],
+    customers:[{label:'New customers',value:'1,980',delta:'+22.4%',up:true},{label:'Returning customers',value:'1,140',delta:'+16.8%',up:true},{label:'Newsletter signups',value:'3,260',delta:'+31.2%',up:true}],
+    device:[68,27,5],browser:[50,33,10,7],
+  },
+};
+function currentAnalyticsData(){return ANALYTICS_RANGE_DATA[state.analyticsRange];}
+
+function initAnalyticsCharts(){
+  if(charts.visitors)return;
+  const d=currentAnalyticsData();
+  charts.visitors=new Chart(document.getElementById('chartVisitors'),{type:'line',data:{labels:d.labels,datasets:[{data:d.visitors,borderColor:'#8C3A46',backgroundColor:'rgba(140,58,70,.08)',fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7}},y:{grid:{color:'#F0E8DC'}}}}});
+  charts.pageviews=new Chart(document.getElementById('chartPageviews'),{type:'bar',data:{labels:d.labels,datasets:[{label:'Page views',data:d.pageviews,backgroundColor:'#E9DFD2',borderRadius:5,maxBarThickness:16},{label:'Product views',data:d.productViews,backgroundColor:'#8C3A46',borderRadius:5,maxBarThickness:16}]},options:{plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,font:{size:11.5}}}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7}},y:{grid:{color:'#F0E8DC'}}}}});
+  charts.device=new Chart(document.getElementById('chartDevice'),{type:'doughnut',data:{labels:['Mobile','Desktop','Tablet'],datasets:[{data:d.device,backgroundColor:['#8C3A46','#B08A55','#6C7A5E'],borderWidth:0}]},options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,padding:14}}}}});
+  charts.browser=new Chart(document.getElementById('chartBrowser'),{type:'doughnut',data:{labels:['Chrome','Safari','Firefox','Other'],datasets:[{data:d.browser,backgroundColor:['#8C3A46','#B08A55','#6C7A5E','#D8C9BC'],borderWidth:0}]},options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,padding:14}}}}});
+  charts.revenueTrend=new Chart(document.getElementById('chartRevenueTrend'),{type:'line',data:{labels:d.labels,datasets:[{data:d.revenueTrend,borderColor:'#B08A55',backgroundColor:'rgba(176,138,85,.10)',fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7}},y:{grid:{color:'#F0E8DC'},ticks:{callback:v=>'₹'+(v/1000)+'k'}}}}});
+  renderAnalyticsData();
+}
+function refreshAnalyticsCharts(){
+  const d=currentAnalyticsData();
+  if(charts.visitors){charts.visitors.data.labels=d.labels;charts.visitors.data.datasets[0].data=d.visitors;charts.visitors.update();}
+  if(charts.pageviews){charts.pageviews.data.labels=d.labels;charts.pageviews.data.datasets[0].data=d.pageviews;charts.pageviews.data.datasets[1].data=d.productViews;charts.pageviews.update();}
+  if(charts.device){charts.device.data.datasets[0].data=d.device;charts.device.update();}
+  if(charts.browser){charts.browser.data.datasets[0].data=d.browser;charts.browser.update();}
+  if(charts.revenueTrend){charts.revenueTrend.data.labels=d.labels;charts.revenueTrend.data.datasets[0].data=d.revenueTrend;charts.revenueTrend.update();}
+}
+function renderAnalyticsData(){
+  const d=currentAnalyticsData();
+  const mult=d.multiplier;
+  document.getElementById('websiteKpis').innerHTML=d.wKpis.map(k=>`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value serif-num">${k.value}</div></div>`).join('');
+  const revSub=document.getElementById('revTrendSub');
+  if(revSub)revSub.textContent=d.revenueSubLabel;
+  const sorted=[...PRODUCTS].sort((a,b)=>b.views-a.views);
+  const mkRow=p=>`<div class="mini-row"><img src="${p.img}" alt="${p.title}" onerror="this.src='Images/Bridal/bridal1.jpg'"><div><div class="mr-title">${p.title}</div><div class="mr-sub">${p.category}</div></div><div class="mr-val">${Math.round(p.views*mult).toLocaleString('en-IN')}</div></div>`;
+  document.getElementById('mostViewedList').innerHTML=sorted.slice(0,5).map(mkRow).join('');
+  document.getElementById('topRevenueList').innerHTML=sorted.slice(0,5).map(p=>{const rev=p.discounted*Math.round(p.views*mult/100);return`<div class="mini-row"><img src="${p.img}" alt="${p.title}" onerror="this.src='Images/Bridal/bridal1.jpg'"><div><div class="mr-title">${p.title}</div><div class="mr-sub">${p.category}</div></div><div class="mr-val">${fmtINR(rev)}</div></div>`;}).join('');
+  document.getElementById('bestPerformingList').innerHTML=sorted.filter(p=>p.featured||p.views>1200).slice(0,4).map(mkRow).join('');
+  document.getElementById('lowEngagementList').innerHTML=sorted.slice(-4).map(mkRow).join('');
+  document.getElementById('conversionFunnel').innerHTML=d.funnel.map(f=>`<div class="bar-row"><span class="b-label">${f.label}</span><div class="bar-track"><div class="bar-fill" style="width:${f.pct}%"></div></div><span class="b-val">${f.val.toLocaleString()}</span></div>`).join('');
+  document.getElementById('channelClicks').innerHTML=d.channels.map(c=>`<div class="bar-row"><span class="b-label">${c.label}</span><div class="bar-track"><div class="bar-fill" style="width:${c.pct}%;background:${c.color}"></div></div><span class="b-val">${c.val.toLocaleString()}</span></div>`).join('');
+  document.getElementById('customerAnalyticsKpis').innerHTML=d.customers.map(c=>`<div class="card pad-lg"><div class="kpi-label">${c.label}</div><div class="kpi-value serif-num">${c.value}</div><div class="kpi-delta ${c.up?'up':'down'}"><svg viewBox="0 0 24 24" stroke-linecap="round">${c.up?'<path d="M6 15l6-6 6 6"/>':'<path d="M6 9l6 6 6-6"/>'}</svg>${c.delta}</div></div>`).join('');
+  document.getElementById('geoBody').innerHTML=GEO_DATA.map(g=>{const vis=Math.round(g.visitors*mult),ord=Math.round(g.orders*mult),rev=Math.round(g.revenue*mult);return`<tr><td class="cell-strong">${g.city}</td><td>${vis.toLocaleString()}</td><td>${ord}</td><td>${fmtINR(rev)}</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="bar-track" style="width:80px;"><div class="bar-fill" style="width:${g.share}%"></div></div><span style="font-size:12px;color:var(--muted);">${g.share}%</span></div></td></tr>`;}).join('');
+}
+function setAnalyticsRange(range){
+  if(!ANALYTICS_RANGE_DATA[range]||state.analyticsRange===range)return;
+  state.analyticsRange=range;
+  renderAnalyticsData();
+  refreshAnalyticsCharts();
+  showToast('Showing: '+ANALYTICS_RANGE_DATA[range].label);
+}
+
+/* ============================================================
+   MARKETING PAGE
+============================================================ */
+function renderDiscounts(){
+  document.getElementById('discountBody').innerHTML=DISCOUNTS.map(d=>`
+    <tr>
+      <td class="cell-strong" style="font-family:monospace;letter-spacing:.05em;">${d.code}</td>
+      <td>${d.type==='percent'?'Percentage':'Fixed amount'}</td>
+      <td>${d.type==='percent'?d.value+'%':fmtINR(d.value)}</td>
+      <td>${d.usage}${d.limit?' / '+d.limit:''}</td>
+      <td class="cell-muted">${d.expiry}</td>
+      <td><span class="pill ${d.status==='active'?'pill-published':'pill-cancelled'}">${d.status==='active'?'Active':'Expired'}</span></td>
+      <td><button class="btn-text" onclick="editDiscount(${d.id})">Edit</button></td>
+    </tr>`).join('');
+}
+function renderCampaigns(){
+  document.getElementById('campaignsBody').innerHTML=CAMPAIGNS.map(c=>`
+    <tr>
+      <td class="cell-strong">${c.name}</td>
+      <td><span class="pill ${c.status==='sent'?'pill-completed':'pill-draft'}">${c.status==='sent'?'Sent':'Draft'}</span></td>
+      <td class="cell-muted">${c.sentDate}</td>
+      <td>${c.sent?c.sent.toLocaleString():'—'}</td>
+      <td>${c.openRate}</td>
+      <td>${c.clickRate}</td>
+    </tr>`).join('');
+  if(!charts.marketing){
+    charts.marketing=new Chart(document.getElementById('chartMarketing'),{type:'line',data:{labels:['W1','W2','W3','W4','W5','W6'],datasets:[{data:[6200,8100,7400,11200,14800,18200],borderColor:'#B08A55',backgroundColor:'rgba(176,138,85,.12)',fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'#F0E8DC'}}}}});
+  }
+}
+function renderBanners(){
+  document.getElementById('bannersContainer').innerHTML=BANNERS.map(b=>`
+    <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line-soft);">
+      <div class="toggle ${b.active?'on':''}" onclick="toggleBanner(${b.id},this)"></div>
+      <div style="flex:1;font-size:13.5px;">${b.text}</div>
+      <span class="pill ${b.active?'pill-published':'pill-draft'}">${b.active?'Live':'Off'}</span>
+    </div>`).join('');
+}
+function toggleBanner(id,el){const b=BANNERS.find(b=>b.id===id);b.active=!b.active;el.classList.toggle('on',b.active);renderBanners();showToast('Banner '+(b.active?'activated':'deactivated'));}
+function openDiscountModal(id){
+  state.editingDiscountId=id||null;
+  if(id){
+    const d=DISCOUNTS.find(d=>d.id===id);
+    document.getElementById('discountModalTitle').textContent='Edit Discount';
+    document.getElementById('dcCode').value=d.code;
+    document.getElementById('dcType').value=d.type;
+    document.getElementById('dcValue').value=d.value;
+    document.getElementById('dcUsage').value=d.limit||'';
+    document.getElementById('dcExpiry').value='';
+  }else{
+    document.getElementById('discountModalTitle').textContent='Create Discount Code';
+    ['dcCode','dcValue','dcUsage','dcExpiry'].forEach(id=>{document.getElementById(id).value='';});
+    document.getElementById('dcType').value='percent';
+  }
+  document.getElementById('discountOverlay').classList.add('open');
+}
+function editDiscount(id){goPage('marketing');openDiscountModal(id);}
+function closeDiscountModal(){document.getElementById('discountOverlay').classList.remove('open');}
+function saveDiscount(){
+  const code=document.getElementById('dcCode').value.toUpperCase().trim();
+  if(!code){showToast('Please enter a code');return;}
+  const data={code,type:document.getElementById('dcType').value,value:parseFloat(document.getElementById('dcValue').value)||10,usage:0,limit:parseInt(document.getElementById('dcUsage').value)||100,expiry:document.getElementById('dcExpiry').value||'31 Dec 2026',status:'active'};
+  if(state.editingDiscountId){const idx=DISCOUNTS.findIndex(d=>d.id===state.editingDiscountId);DISCOUNTS[idx]={...DISCOUNTS[idx],...data};showToast('Discount updated');}
+  else{DISCOUNTS.unshift({id:Date.now(),...data});showToast('Discount code created: '+code);}
+  closeDiscountModal();renderDiscounts();
+}
+function renderIntegrations(){
+  document.getElementById('integrationsGrid').innerHTML=INTEGRATIONS.map(i=>`
+    <div class="integration-card">
+      <div class="int-icon" style="background:var(--panel-sunk);">${i.icon}</div>
+      <div><div class="int-name">${i.name}</div><div class="int-desc">${i.desc}</div></div>
+      <div class="int-actions">
+        <button class="btn btn-sm ${i.connected?'btn-ghost':'btn-outline'}" onclick="showToast('${i.name}: ${i.connected?'Disconnect':'Connect'} — coming soon')">
+          ${i.connected?'Connected ✓':'Connect'}
+        </button>
+      </div>
+    </div>`).join('');
+}
+</script>
+<script>
+/* ============================================================
+   HELPER STATES
+============================================================ */
+function emptyStateHTML(icon,title,desc,actionHTML){
+  const icons={search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',box:'<path d="M3 8l9-5 9 5-9 5-9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',orders:'<path d="M3 7h18l-1.5 12.5a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5L3 7Z"/>',users:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/>'};
+  return`<div class="state-block"><div class="state-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${icons[icon]||icons.box}</svg></div><h3>${title}</h3><p>${desc}</p>${actionHTML||''}</div>`;
+}
+
+/* ============================================================
+   TEAM MEMBER MANAGEMENT
+============================================================ */
+const ROLE_PERMISSIONS = {
+  owner: ['View all', 'Add products', 'Edit products', 'Delete products', 'Update orders', 'Manage customers', 'View analytics', 'Marketing', 'Settings', 'Invite/remove team members'],
+  editor: ['View all', 'Add products', 'Edit products', 'Delete products', 'Update orders', 'Manage customers', 'View analytics', 'Marketing'],
+  viewer: ['View dashboard', 'View orders', 'View customers', 'View analytics'],
+};
+
+// Cached in memory, refreshed from Supabase (shared across every
+// device) whenever the Settings page opens or a team action happens.
+let TEAM_MEMBERS_CACHE = [];
+let PENDING_INVITES_CACHE = [];
+
+async function refreshTeamMembers() {
+  try {
+    const [members, invites] = await Promise.all([
+      window.sbFetchTeamMembers(),
+      window.sbFetchInvites(),
+    ]);
+    TEAM_MEMBERS_CACHE = members;
+    PENDING_INVITES_CACHE = invites.filter(i => !i.used && new Date(i.expiry).getTime() > Date.now());
+  } catch (e) {
+    console.warn('[TNC] Could not load team data:', e);
+  }
+  renderTeamMembers();
+}
+
+function renderTeamMembers() {
+  const el = document.getElementById('teamMembersList');
+  if (!el) return;
+  const roleColors = { owner:'var(--gold)', editor:'var(--sage)', viewer:'var(--blue)' };
+  const roleBg = { owner:'var(--gold-tint)', editor:'var(--sage-tint)', viewer:'var(--blue-tint)' };
+
+  const s = STORE_SETTINGS || {};
+  const ownerName = s.owner_name || 'Owner';
+  const ownerEmail = s.owner_email || '';
+  const ownerAvatar = avatarHTML(s.owner_avatar_url, ownerName.charAt(0).toUpperCase());
+
+  // Always show owner first
+  const ownerRow = `
+    <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line-soft);">
+      <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(155deg,var(--gold),var(--rosewood));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:15px;font-weight:600;color:#fff;flex-shrink:0;overflow:hidden;">${ownerAvatar}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13.5px;font-weight:600;">${ownerName}</div>
+        <div style="font-size:11.5px;color:var(--muted);">${ownerEmail}</div>
+      </div>
+      <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;background:var(--gold-tint);color:var(--gold);">👑 Owner</span>
+    </div>`;
+
+  const memberRows = TEAM_MEMBERS_CACHE.map(m => `
+    <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line-soft);">
+      <div style="width:38px;height:38px;border-radius:50%;background:${roleBg[m.role]||'var(--panel-sunk)'};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:15px;font-weight:600;color:${roleColors[m.role]||'var(--muted)'};flex-shrink:0;">${(m.name||'?').charAt(0).toUpperCase()}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13.5px;font-weight:600;">${m.name||'Unnamed member'}</div>
+        <div style="font-size:11.5px;color:var(--muted);">Added ${m.added_date||'recently'} · ${m.used_invite?'Active':'Pending invite'}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <select onchange="changeMemberRole('${m.id}',this.value)" style="font-family:var(--font-body);font-size:12px;padding:5px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;">
+          <option value="editor" ${m.role==='editor'?'selected':''}>Editor</option>
+          <option value="viewer" ${m.role==='viewer'?'selected':''}>Viewer</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" onclick="askRemoveMember('${m.id}')" style="color:var(--rust);border-color:var(--rust-tint);font-size:12px;">Remove</button>
+      </div>
+    </div>`).join('');
+
+  const pendingSection = PENDING_INVITES_CACHE.length ? `
+    <div style="margin-top:14px;padding:12px 14px;background:var(--gold-tint);border-radius:10px;font-size:12.5px;color:var(--ink-soft);">
+      <strong>⏳ ${PENDING_INVITES_CACHE.length} pending invite${PENDING_INVITES_CACHE.length>1?'s':''}</strong> — waiting to be accepted
+    </div>` : '';
+
+  el.innerHTML = ownerRow + (memberRows || '<div style="padding:20px 0;font-size:13px;color:var(--muted);">No team members yet. Invite someone using the button above.</div>') + pendingSection;
+}
+
+function openInviteModal() {
+  document.getElementById('inviteOverlay').classList.add('open');
+  document.getElementById('inviteName').value = '';
+  document.getElementById('inviteRole').value = 'editor';
+  document.getElementById('inviteLinkInput').value = '';
+  document.getElementById('copyInviteBtn').style.display = 'none';
+  updateRolePreview();
+}
+function closeInviteModal() { document.getElementById('inviteOverlay').classList.remove('open'); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const roleSelect = document.getElementById('inviteRole');
+  if (roleSelect) roleSelect.addEventListener('change', updateRolePreview);
+});
+
+function updateRolePreview() {
+  const role = (document.getElementById('inviteRole')||{}).value || 'editor';
+  const perms = ROLE_PERMISSIONS[role] || [];
+  const el = document.getElementById('rolePermissionsPreview');
+  if (el) el.innerHTML = perms.map(p=>`<span style="display:inline-block;margin-right:6px;margin-bottom:4px;padding:2px 8px;background:var(--panel);border:1px solid var(--line);border-radius:100px;font-size:11px;">✓ ${p}</span>`).join('');
+}
+
+async function generateInviteLink() {
+  const genBtn = document.querySelector('#inviteOverlay .btn-primary');
+  const name = (document.getElementById('inviteName')||{}).value.trim() || 'Team Member';
+  const role = (document.getElementById('inviteRole')||{}).value || 'editor';
+  const token = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2) + Date.now().toString(36);
+  const expiry = new Date(Date.now() + 86400000).toISOString();
+  if (genBtn) genBtn.disabled = true;
+  try {
+    // Saved to Supabase (not localStorage) so ANY device that opens the
+    // link — not just this browser — can find and accept the invite.
+    await window.sbCreateInvite({ token, expiry, used: false, name, role });
+    // Build link — works on both localhost and file://
+    let base = window.location.href.split('?')[0].split('#')[0];
+    const link = base + '?invite=' + token;
+    const inp = document.getElementById('inviteLinkInput');
+    if (inp) inp.value = link;
+    const btn = document.getElementById('copyInviteBtn');
+    if (btn) btn.style.display = '';
+    // Auto-copy
+    navigator.clipboard.writeText(link).then(() => {
+      showToast('Invite link copied! Send it to ' + name);
+    }).catch(() => {
+      showToast('Link generated — copy it from the box above');
+    });
+    await refreshTeamMembers();
+  } catch (e) {
+    console.warn('[TNC] Could not create invite:', e);
+    showToast('Could not generate the link — check your connection');
+  } finally {
+    if (genBtn) genBtn.disabled = false;
+  }
+}
+
+function copyInviteLink() {
+  const link = (document.getElementById('inviteLinkInput')||{}).value;
+  if (!link) return;
+  navigator.clipboard.writeText(link).then(() => showToast('Link copied to clipboard!'));
+}
+
+let removeMemberId = null;
+function askRemoveMember(id) {
+  removeMemberId = id;
+  const m = TEAM_MEMBERS_CACHE.find(m => String(m.id) === String(id));
+  const el = document.getElementById('removeMemberText');
+  if (el && m) el.textContent = `Remove "${m.name}" from the team? They will lose dashboard access immediately.`;
+  document.getElementById('removeMemberOverlay').classList.add('open');
+}
+function closeRemoveMemberModal() { document.getElementById('removeMemberOverlay').classList.remove('open'); removeMemberId = null; }
+async function confirmRemoveMember() {
+  if (!removeMemberId) return;
+  const id = removeMemberId;
+  closeRemoveMemberModal();
+  try {
+    await window.sbRemoveTeamMember(id);
+    await refreshTeamMembers();
+    showToast('Team member removed');
+  } catch (e) {
+    console.warn('[TNC] Could not remove member:', e);
+    showToast('Could not remove — check your connection');
+  }
+}
+async function changeMemberRole(id, newRole) {
+  const m = TEAM_MEMBERS_CACHE.find(m => String(m.id) === String(id));
+  try {
+    await window.sbUpdateTeamMemberRole(id, newRole);
+    await refreshTeamMembers();
+    showToast((m&&m.name||'Member') + ' role updated to ' + newRole);
+  } catch (e) {
+    console.warn('[TNC] Could not update role:', e);
+    showToast('Could not update role — check your connection');
+  }
+}
+
+/* ============================================================
+   LOGIN / AUTH + SESSION ROLE
+============================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+  const SESSION_KEY = 'tnc_admin_session';
+
+  async function hashPassword(pw) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // Store default password hash on first visit
+  if (!localStorage.getItem('tnc_admin_hash')) {
+    hashPassword('NailsClub@Admin2025').then(h => localStorage.setItem('tnc_admin_hash', h));
+  }
+
+  function getSession() {
+    try { return JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null'); } catch(e) { return null; }
+  }
+
+  function isAuthenticated() {
+    const s = getSession();
+    if (!s || !s.ok) return false;
+    if (Date.now() - s.ts > 8 * 60 * 60 * 1000) { sessionStorage.removeItem(SESSION_KEY); return false; }
+    return true;
+  }
+
+  // Role-based access control
+  function getCurrentRole() {
+    const s = getSession();
+    return s ? (s.role || 'owner') : 'viewer';
+  }
+
+  function applyRoleRestrictions(role) {
+    // Hide write actions for viewers
+    if (role === 'viewer') {
+      // Products — hide add/edit/delete
+      document.querySelectorAll('#page-products .btn-primary, #page-products .btn-outline, #page-products .btn-danger').forEach(b => {
+        b.style.display = 'none';
+      });
+      // Settings — hide security tab
+      const secBtn = document.querySelector('[data-tab="security"]');
+      if (secBtn) secBtn.style.display = 'none';
+      // Show viewer badge
+      const adminRole = document.querySelector('.admin-meta .a-role');
+      if (adminRole) adminRole.textContent = 'Viewer';
+      const aNameV = document.querySelector('.admin-meta .a-name');
+      if (aNameV && getSession() && getSession().memberName) aNameV.textContent = getSession().memberName;
+      const sideAvatarV = document.getElementById('sidebarAvatar');
+      if (sideAvatarV && getSession() && getSession().memberName) sideAvatarV.textContent = getSession().memberName.charAt(0).toUpperCase();
+    } else if (role === 'editor') {
+      // Editors can't manage team or settings security
+      const secBtn = document.querySelector('[data-tab="security"]');
+      if (secBtn) secBtn.style.display = 'none';
+      const adminRole = document.querySelector('.admin-meta .a-role');
+      if (adminRole) adminRole.textContent = 'Editor';
+      const aName = document.querySelector('.admin-meta .a-name');
+      if (aName && getSession() && getSession().memberName) aName.textContent = getSession().memberName;
+      const sideAvatarE = document.getElementById('sidebarAvatar');
+      if (sideAvatarE && getSession() && getSession().memberName) sideAvatarE.textContent = getSession().memberName.charAt(0).toUpperCase();
+    }
+    // Update session info label
+    const lbl = document.getElementById('sessionRoleLabel');
+    if (lbl) {
+      const roleLabels = { owner:'Owner — Full access', editor:'Editor — Products, orders & customers', viewer:'Viewer — Read only' };
+      lbl.textContent = roleLabels[role] || role;
+    }
+  }
+
+  function showLoginScreen() {
+    document.getElementById('loginGate').style.display = 'flex';
+    document.getElementById('appShell').style.display = 'none';
+    document.getElementById('loginPasswordInput').value = '';
+    document.getElementById('loginError').style.display = 'none';
+    document.getElementById('loginBtn').textContent = 'Enter Dashboard';
+    document.getElementById('loginBtn').disabled = false;
+    setTimeout(() => document.getElementById('loginPasswordInput').focus(), 100);
+  }
+
+  async function showDashboard(role, memberName) {
+    document.getElementById('loginGate').style.display = 'none';
+    document.getElementById('appShell').style.display = '';
+    updateDate();
+    skeletonBoot();
+    await loadProducts(); // pull the real product catalog from the database
+    await loadStoreSettings(); // store info + owner profile, shared across every device
+    setTimeout(() => { renderKpis(); renderTopDesignsMini(); renderRecentOrders(); initOverviewCharts(); }, 400);
+    setTimeout(() => applyRoleRestrictions(role || getCurrentRole()), 500);
+    // Close overlays on backdrop click
+    ['editorOverlay','customerOverlay','deleteOverlay','discountOverlay','orderOverlay','inviteOverlay','removeMemberOverlay'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+    });
+  }
+
+  window.attemptLogin = async function() {
+    const pw = document.getElementById('loginPasswordInput').value;
+    const errEl = document.getElementById('loginError');
+    const btn = document.getElementById('loginBtn');
+    if (!pw) { errEl.style.display='block'; errEl.textContent='Please enter a password.'; return; }
+    btn.textContent = 'Verifying…'; btn.disabled = true;
+    const hash = await hashPassword(pw);
+    const storedHash = localStorage.getItem('tnc_admin_hash');
+    if (hash === storedHash) {
+      // Owner login
+      const sessionData = { ok: true, ts: Date.now(), role: 'owner' };
+      // Check if arrived via invite link — use that role. Looked up in
+      // Supabase so this works no matter whose device generated the link.
+      const params = new URLSearchParams(window.location.search);
+      const invToken = params.get('invite');
+      if (invToken) {
+        try {
+          const invites = await window.sbFetchInvites();
+          const inv = invites.find(i => i.token === invToken && i.used);
+          if (inv) {
+            sessionData.role = inv.role || 'editor';
+            sessionData.memberName = inv.name || 'Team Member';
+            // Add to team members list if not already there
+            const members = await window.sbFetchTeamMembers();
+            if (!members.find(m => m.invite_token === invToken)) {
+              await window.sbAddTeamMember({ name: inv.name || 'Team Member', role: inv.role || 'editor', added_date: new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}), used_invite: true, invite_token: invToken });
+            }
+          }
+        } catch (e) {
+          console.warn('[TNC] Could not resolve invite:', e);
+        }
+      }
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+      document.getElementById('loginGate').style.opacity = '0';
+      document.getElementById('loginGate').style.transition = 'opacity .3s';
+      setTimeout(() => showDashboard(sessionData.role, sessionData.memberName), 300);
+    } else {
+      errEl.style.display = 'block';
+      errEl.textContent = 'Incorrect password. Please try again.';
+      document.getElementById('loginPasswordInput').value = '';
+      document.getElementById('loginPasswordInput').focus();
+      btn.textContent = 'Enter Dashboard'; btn.disabled = false;
+      document.getElementById('loginCard').style.animation = 'loginShake 0.4s ease';
+      setTimeout(() => document.getElementById('loginCard').style.animation = '', 420);
+    }
+  };
+
+  window.doLogout = function() {
+    sessionStorage.removeItem(SESSION_KEY);
+    showToast('Signed out successfully.');
+    setTimeout(showLoginScreen, 700);
+    toggleAdminMenu();
+  };
+
+  window.changeAdminPassword = async function() {
+    const cur = document.getElementById('secCurPassword').value;
+    const nw = document.getElementById('secNewPassword').value;
+    const conf = document.getElementById('secConfirmPassword').value;
+    const errEl = document.getElementById('secPwError');
+    const okEl = document.getElementById('secPwOk');
+    errEl.style.display='none'; okEl.style.display='none';
+    if (!cur||!nw||!conf) { errEl.style.display='block'; errEl.textContent='All fields are required.'; return; }
+    if (nw !== conf) { errEl.style.display='block'; errEl.textContent='New passwords do not match.'; return; }
+    if (nw.length < 8) { errEl.style.display='block'; errEl.textContent='Password must be at least 8 characters.'; return; }
+    const curHash = await hashPassword(cur);
+    if (curHash !== localStorage.getItem('tnc_admin_hash')) { errEl.style.display='block'; errEl.textContent='Current password is incorrect.'; return; }
+    localStorage.setItem('tnc_admin_hash', await hashPassword(nw));
+    ['secCurPassword','secNewPassword','secConfirmPassword'].forEach(id => { const el=document.getElementById(id); if(el)el.value=''; });
+    okEl.style.display='block'; showToast('Password updated successfully');
+  };
+
+  // Handle invite link in URL — looked up in Supabase (not localStorage)
+  // so this works no matter whose device generated the invite.
+  (async () => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('invite');
+    if (!token) return;
+    try {
+      const invites = await window.sbFetchInvites();
+      const inv = invites.find(i => i.token === token && !i.used && new Date(i.expiry).getTime() > Date.now());
+      if (inv) {
+        await window.sbMarkInviteUsed(token);
+        document.getElementById('loginCard').insertAdjacentHTML('afterbegin',
+          `<div style="background:var(--sage-tint);border:1px solid var(--sage);border-radius:10px;padding:11px 14px;margin-bottom:16px;font-size:12.5px;color:var(--sage);text-align:left;">
+            <strong>👋 You've been invited${inv.name?' for '+inv.name:''}!</strong><br>
+            Your role: <strong>${(inv.role||'editor').charAt(0).toUpperCase()+(inv.role||'editor').slice(1)}</strong> · Enter the admin password to access the studio.
+          </div>`);
+      } else {
+        document.getElementById('loginError').style.display='block';
+        document.getElementById('loginError').textContent='This invite link is invalid or has already expired.';
+      }
+    } catch (e) {
+      console.warn('[TNC] Could not resolve invite link:', e);
+      document.getElementById('loginError').style.display='block';
+      document.getElementById('loginError').textContent='Could not check the invite link — check your connection and try again.';
+    }
+  })();
+
+  document.getElementById('loginPasswordInput').addEventListener('keydown', e => { if(e.key==='Enter') window.attemptLogin(); });
+  document.getElementById('loginToggleEye').addEventListener('click', () => {
+    const inp = document.getElementById('loginPasswordInput');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  });
+
+  // Boot
+  if (isAuthenticated()) { showDashboard(); }
+  else { showLoginScreen(); }
+});
+</script>
+</body>
+</html>
+

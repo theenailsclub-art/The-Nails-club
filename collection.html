@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZLP08PTF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TDZLP08PTF');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Our Collection | The Nails Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="tailwind.min.js"></script>
+<script src="designs-data.js"></script>
+<script>
+tailwind.config = {
+  theme: { extend: { colors: { primary:'#BC1423', gold:'#C6A35B', beige:'#F5F0ED', dark:'#322C2C', ivory:'#FAF8F5' },
+    fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['"DM Sans"','system-ui','sans-serif'] } } }
+}
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#fff;color:#322C2C;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+.no-scrollbar::-webkit-scrollbar{display:none}
+.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+.ham-line{display:block;width:22px;height:1.5px;background:#322C2C;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);transform-origin:center}
+#menu-btn.is-open .ham-line:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+#menu-btn.is-open .ham-line:nth-child(2){opacity:0;transform:scaleX(0)}
+#menu-btn.is-open .ham-line:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+#nav-overlay{position:fixed;inset:0;z-index:200;background:#322C2C;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.45s cubic-bezier(0.4,0,0.2,1)}
+#nav-overlay.is-open{opacity:1;pointer-events:all}
+#nav-overlay .nav-link{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,8vw,5.5rem);color:#F5F0ED;line-height:1.15;letter-spacing:-0.01em;transition:color 0.25s ease;text-decoration:none;display:block}
+#nav-overlay .nav-link:hover{color:#C6A35B}
+/* Category card */
+.cat-card{position:relative;border-radius:16px;overflow:hidden;background:#e8e0db;cursor:pointer;border:none;padding:0;text-align:left;transition:transform 0.28s ease,box-shadow 0.28s ease;aspect-ratio:3/4}
+.cat-card:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(0,0,0,0.16)}
+.cat-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cat-card .overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(50,44,44,0.85) 0%,rgba(50,44,44,0.1) 55%,transparent 100%)}
+.cat-card .info{position:absolute;bottom:0;left:0;right:0;padding:16px 14px}
+.cat-card .badge{position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.2);backdrop-filter:blur(4px);border-radius:99px;padding:3px 9px;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.1em;color:#fff}
+/* Design card */
+.design-card{border-radius:16px;overflow:hidden;background:#FAF8F5;box-shadow:0 2px 14px rgba(0,0,0,0.07);transition:transform 0.3s ease,box-shadow 0.3s ease;cursor:pointer}
+.design-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,0.13)}
+.slide-wrap{position:relative;aspect-ratio:4/5;overflow:hidden;background:#e8e0db}
+.slide-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:1;}
+/* Detail panel */
+#detail-panel.hidden{display:none!important}
+/* Size chip */
+.size-chip{font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 14px;border:1.5px solid rgba(50,44,44,0.2);border-radius:99px;color:#322C2C;cursor:pointer;background:transparent;transition:all 0.18s ease}
+.size-chip:hover{border-color:rgba(50,44,44,0.5)}
+.size-chip.selected{background:#BC1423;border-color:#BC1423;color:#fff}
+</style>
+</head>
+<body class="antialiased">
+
+<!-- HEADER -->
+<header id="site-header" class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 md:px-10 py-3.5 bg-white/92 backdrop-blur-md border-b border-black/5 transition-shadow duration-300">
+  <a href="index.html" class="flex items-center shrink-0 rounded-xl overflow-hidden" style="padding:5px 4px;">
+    <img src="logo.png" alt="The Nails Club" class="h-8 md:h-9 w-auto object-contain block">
+  </a>
+  <nav class="hidden md:flex items-center gap-10">
+    <a href="index.html" class="font-sans text-[10px] tracking-[0.18em] uppercase text-dark/55 hover:text-dark transition-colors duration-200">Home</a>
+    <a href="collection.html" class="font-sans text-[10px] tracking-[0.18em] uppercase text-dark font-medium border-b border-dark pb-0.5">Collection</a>
+    <a href="index.html#reels" class="font-sans text-[10px] tracking-[0.18em] uppercase text-dark/55 hover:text-dark transition-colors duration-200">Reels</a>
+    <a href="index.html#about" class="font-sans text-[10px] tracking-[0.18em] uppercase text-dark/55 hover:text-dark transition-colors duration-200">About</a>
+  </nav>
+  <div class="flex items-center gap-3">
+    <!-- User dropdown -->
+    <div id="auth-status" class="hidden relative" style="display:none;">
+      <button id="auth-avatar-btn" onclick="toggleUserDropdown()" style="display:flex;align-items:center;gap:9px;background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:99px;transition:background 0.2s;" onmouseenter="this.style.background='rgba(50,44,44,0.06)'" onmouseleave="this.style.background='none'">
+        <div id="auth-avatar" style="width:34px;height:34px;border-radius:50%;background:#BC1423;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#fff;flex-shrink:0;"></div>
+        <div style="text-align:left;">
+          <p id="auth-user-name" style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:#322C2C;line-height:1.2;"></p>
+          <p id="auth-user-email" style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(50,44,44,0.45);line-height:1.2;"></p>
+        </div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#322C2C" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div id="user-dropdown" style="display:none;position:absolute;top:calc(100% + 10px);right:0;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.13);border:1px solid rgba(50,44,44,0.08);min-width:220px;overflow:hidden;z-index:999;">
+        <div style="padding:16px 18px 14px;border-bottom:1px solid rgba(50,44,44,0.07);background:#FAF8F5;">
+          <p id="dd-name" style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:#322C2C;"></p>
+          <p id="dd-email" style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(50,44,44,0.5);margin-top:2px;"></p>
+        </div>
+        <div style="padding:8px 0;">
+          <a href="index.html" style="display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:12px;color:#322C2C;text-decoration:none;" onmouseenter="this.style.background='#FAF8F5'" onmouseleave="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+          <a href="https://wa.me/919913091744" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:12px;color:#322C2C;text-decoration:none;" onmouseenter="this.style.background='#FAF8F5'" onmouseleave="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>WhatsApp Us</a>
+        </div>
+        <div style="padding:8px 0;border-top:1px solid rgba(50,44,44,0.07);">
+          <button onclick="authLogout()" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:12px;color:#BC1423;background:none;border:none;cursor:pointer;" onmouseenter="this.style.background='#fff5f5'" onmouseleave="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="1.5" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
+        </div>
+      </div>
+    </div>
+    <button id="auth-login-btn" onclick="openAuthModal('login')" class="hidden md:inline-flex items-center gap-2 px-4 py-2 border border-dark/20 rounded-full font-sans text-[10px] uppercase tracking-[0.14em] text-dark hover:bg-dark hover:text-white transition-all duration-200">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Sign In
+    </button>
+    <!-- Wishlist icon -->
+    <a href="wishlist.html" title="My Wishlist" style="position:relative;display:flex;align-items:center;color:rgba(50,44,44,0.55);transition:color 0.2s;" onmouseenter="this.style.color='#BC1423'" onmouseleave="this.style.color='rgba(50,44,44,0.55)'">
+      <svg id="header-wl-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span id="header-wl-count" style="position:absolute;top:-6px;right:-6px;background:#BC1423;color:#fff;font-size:9px;font-weight:700;font-family:'DM Sans',sans-serif;width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;pointer-events:none;"></span>
+    </a>
+    <button id="menu-btn" class="flex flex-col gap-[5px] p-2 cursor-pointer" aria-label="Open menu" onclick="toggleMenu()">
+      <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+    </button>
+  </div>
+</header>
+
+<!-- NAV OVERLAY -->
+<div id="nav-overlay" aria-modal="true" role="dialog">
+  <button class="absolute top-7 right-7 p-2 text-white/60 hover:text-white transition-colors" onclick="closeMenu()" aria-label="Close menu">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <ul class="text-center space-y-5 mb-14 list-none">
+    <li><a href="index.html"       class="nav-link" onclick="closeMenu()">Home</a></li>
+    <li><a href="collection.html"  class="nav-link" onclick="closeMenu()">Collection</a></li>
+    <li><a href="index.html#reels" class="nav-link" onclick="closeMenu()">Reels</a></li>
+    <li><a href="index.html#about" class="nav-link" onclick="closeMenu()">About</a></li>
+  </ul>
+  <div class="flex gap-8 text-[10px] tracking-[0.2em] uppercase text-white/35">
+    <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" class="hover:text-white/80 transition-colors">Instagram</a>
+    <span>&middot;</span>
+    <a href="https://wa.me/919913091744" target="_blank" class="hover:text-white/80 transition-colors">WhatsApp</a>
+    <span>&middot;</span>
+    <a href="https://pin.it/7ibXsm1GV" target="_blank" rel="noopener" class="hover:text-white/80 transition-colors">Pinterest</a>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="pt-24 pb-20 px-5 md:px-10">
+  <div class="max-w-screen-xl mx-auto">
+
+    <!-- Page title -->
+    <div class="mb-10">
+      <p class="font-sans text-[9px] tracking-[0.38em] uppercase text-dark/35 mb-3">Handcrafted Press-On Nails</p>
+      <h1 class="font-serif text-[clamp(2.4rem,5vw,4rem)] text-dark mb-2" style="font-weight:400;">Our Collection</h1>
+      <p class="font-sans text-[10px] tracking-[0.22em] uppercase text-dark/40">Explore handcrafted nail art for every occasion</p>
+    </div>
+
+    <!-- Category cards grid -->
+    <div id="cat-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5"></div>
+
+    <!-- Filtered designs panel -->
+    <div id="cat-filter-panel" style="display:none;margin-top:48px;">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <h2 id="cat-filter-label" class="font-serif text-[clamp(1.8rem,3.5vw,2.8rem)] text-dark" style="font-weight:400;"></h2>
+          <span id="cat-filter-count" class="font-sans text-[11px] text-dark/40 mt-1"></span>
+        </div>
+        <button onclick="closeCatFilter()" class="flex items-center gap-2 font-sans text-[10px] uppercase tracking-[0.14em] text-dark/60 hover:text-dark border border-dark/20 rounded-full px-4 py-2 transition-colors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          All Categories
+        </button>
+      </div>
+      <div id="cat-design-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
+      <div id="cat-load-more-wrap" class="hidden justify-center mt-8">
+        <button onclick="catLoadMore()" class="px-10 py-3.5 border border-dark/20 rounded-full font-sans text-[10px] uppercase tracking-[0.16em] text-dark hover:bg-dark hover:text-white transition-all">Load More</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- DETAIL PANEL -->
+<div id="detail-panel" class="hidden" style="position:fixed;inset:0;z-index:400;background:rgba(20,18,18,0.7);backdrop-filter:blur(6px);overflow-y:auto;">
+  <div style="min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px 16px 40px;">
+    <div style="background:#fff;border-radius:20px;width:100%;max-width:1100px;position:relative;overflow:hidden;">
+      <button onclick="closeDetail()" style="position:absolute;top:16px;right:16px;z-index:20;background:#322C2C;color:#fff;border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div style="display:flex;flex-wrap:wrap;min-height:600px;">
+        <!-- Left gallery -->
+        <div style="flex:1;min-width:300px;display:flex;background:#F7F4F1;border-radius:20px 0 0 20px;overflow:hidden;">
+          <div id="detail-thumbs" style="display:flex;flex-direction:column;gap:6px;padding:14px 8px 14px 12px;overflow-y:auto;width:76px;flex-shrink:0;" class="no-scrollbar"></div>
+          <div id="detail-main" style="flex:1;position:relative;min-height:480px;background:#F0EBE6;overflow:hidden;">
+            <button onclick="detailNav(-1)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.92);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.13);z-index:5;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#322C2C" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button onclick="detailNav(1)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.92);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.13);z-index:5;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#322C2C" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+        <!-- Right info -->
+        <div style="width:340px;flex-shrink:0;padding:32px 28px 28px;display:flex;flex-direction:column;overflow-y:auto;border-left:1px solid rgba(50,44,44,0.08);" class="no-scrollbar">
+          <p id="detail-cat" style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(50,44,44,0.4);margin-bottom:6px;"></p>
+          <h3 id="detail-title" style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:#322C2C;line-height:1.15;margin-bottom:8px;"></h3>
+          <p id="detail-price" style="font-family:'DM Sans',sans-serif;font-size:18px;font-weight:600;color:#BC1423;margin-bottom:10px;"></p>
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:14px;">
+            <span style="color:#C6A35B;font-size:14px;">★★★★★</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:11px;color:#BC1423;font-weight:500;">5.0</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(50,44,44,0.4);">· Handcrafted</span>
+          </div>
+          <div style="height:1px;background:rgba(50,44,44,0.08);margin-bottom:14px;"></div>
+          <div style="margin-bottom:14px;">
+            <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(50,44,44,0.35);margin-bottom:4px;">Design Style</p>
+            <p id="detail-design" style="font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;font-weight:500;"></p>
+          </div>
+          <div style="margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(50,44,44,0.35);">Select Size</p>
+              <span id="detail-size-label" style="font-family:'DM Sans',sans-serif;font-size:10px;color:#BC1423;font-weight:500;"></span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;" id="detail-size-chips"></div>
+          </div>
+          <div style="margin-bottom:16px;padding:12px 14px;background:#F7F4F1;border-radius:12px;">
+            <p id="detail-desc" style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(50,44,44,0.65);line-height:1.7;"></p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">
+            <span style="font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(50,44,44,0.5);display:flex;align-items:center;gap:4px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Handcrafted</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(50,44,44,0.5);display:flex;align-items:center;gap:4px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Reusable</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(50,44,44,0.5);display:flex;align-items:center;gap:4px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>All Sizes</span>
+          </div>
+          <a id="detail-ig-btn" href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#BC1423;color:#fff;border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;margin-bottom:8px;font-weight:500;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            Order via Instagram DM
+          </a>
+          <a id="detail-wa-btn" href="https://wa.me/919913091744" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;margin-bottom:8px;font-weight:500;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            +91 99130 91744
+          </a>
+          <a id="detail-wa-btn2" href="https://wa.me/919016242187" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#25D366;border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;border:1.5px solid #25D366;font-weight:500;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            +91 90162 42187
+          </a>
+          <p id="detail-count" style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(50,44,44,0.3);margin-top:12px;text-align:center;"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── NAV ──
+function toggleMenu(){document.getElementById('nav-overlay').classList.toggle('is-open');document.getElementById('menu-btn').classList.toggle('is-open')}
+function closeMenu(){document.getElementById('nav-overlay').classList.remove('is-open');document.getElementById('menu-btn').classList.remove('is-open')}
+
+// ── DATA ──
+
+
+// ── CATEGORY CARDS ──
+function renderCategoryCards() {
+  const grid = document.getElementById('cat-cards-grid');
+  if (!grid) return;
+  grid.innerHTML = Object.keys(catLabels).map(cat => {
+    const cover = catCovers[cat] || { img:'', sub:'' };
+    const catDesigns = DESIGNS.filter(d => d.cat === cat);
+    const count = catDesigns.length;
+    const minPrice = catDesigns.length ? Math.min(...catDesigns.map(d => d.price || 999)) : 999;
+    return '<button onclick="openCategory(\'' + cat + '\')" class="cat-card">'
+      + '<img src="' + encodeImgPath(cover.img) + '" alt="' + catLabels[cat] + '" onerror="this.style.display=\'none\'">'
+      + '<div class="overlay"></div>'
+      + '<div class="badge">' + count + '</div>'
+      + '<div class="info">'
+      + '<p style="font-family:\'Cormorant Garamond\',serif;font-size:22px;font-weight:500;color:#fff;line-height:1.2;margin-bottom:3px;">' + catLabels[cat] + '</p>'
+      + '<p style="font-family:\'DM Sans\',sans-serif;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">' + cover.sub + '</p>'
+      + '<p style="font-family:\'DM Sans\',sans-serif;font-size:11px;font-weight:600;color:#fff;margin-top:4px;">From ₹' + minPrice + '</p>'
+      + '</div></button>';
+  }).join('');
+}
+
+let catVisibleCount = 12;
+let currentCat = '';
+
+function openCategory(cat) {
+  currentCat = cat;
+  catVisibleCount = 12;
+  document.getElementById('cat-cards-grid').style.display = 'none';
+  document.getElementById('cat-filter-panel').style.display = 'block';
+  document.getElementById('cat-filter-label').textContent = catLabels[cat] || cat;
+  renderCatDesigns();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeCatFilter() {
+  document.getElementById('cat-cards-grid').style.display = '';
+  document.getElementById('cat-filter-panel').style.display = 'none';
+  currentCat = '';
+}
+
+function catLoadMore() { catVisibleCount += 8; renderCatDesigns(); }
+
+function renderCatDesigns() {
+  const grid = document.getElementById('cat-design-grid');
+  const filtered = DESIGNS.filter(d => d.cat === currentCat);
+  document.getElementById('cat-filter-count').textContent = filtered.length + ' designs';
+  grid.innerHTML = '';
+  filtered.slice(0, catVisibleCount).forEach((d, i) => {
+    const idx = DESIGNS.indexOf(d);
+    grid.insertAdjacentHTML('beforeend', buildCard(d, idx));
+  });
+  const wrap = document.getElementById('cat-load-more-wrap');
+  if (wrap) wrap.className = filtered.length > catVisibleCount ? 'flex justify-center mt-8' : 'hidden';
+}
+
+function buildCard(design, idx) {
+  const thumb = design.photos[0];
+  const encodedThumb = encodeImgPath(thumb);
+  const videoTag = design.video
+    ? '<div style="position:absolute;bottom:10px;right:10px;background:rgba(50,44,44,0.65);color:#fff;border-radius:99px;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;padding:3px 9px;font-family:DM Sans,sans-serif;display:flex;align-items:center;gap:4px;"><svg width="7" height="7" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>+Video</div>'
+    : '';
+  return '<div class="design-card" onclick="window.location.href=\'premium_product_page.html?design=' + idx + '\'" style="cursor:pointer;">'
+    + '<div class="slide-wrap"><img src="' + encodedThumb + '" alt="' + design.title + '" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:1;" onerror="this.closest(\'.design-card\').style.display=\'none\'">' + videoTag + '</div>'
+    + '<div class="px-3 pb-4 pt-2"><p class="font-sans text-[9px] tracking-[0.18em] uppercase text-dark/40 mb-0.5">' + (catLabels[design.cat] || design.cat) + '</p>'
+    + '<p class="font-serif text-base text-dark leading-tight">' + design.title + '</p>'
+    + '<p class="font-sans text-[11px] text-dark/50 mt-1 leading-snug" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + design.desc + '</p>'
+    + '<p class="font-serif text-base text-primary mt-1.5" style="font-weight:500;">₹' + (design.price || 999) + '</p></div></div>';
+}
+
+// ── DETAIL PANEL ──
+let detailDesign = null;
+let detailActiveIdx = 0;
+let selectedSize = '';
+
+function openDetail(idx) {
+  detailDesign = DESIGNS[idx];
+  detailActiveIdx = 0;
+  selectedSize = '';
+  const panel = document.getElementById('detail-panel');
+  panel.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  renderDetail();
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').classList.add('hidden');
+  document.body.style.overflow = '';
+  document.getElementById('detail-panel').querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+}
+
+function renderDetail() {
+  const d = detailDesign;
+  const allMedia = [...d.photos];
+  if (d.video) allMedia.push({ type:'video', src:d.video });
+
+  // Thumbs
+  document.getElementById('detail-thumbs').innerHTML = allMedia.map((m, i) => {
+    const isVid = typeof m === 'object';
+    const border = i === 0 ? '#BC1423' : 'transparent';
+    const inner = isVid
+      ? '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#322C2C;"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>'
+      : '<img src="' + encodeImgPath(m) + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display=\'none\'">';
+    return '<button onclick="setDetailMedia(' + i + ')" class="detail-thumb" style="width:62px;height:72px;border-radius:8px;overflow:hidden;border:2px solid ' + border + ';flex-shrink:0;background:#e8e0db;cursor:pointer;transition:border-color 0.15s;">' + inner + '</button>';
+  }).join('');
+
+  setDetailMedia(0);
+
+  $setText('detail-cat',    catLabels[d.cat] || d.cat);
+  $setText('detail-title',  d.title);
+  $setText('detail-price',  '₹' + (d.price || 999));
+  $setText('detail-count',  d.photos.length + ' photo' + (d.photos.length > 1 ? 's' : '') + (d.video ? ' + 1 video' : ''));
+  $setText('detail-design', d.design || '—');
+  $setText('detail-desc',   d.desc);
+  // Size chips
+  const sizes = (d.size || 'XS · S · M · L · XL').split('·').map(s => s.trim());
+  document.getElementById('detail-size-chips').innerHTML = sizes.map(s =>
+    '<button onclick="selectSize(this,\'' + s + '\')" class="size-chip">' + s + '</button>'
+  ).join('');
+  document.getElementById('detail-size-label').textContent = '';
+  selectedSize = '';
+  updateOrderLinks();
+}
+
+function setDetailMedia(i) {
+  if (!detailDesign) return;
+  const allMedia = [...detailDesign.photos];
+  if (detailDesign.video) allMedia.push({ type:'video', src:detailDesign.video });
+  detailActiveIdx = i;
+  const m = allMedia[i];
+  const mainArea = document.getElementById('detail-main');
+  mainArea.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+  const isVid = typeof m === 'object';
+  // Keep arrow buttons, replace only the media element
+  const existing = mainArea.querySelector('img, video');
+  if (existing) existing.remove();
+  const el = document.createElement(isVid ? 'video' : 'img');
+  if (isVid) { el.src = m.src; el.controls = true; el.autoplay = true; el.loop = true; el.setAttribute('playsinline',''); }
+  else { el.src = encodeImgPath(m); el.alt = detailDesign.title; }
+  el.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;';
+  mainArea.appendChild(el);
+  // Update thumb borders
+  document.querySelectorAll('.detail-thumb').forEach((t, ti) => { t.style.borderColor = ti === i ? '#BC1423' : 'transparent'; });
+}
+
+function detailNav(dir) {
+  if (!detailDesign) return;
+  const allMedia = [...detailDesign.photos];
+  if (detailDesign.video) allMedia.push({ type:'video', src:detailDesign.video });
+  setDetailMedia((detailActiveIdx + dir + allMedia.length) % allMedia.length);
+}
+
+function selectSize(btn, size) {
+  document.querySelectorAll('.size-chip').forEach(c => { c.classList.remove('selected'); });
+  btn.classList.add('selected');
+  selectedSize = size;
+  document.getElementById('detail-size-label').textContent = 'Selected: ' + size;
+  updateOrderLinks();
+}
+
+function updateOrderLinks() {
+  if (!detailDesign) return;
+  const sz = selectedSize || '___';
+  // All three buttons open the same confirm-your-order modal (with the
+  // product photo) — WhatsApp and Instagram DM links can't attach a
+  // photo on their own, so the modal keeps it in view either way.
+  const openModal = (waNumber) => openOrderModal({
+    title: detailDesign.title,
+    cat: catLabels[detailDesign.cat] || detailDesign.cat,
+    design: detailDesign.design,
+    size: sz,
+    price: detailDesign.price || 999,
+    img: detailDesign.photos[0],
+    waNumber: waNumber,
+    igLink: 'https://ig.me/m/theenaiilsclub'
+  });
+  const igBtn = document.getElementById('detail-ig-btn');
+  const waBtn = document.getElementById('detail-wa-btn');
+  const waBtn2 = document.getElementById('detail-wa-btn2');
+  if (igBtn) igBtn.onclick = (e) => { e.preventDefault(); openModal('919913091744'); };
+  if (waBtn) waBtn.onclick = (e) => { e.preventDefault(); openModal('919913091744'); };
+  if (waBtn2) waBtn2.onclick = (e) => { e.preventDefault(); openModal('919016242187'); };
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', async () => {
+  if (window.DESIGNS_READY) { try { await window.DESIGNS_READY; } catch(e) {} }
+  renderCategoryCards();
+  $on('detail-panel', 'click', function(e) { if (e.target === this) closeDetail(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+  window.addEventListener('scroll', () => {
+    document.getElementById('site-header').style.boxShadow = window.scrollY > 20 ? '0 4px 24px rgba(0,0,0,0.07)' : 'none';
+  });
+  // ── Wishlist badge ──
+  try {
+    const wl = JSON.parse(localStorage.getItem('tnc_wishlist') || '[]');
+    const badge = document.getElementById('header-wl-count');
+    const icon  = document.getElementById('header-wl-icon');
+    if (badge && wl.length > 0) {
+      badge.textContent = wl.length;
+      badge.style.display = 'flex';
+      if (icon) { icon.setAttribute('fill','#BC1423'); icon.setAttribute('stroke','#BC1423'); }
+    }
+  } catch(e) {}
+  // Open category from URL param e.g. collection.html?cat=chrome
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('cat')) openCategory(params.get('cat'));
+});
+</script>
+
+<footer style="background:#322C2C;color:#fff;padding:56px 40px 32px;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;align-items:flex-start;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.08);">
+      <!-- Brand -->
+      <div style="min-width:200px;flex:1;">
+        <a href="index.html" style="display:inline-flex;align-items:center;background:transparent;padding:5px 4px;border-radius:10px;margin-bottom:20px;">
+          <img src="logo.png" alt="The Nails Club" style="height:36px;width:auto;object-fit:contain;display:block;">
+        </a>
+        <p style="font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:rgba(255,255,255,0.45);max-width:240px;">Handcrafted luxury press-on nails — bridal, festive, chrome &amp; more. Every set made with love.</p>
+        <div style="display:flex;gap:14px;margin-top:20px;">
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#BC1423'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://wa.me/919913091744" target="_blank" rel="noopener" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#25D366'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          </a>
+          <a href="https://pin.it/7ibXsm1GV" target="_blank" rel="noopener" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#E60023'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+          </a>
+        </div>
+      </div>
+      <!-- Navigate -->
+      <div style="min-width:140px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">Navigate</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+          <li><a href="index.html" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Home</a></li>
+          <li><a href="collection.html" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Collection</a></li>
+          <li><a href="index.html#reels" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Reels</a></li>
+          <li><a href="index.html#about" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">About</a></li>
+        </ul>
+      </div>
+      <!-- Contact -->
+      <div style="min-width:160px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">Contact</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">@theenaiilsclub</a>
+          <a href="https://wa.me/919913091744" target="_blank" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#25D366'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">+91 99130 91744</a>
+          <a href="https://wa.me/919016242187" target="_blank" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#25D366'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">+91 90162 42187</a>
+          <a href="https://pin.it/7ibXsm1GV" target="_blank" rel="noopener" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#E60023'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">ðŸ“ Pinterest</a>
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;margin-top:6px;background:#BC1423;color:#fff;border-radius:99px;padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            Order via DM
+          </a>
+        </div>
+      </div>
+      <!-- QR -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);">Scan to visit</p>
+        <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" style="display:block;padding:10px;background:#fff;border-radius:16px;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='scale(1.04)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.3)'" onmouseleave="this.style.transform='scale(1)';this.style.boxShadow='none'">
+          <img src="theenaiilsclub_qr.png" alt="Scan QR to visit @theenaiilsclub on Instagram" style="width:120px;height:120px;display:block;object-fit:contain;">
+        </a>
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(255,255,255,0.3);text-align:center;">Opens Instagram</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding-top:24px;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.25);">&copy; 2025 The Nails Club. All rights reserved.</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,0.2);">Crafted with love &amp; precision</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

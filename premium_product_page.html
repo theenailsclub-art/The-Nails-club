@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZLP08PTF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TDZLP08PTF');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Nails Club | Product</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="tailwind.min.js"></script>
+    <script src="designs-data.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        borderGray: '#ECECEC',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Hide scrollbar for carousels */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Smooth accordion transition */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+
+        /* Hover zoom logic */
+        #main-image-container {
+            cursor: crosshair;
+        }
+        #main-image {
+            transition: transform 0.2s ease-out;
+        }
+
+        .image-swap-wrapper img:nth-child(2) {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .image-swap-wrapper:hover img:nth-child(2) {
+            opacity: 1;
+        }
+        .image-swap-wrapper:hover img:nth-child(1) {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 selection:bg-black selection:text-white">
+
+    <header class="border-b border-borderGray py-4 px-6 flex justify-between items-center text-sm font-medium z-50 bg-white relative">
+        <a href="index.html" style="display:flex;align-items:center;padding:4px;"><img src="logo.png" alt="The Nails Club" style="height:36px;width:auto;object-fit:contain;"></a>
+        <nav class="hidden md:flex gap-8">
+            <a href="index.html#collection" class="hover:text-gray-500 transition-colors">Collection</a>
+            <a href="index.html#reels" class="hover:text-gray-500 transition-colors">Reels</a>
+            <a href="index.html#about" class="hover:text-gray-500 transition-colors">About</a>
+            <a href="https://www.instagram.com/theenaiilsclub" target="_blank" class="hover:text-gray-500 transition-colors">Instagram</a>
+        </nav>
+        <div class="flex gap-4">
+            <a href="https://wa.me/919913091744" target="_blank" class="hover:text-gray-500 transition-colors">WhatsApp</a>
+            <a href="index.html" class="hover:text-gray-500 transition-colors">Home</a>
+            <!-- Wishlist icon -->
+            <a href="wishlist.html" title="My Wishlist" style="position:relative;display:flex;align-items:center;color:rgba(50,44,44,0.55);transition:color 0.2s;" onmouseenter="this.style.color='#BC1423'" onmouseleave="this.style.color='rgba(50,44,44,0.55)'">
+              <svg id="header-wl-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span id="header-wl-count" style="position:absolute;top:-6px;right:-6px;background:#BC1423;color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;pointer-events:none;"></span>
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-[1440px] mx-auto pb-32">
+        <div class="max-w-[1380px] mx-auto">
+            
+            <section class="flex flex-col lg:flex-row gap-12 xl:gap-24 pt-8 md:pt-12 px-4 md:px-8">
+                
+                <!-- LEFT COLUMN: Gallery (65%) -->
+                <div class="w-full lg:w-[65%] flex flex-col gap-3 relative">
+
+                    <!-- MOSAIC GRID — wide main photo on top, two tiles below -->
+                    <div id="mosaic-grid" class="grid gap-2" style="grid-template-columns:1fr 1fr;grid-template-rows:auto;">
+                        <!-- Big main image (spans full width on top) -->
+                        <div id="main-image-container" class="relative overflow-hidden bg-gray-100 cursor-crosshair group"
+                             style="grid-column:1/3;grid-row:1;aspect-ratio:4/3;">
+                            <img
+                                id="main-image"
+                                src=""
+                                alt="Press-On Nails"
+                                class="w-full h-full object-cover scale-100 origin-center transition-transform duration-200"
+                                style="display:none;"
+                            />
+                            <div id="main-image-placeholder" class="w-full h-full flex items-center justify-center bg-gray-100">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            </div>
+                            <!-- Zoom hint -->
+                            <div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs font-medium text-gray-600 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>
+                                Hover to zoom
+                            </div>
+                        </div>
+                        <!-- Bottom-left small image -->
+                        <div id="grid-img-1" class="relative overflow-hidden bg-gray-100 cursor-pointer group" style="grid-column:1;grid-row:2;aspect-ratio:4/3;">
+                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="" />
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/8 transition-colors"></div>
+                        </div>
+                        <!-- Bottom-right small image -->
+                        <div id="grid-img-2" class="relative overflow-hidden bg-gray-100 cursor-pointer group" style="grid-column:2;grid-row:2;aspect-ratio:4/3;">
+                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="" />
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/8 transition-colors"></div>
+                            <!-- "View all X photos" badge on last grid cell -->
+                            <div id="view-all-badge" class="absolute inset-0 flex-col items-center justify-center bg-black/45 text-white hidden">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" class="mb-1"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                                <span id="view-all-count" class="text-sm font-semibold"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thumbnail strip (scrollable, shown below mosaic) -->
+                    <div class="relative group/thumbs mt-1">
+                        <button id="thumb-prev" class="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 rounded-full shadow-sm flex items-center justify-center opacity-0 group-hover/thumbs:opacity-100 transition-opacity border border-borderGray hover:bg-gray-50">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <div id="thumb-gallery" class="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide py-1 px-1">
+                            <!-- Populated by JS -->
+                        </div>
+                        <button id="thumb-next" class="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 rounded-full shadow-sm flex items-center justify-center opacity-0 group-hover/thumbs:opacity-100 transition-opacity border border-borderGray hover:bg-gray-50">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Details (35% Sticky) -->
+                <div class="w-full lg:w-[35%] relative">
+                    <div class="lg:sticky lg:top-8 flex flex-col gap-8 pb-12">
+                        
+                        <!-- Header Info -->
+                        <div class="flex flex-col gap-3">
+                            <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Rose Gloss Press-On Nails</h1>
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="flex text-black">
+                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                                <span class="font-medium underline cursor-pointer hover:text-gray-600 transition-colors">
+                                    5.0 (50+ Reviews)
+                                </span>
+                            </div>
+                            <div id="main-price" class="text-2xl font-medium mt-2">₹899</div>
+                            <!-- NAI Code — Nail Art Identifier -->
+                            <div class="flex items-center justify-end">
+                                <span id="nai-code" class="text-xs font-bold tracking-widest text-gray-500 bg-gray-100 px-2.5 py-1 rounded border border-gray-200 select-all cursor-text font-mono uppercase">NAI:TNC0001</span>
+                            </div>
+                            <p class="text-gray-600 leading-relaxed mt-2 text-sm md:text-base">
+                                Luminous rose-glazed finish crafted for your most beautiful moments. Soft, feminine and effortlessly elegant — each set is handcrafted, reusable and salon-finished. Ready to wear instantly.
+                            </p>
+                        </div>
+
+                        <!-- Selectors -->
+                        <div class="flex flex-col gap-6">
+                            <!-- Design Style -->
+                            <div class="flex flex-col gap-2">
+                                <span class="text-sm font-medium">Style: <span id="selected-color-label" class="text-gray-700 font-semibold"></span></span>
+                            </div>
+
+                            <!-- Size -->
+                            <div class="flex flex-col gap-3">
+                                <div class="flex justify-between items-center text-sm font-medium">
+                                    <span>Finger Size</span>
+                                    <button class="text-gray-500 underline hover:text-black transition-colors">Size Chart</button>
+                                </div>
+                                <div class="relative">
+                                    <select class="w-full appearance-none border border-borderGray rounded-lg py-4 px-4 text-base focus:outline-none focus:border-gray-900 transition-colors cursor-pointer bg-white">
+                                        <option value="" disabled selected>Select your size</option>
+                                        <option value="XS">XS</option>
+                                        <option value="S">S</option>
+                                        <option value="M">M</option>
+                                        <option value="L">L</option>
+                                        <option value="XL">XL</option>
+                                        <option value="XXL">XXL</option>
+                                    </select>
+                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="6 9 12 15 18 9"/></svg>
+                                </div>
+                            </div>
+
+                            <!-- Fit -->
+                            <div class="flex flex-col gap-3">
+                                <span class="text-sm font-medium">Nail Shape</span>
+                                <div class="flex gap-2 flex-wrap" id="fit-selectors">
+                                    <button class="fit-btn px-6 py-2.5 rounded-full border text-sm font-medium transition-colors border-borderGray bg-white text-gray-700 hover:border-gray-400">Almond</button>
+                                    <button class="fit-btn px-6 py-2.5 rounded-full border text-sm font-medium transition-colors border-gray-900 bg-gray-900 text-white">Coffin</button>
+                                    <button class="fit-btn px-6 py-2.5 rounded-full border text-sm font-medium transition-colors border-borderGray bg-white text-gray-700 hover:border-gray-400">Stiletto</button>
+                                </div>
+                            </div>
+
+                            <!-- Quantity -->
+                            <div class="flex flex-col gap-3">
+                                <span class="text-sm font-medium flex justify-between">
+                                    Quantity 
+                                    <span class="text-green-700 flex items-center gap-1"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> In Stock</span>
+                                </span>
+                                <div class="flex items-center border border-borderGray rounded-lg w-32 h-12">
+                                    <button id="qty-minus" class="flex-1 flex justify-center items-center hover:bg-gray-50 h-full transition-colors"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+                                    <span id="qty-val" class="w-10 text-center font-medium">1</span>
+                                    <button id="qty-plus" class="flex-1 flex justify-center items-center hover:bg-gray-50 h-full transition-colors"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col gap-3 mt-4">
+                            <button id="ig-order-btn" class="w-full bg-gray-900 text-white py-4 rounded-lg font-semibold text-base hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
+                                Order via Instagram DM <span id="cart-price" class="font-normal opacity-70">• ₹899</span>
+                            </button>
+                            <button id="wa-order-btn" class="w-full bg-white text-gray-900 border border-borderGray py-4 rounded-lg font-semibold text-base hover:bg-gray-50 transition-colors">
+                                Order via WhatsApp
+                            </button>
+                            <button id="wishlist-btn" class="flex items-center justify-center gap-2 text-sm font-medium text-gray-600 hover:text-black py-2 mt-2 transition-colors">
+                                <i id="wishlist-icon"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></i> <span id="wishlist-label">Add to Wishlist</span>
+                            </button>
+                        </div>
+
+                        <!-- Info blocks -->
+                        <div class="flex flex-col gap-4 border-t border-borderGray pt-6 mt-4">
+                            <div class="flex items-start gap-4">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                                <div>
+                                    <h4 class="text-sm font-medium">Pan India Delivery</h4>
+                                    <p class="text-xs text-gray-500 mt-1">Order today, dispatched by <span id="delivery-date"></span></p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3"/></svg>
+                                <div>
+                                    <h4 class="text-sm font-medium">Happiness Guarantee</h4>
+                                    <p class="text-xs text-gray-500 mt-1">If you are not happy with your set, we will make it right. Reach us on WhatsApp or Instagram.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <section class="py-24 px-4 md:px-8 border-b border-borderGray">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="flex flex-col items-center md:items-start text-center md:text-left gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-50 border border-borderGray flex items-center justify-center text-gray-900 text-xl">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M2 22c1.25-3.5 3.5-6 7-7s7-3.5 7-7a7 7 0 0 0-7-7 7 7 0 0 0-7 7c0 3.5 2 5.5 5 7"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">Handcrafted Quality</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">Each set handcrafted with premium nail art materials.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center md:items-start text-center md:text-left gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-50 border border-borderGray flex items-center justify-center text-gray-900 text-xl">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">Long Lasting</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">Stays on for 2–3 weeks with nail glue tabs.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center md:items-start text-center md:text-left gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-50 border border-borderGray flex items-center justify-center text-gray-900 text-xl">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">Reusable Sets</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">Reusable up to 10+ times when removed carefully.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center md:items-start text-center md:text-left gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-50 border border-borderGray flex items-center justify-center text-gray-900 text-xl">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><circle cx="12" cy="15" r="6"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">All Sizes Available</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">Every set fits perfectly — XS to XL available.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="py-24 px-4 md:px-8 max-w-[1380px] mx-auto">
+            <div class="mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4">LOOK CLOSER</h2>
+                <p class="text-gray-600 max-w-xl">Every nail tells a story. Discover the handcrafted details that make each set unique.</p>
+            </div>
+            
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                <!-- Look Closer Cards populated by JS to keep HTML clean, or hardcoded for absolute structure -->
+                <div class="relative group overflow-hidden border border-borderGray bg-gray-50">
+                    <div class="aspect-[4/3] relative">
+                        <img src="Images/Festive/pink-gloss-gems.jpg" alt="Gems Detail" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 text-[10px] font-bold tracking-widest rounded uppercase shadow-sm">01</div>
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+                            <span class="text-white text-sm font-medium">Gems Detail</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden border border-borderGray bg-gray-50">
+                    <div class="aspect-[4/3] relative">
+                        <img src="Images/Floral/floral4.jpeg" alt="Floral Art" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 text-[10px] font-bold tracking-widest rounded uppercase shadow-sm">02</div>
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+                            <span class="text-white text-sm font-medium">Floral Art</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden border border-borderGray bg-gray-50">
+                    <div class="aspect-[4/3] relative">
+                        <img src="Images/chrome/Chrome1.jpeg" alt="Chrome Finish" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 text-[10px] font-bold tracking-widest rounded uppercase shadow-sm">03</div>
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+                            <span class="text-white text-sm font-medium">Chrome Finish</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden border border-borderGray bg-gray-50">
+                    <div class="aspect-[4/3] relative">
+                        <img src="Images/CatEye/Cateye.jpg" alt="Cat Eye Detail" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 text-[10px] font-bold tracking-widest rounded uppercase shadow-sm">04</div>
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+                            <span class="text-white text-sm font-medium">Cat Eye Detail</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden border border-borderGray bg-gray-50 col-span-2 lg:col-span-1">
+                    <div class="aspect-[4/3] relative">
+                        <img src="Images/Bridal/bridal1.jpg" alt="Bridal Set" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 text-[10px] font-bold tracking-widest rounded uppercase shadow-sm">05</div>
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+                            <span class="text-white text-sm font-medium">Bridal Set</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-black text-white py-24 md:py-32 w-full mt-12">
+            <div class="max-w-[1380px] mx-auto px-4 md:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+                    <div>
+                        <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4">HOW SHE WEARS IT</h2>
+                        <p class="text-gray-400 max-w-xl">From festive nights to everyday glam — real looks from our community.</p>
+                    </div>
+                    <button class="text-white border-b border-white pb-1 font-medium hover:text-gray-300 hover:border-gray-300 transition-colors">
+                        View on Instagram
+                    </button>
+                </div>
+
+                <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 scrollbar-hide" id="how-they-wear-it-gallery">
+                    <div class="shrink-0 w-[80vw] md:w-[40vw] lg:w-[25vw] snap-center group cursor-pointer">
+                        <div class="relative aspect-[4/3] overflow-hidden mb-4 rounded-sm bg-gray-900 border border-gray-800">
+                            <img src="Images/Festive/navrati%20vibe%20(1).JPG" alt="City Commute" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
+                        </div>
+                        <h3 class="font-semibold text-lg">City Festive</h3><p class="text-sm text-gray-400 mt-1">Navratri vibes on point.</p>
+                    </div>
+                    <div class="shrink-0 w-[80vw] md:w-[40vw] lg:w-[25vw] snap-center group cursor-pointer">
+                        <div class="relative aspect-[4/3] overflow-hidden mb-4 rounded-sm bg-gray-900 border border-gray-800">
+                            <img src="Images/french/French%20nails.jpg" alt="Weekend Casual" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
+                        </div>
+                        <h3 class="font-semibold text-lg">Everyday French</h3><p class="text-sm text-gray-400 mt-1">Clean, classic french tip.</p>
+                    </div>
+                    <div class="shrink-0 w-[80vw] md:w-[40vw] lg:w-[25vw] snap-center group cursor-pointer">
+                        <div class="relative aspect-[4/3] overflow-hidden mb-4 rounded-sm bg-gray-900 border border-gray-800">
+                            <img src="Images/Polka/Polka1.JPG" alt="Evening Out" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
+                        </div>
+                        <h3 class="font-semibold text-lg">Polka Fun</h3><p class="text-sm text-gray-400 mt-1">Bold dots for bold days.</p>
+                    </div>
+                    <div class="shrink-0 w-[80vw] md:w-[40vw] lg:w-[25vw] snap-center group cursor-pointer">
+                        <div class="relative aspect-[4/3] overflow-hidden mb-4 rounded-sm bg-gray-900 border border-gray-800">
+                            <img src="Images/Bridal/bridal1.jpg" alt="Creative Studio" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
+                        </div>
+                        <h3 class="font-semibold text-lg">Bridal Ready</h3><p class="text-sm text-gray-400 mt-1">Pearl & lace perfection.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="max-w-[1380px] mx-auto px-4 md:px-8">
+            
+            <section class="py-24 max-w-4xl mx-auto border-b border-borderGray">
+                <div class="text-center mb-16">
+                    <h2 class="text-2xl md:text-4xl font-bold mb-4 tracking-tight">The Nails Club Difference</h2>
+                    <p class="text-gray-600">Why go to a salon when you can have luxury nails at home?</p>
+                </div>
+
+                <div class="w-full overflow-hidden rounded-xl border border-borderGray">
+                    <!-- Header -->
+                    <div class="grid grid-cols-3 bg-gray-50 border-b border-borderGray text-sm md:text-base font-semibold">
+                        <div class="p-4 md:p-6 text-gray-500">Feature</div>
+                        <div class="p-4 md:p-6 text-black border-l border-borderGray">The Nails Club</div>
+                        <div class="p-4 md:p-6 text-gray-500 border-l border-borderGray">Salon Nails</div>
+                    </div>
+                    
+                    <!-- Rows -->
+                    <div class="grid grid-cols-3 text-sm md:text-base transition-colors hover:bg-gray-50 border-b border-borderGray">
+                        <div class="p-4 md:p-6 font-medium text-gray-700">Price</div>
+                        <div class="p-4 md:p-6 font-semibold text-black border-l border-borderGray flex items-center gap-2">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> <span id="compare-price">₹899</span> / Set
+                        </div>
+                        <div class="p-4 md:p-6 text-gray-500 border-l border-borderGray">₹2500+</div>
+                    </div>
+                    <div class="grid grid-cols-3 text-sm md:text-base transition-colors hover:bg-gray-50 border-b border-borderGray">
+                        <div class="p-4 md:p-6 font-medium text-gray-700">Quality</div>
+                        <div class="p-4 md:p-6 font-semibold text-black border-l border-borderGray flex items-center gap-2">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> Premium Acrylic
+                        </div>
+                        <div class="p-4 md:p-6 text-gray-500 border-l border-borderGray">Gel Polish</div>
+                    </div>
+                    <div class="grid grid-cols-3 text-sm md:text-base transition-colors hover:bg-gray-50 border-b border-borderGray">
+                        <div class="p-4 md:p-6 font-medium text-gray-700">Application</div>
+                        <div class="p-4 md:p-6 font-semibold text-black border-l border-borderGray flex items-center gap-2">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> Instant Wear
+                        </div>
+                        <div class="p-4 md:p-6 text-gray-500 border-l border-borderGray">2-3 Hours Salon</div>
+                    </div>
+                    <div class="grid grid-cols-3 text-sm md:text-base transition-colors hover:bg-gray-50 border-b border-borderGray">
+                        <div class="p-4 md:p-6 font-medium text-gray-700">Variety</div>
+                        <div class="p-4 md:p-6 font-semibold text-black border-l border-borderGray flex items-center gap-2">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> 10+ Styles
+                        </div>
+                        <div class="p-4 md:p-6 text-gray-500 border-l border-borderGray">Limited Options</div>
+                    </div>
+                    <div class="grid grid-cols-3 text-sm md:text-base transition-colors hover:bg-gray-50 border-b border-borderGray">
+                        <div class="p-4 md:p-6 font-medium text-gray-700">Reusability</div>
+                        <div class="p-4 md:p-6 font-semibold text-black border-l border-borderGray flex items-center gap-2">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> 2-3 Weeks
+                        </div>
+                        <div class="p-4 md:p-6 text-gray-500 border-l border-borderGray">3-7 Days</div>
+                    </div>
+                    <div class="grid grid-cols-3 text-sm md:text-base transition-colors hover:bg-gray-50">
+                        <div class="p-4 md:p-6 font-medium text-gray-700">Sizing</div>
+                        <div class="p-4 md:p-6 font-semibold text-black border-l border-borderGray flex items-center gap-2">
+                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><polyline points="20 6 9 17 4 12"/></svg> All Sizes Available
+                        </div>
+                        <div class="p-4 md:p-6 text-gray-500 border-l border-borderGray">Single Size</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="py-24 max-w-3xl mx-auto border-b border-borderGray">
+                <h2 class="text-2xl font-bold mb-8 tracking-tight">More About The Set</h2>
+                <div class="flex flex-col" id="accordion-container">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <section class="py-24 border-b border-borderGray">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Customer Reviews</h2>
+                        <div class="flex items-center gap-3">
+                            <div class="flex text-black">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <span class="font-medium text-lg">5.0</span>
+                            <span class="text-gray-500">Based on 50+ reviews</span>
+                        </div>
+                    </div>
+                    <button class="px-6 py-3 border border-borderGray rounded-lg font-medium hover:bg-black hover:text-white hover:border-black transition-colors">
+                        Write a Review
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Review — Rajvi Bharucha (Google) -->
+                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
+                        <div class="flex justify-between items-start">
+                            <div class="flex text-black">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <span class="text-sm text-gray-400">3 months ago</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold">Rajvi Bharucha</span>
+                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Google Review · 1 photo</span>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
+                            "I'm honestly so happy with how my nails turned out! The design is even prettier in person — the soft blue tones and little 3D details make them look really unique without being too much. The shape is perfect and they feel really well done."
+                        </p>
+                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
+                    </div>
+                    <!-- Review — Tisha Jariwala (Google) -->
+                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
+                        <div class="flex justify-between items-start">
+                            <div class="flex text-black">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <span class="text-sm text-gray-400">1 month ago</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold">Tisha Jariwala</span>
+                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Google Review</span>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
+                            "Great quality nails at a really good price — ₹500–1,000. Totally worth it!"
+                        </p>
+                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
+                    </div>
+                    <!-- Review — Harsh Jariwala (Google) -->
+                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
+                        <div class="flex justify-between items-start">
+                            <div class="flex text-black">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <span class="text-sm text-gray-400">3 months ago</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold">Harsh Jariwala</span>
+                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Google Review · 4 reviews · 1 photo</span>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
+                            "Availed the nail extensions service — really happy with the results. Professional work and beautiful finish. Highly recommend!"
+                        </p>
+                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
+                    </div>
+                    <!-- Review — Priya S. -->
+                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
+                        <div class="flex justify-between items-start">
+                            <div class="flex text-black">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <span class="text-sm text-gray-400">Jul 12, 2026</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold">Priya S.</span>
+                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Verified Buyer</span>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
+                            "Absolutely stunning! My bridal nails were exactly what I dreamed of. Everyone at the wedding was asking where I got them!"
+                        </p>
+                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
+                    </div>
+                    <!-- Review — Dhara M. -->
+                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
+                        <div class="flex justify-between items-start">
+                            <div class="flex text-black">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <span class="text-sm text-gray-400">Jun 28, 2026</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold">Dhara M.</span>
+                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Verified Buyer</span>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
+                            "The chrome nails I ordered for Navratri were absolutely gorgeous. So many compliments! Will definitely order again."
+                        </p>
+                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
+                    </div>
+                    <!-- Review — Neha R. -->
+                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
+                        <div class="flex justify-between items-start">
+                            <div class="flex text-black">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <span class="text-sm text-gray-400">Jun 15, 2026</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold">Neha R.</span>
+                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Verified Buyer</span>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
+                            "Super easy to apply, lasted my whole trip! The press-on nails look completely real. Amazing quality and packaging."
+                        </p>
+                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
+                    </div>
+                    <!-- Review 4 -->
+                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
+                        <div class="flex justify-between items-start">
+                            <div class="flex text-black">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <span class="text-sm text-gray-400">May 02, 2026</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold">Shruti K.</span>
+                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Verified Buyer</span>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
+                            "Ordered the floral set for my baby shower and it was perfect. The nails matched my outfit beautifully. Highly recommend!"
+                        </p>
+                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
+                    </div>
+                </div>
+
+                
+                <div class="flex justify-center mt-10">
+                    <button class="text-sm font-medium border-b border-black pb-1 hover:text-gray-500 transition-colors">
+                        Load More Reviews
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer style="background:#322C2C;color:#fff;padding:56px 40px 32px;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;align-items:flex-start;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.08);">
+      <!-- Brand -->
+      <div style="min-width:200px;flex:1;">
+        <a href="index.html" style="display:inline-flex;align-items:center;background:transparent;padding:5px 4px;border-radius:10px;margin-bottom:20px;">
+          <img src="logo.png" alt="The Nails Club" style="height:36px;width:auto;object-fit:contain;display:block;">
+        </a>
+        <p style="font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:rgba(255,255,255,0.45);max-width:240px;">Handcrafted luxury press-on nails — bridal, festive, chrome &amp; more. Every set made with love.</p>
+        <div style="display:flex;gap:14px;margin-top:20px;">
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#BC1423'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://wa.me/919913091744" target="_blank" rel="noopener" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#25D366'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          </a>
+          <a href="https://pin.it/7ibXsm1GV" target="_blank" rel="noopener" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#E60023'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+          </a>
+        </div>
+      </div>
+      <!-- Navigate -->
+      <div style="min-width:140px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">Navigate</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+          <li><a href="index.html" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Home</a></li>
+          <li><a href="index.html#collection" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Collection</a></li>
+          <li><a href="index.html#reels" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Reels</a></li>
+          <li><a href="index.html#about" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">About</a></li>
+        </ul>
+      </div>
+      <!-- Contact -->
+      <div style="min-width:160px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">Contact</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">@theenaiilsclub</a>
+          <a href="https://wa.me/919913091744" target="_blank" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#25D366'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">+91 99130 91744</a>
+          <a href="https://wa.me/919016242187" target="_blank" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#25D366'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">+91 90162 42187</a>
+          <a href="https://pin.it/7ibXsm1GV" target="_blank" rel="noopener" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#E60023'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">📍 Pinterest</a>
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;margin-top:6px;background:#BC1423;color:#fff;border-radius:99px;padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            Order via DM
+          </a>
+        </div>
+      </div>
+      <!-- QR -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);">Scan to visit</p>
+        <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" style="display:block;padding:10px;background:#fff;border-radius:16px;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='scale(1.04)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.3)'" onmouseleave="this.style.transform='scale(1)';this.style.boxShadow='none'">
+          <img src="theenaiilsclub_qr.png" alt="Scan QR to visit @theenaiilsclub on Instagram" style="width:120px;height:120px;display:block;object-fit:contain;">
+        </a>
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(255,255,255,0.3);text-align:center;">Opens Instagram</p>
+      </div>
+    </div>
+    <!-- Bottom row -->
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding-top:24px;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.25);">&copy; 2025 The Nails Club. All rights reserved.</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,0.2);">Crafted with love &amp; precision</p>
+    </div>
+  </div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (window.DESIGNS_READY) { try { await window.DESIGNS_READY; } catch(e) {} }
+            // ── Read design index from URL param ──
+            const params = new URLSearchParams(window.location.search);
+            const designIdx = parseInt(params.get('design'), 10);
+            const design = (DESIGNS && !isNaN(designIdx) && DESIGNS[designIdx]) ? DESIGNS[designIdx] : null;
+
+            // ── Update page title & header info ──
+            if (design) {
+                document.title = `${design.title} | The Nails Club`;
+                const h1 = document.querySelector('h1');
+                if (h1) h1.textContent = design.title;
+                const descEl = document.querySelector('.text-gray-600.leading-relaxed.mt-2');
+                if (descEl) descEl.textContent = design.desc;
+                const catLabel = catLabels ? (catLabels[design.cat] || design.cat) : design.cat;
+                $setText('selected-color-label', design.design || catLabel);
+                const priceVal = design.price || 999;
+                $setText('main-price', `₹${priceVal}`);
+                $setText('cart-price', `• ₹${priceVal}`);
+                $setText('compare-price', `₹${priceVal}`);
+                // Update size selector
+                const sizeSelect = document.querySelector('select');
+                if (sizeSelect && design.size) {
+                    const sizes = design.size.split('·').map(s => s.trim());
+                    sizeSelect.innerHTML = '<option value="" disabled selected>Select your size</option>';
+                    sizes.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s; opt.textContent = s;
+                        sizeSelect.appendChild(opt);
+                    });
+                }
+            }
+
+            // ── Setup Dates ──
+            $setText('copyright-year', `© ${new Date().getFullYear()} The Nails Club. All rights reserved.`);
+            const delivery = new Date();
+            delivery.setDate(delivery.getDate() + 3);
+            $setText('delivery-date', delivery.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+
+            // ── Images ──
+            const productImages = design ? design.photos : [
+                "Images/rose-gloss.jpg","Images/rose-gloss1.JPG","Images/rose-gloss 2.JPG",
+                "Images/rose-gloss 3.JPG","Images/rose-gloss 4.JPG","Images/rose-gloss5.JPG","Images/ross-gloss6.JPG"
+            ];
+
+            // ── NAI Code (Nail Art Identifier) ──
+            // Format: NAI:TNC + zero-padded category code + index
+            (function() {
+                const catCodes = {
+                    gloss:'GL', chrome:'CR', french:'FR', bridal:'BR', floral:'FL',
+                    polka:'PK', cateye:'CE', festive:'FE', babyshower:'BS', pressOn:'PO', manicure:'MN'
+                };
+                const catCode = design ? (catCodes[design.cat] || 'XX') : 'XX';
+                const num = String(isNaN(designIdx) ? 1 : designIdx + 1).padStart(4, '0');
+                const naiCode = 'NAI:TNC' + catCode + num;
+                const naiEl = document.getElementById('nai-code');
+                if (naiEl) naiEl.textContent = naiCode;
+                // Also inject NAI into WhatsApp order message for reference
+                window._naiCode = naiCode;
+            })();
+
+            const thumbGallery = $id('thumb-gallery');
+            const mainImage = $id('main-image');
+
+            function setMainImage(src) {
+                if (mainImage) {
+                    safeSetImg(mainImage, src);
+                    // Update active border on mosaic big image
+                    const placeholder = $id('main-image-placeholder');
+                    if (placeholder) placeholder.style.display = 'none';
+                }
+                // Update active thumb border
+                if (thumbGallery) {
+                    Array.from(thumbGallery.children).forEach(c => {
+                        const img = c.querySelector('img');
+                        const matchSrc = img ? decodeURIComponent(img.src.split('/').pop()) : '';
+                        const thisSrc = decodeURIComponent(src.split('/').pop());
+                        c.classList.toggle('border-gray-900', matchSrc === thisSrc);
+                        c.classList.toggle('border-transparent', matchSrc !== thisSrc);
+                    });
+                }
+            }
+
+            // ── Populate mosaic grid ──
+            (function buildMosaic() {
+                if (!productImages.length) return;
+
+                // Main large image
+                setMainImage(productImages[0]);
+                if (mainImage) mainImage.alt = design ? design.title : 'Press-On Nails';
+
+                // Grid slot 1 (top-right)
+                const g1 = $id('grid-img-1');
+                if (g1 && productImages[1]) {
+                    const img = g1.querySelector('img');
+                    if (img) { img.src = encodeImgPath(productImages[1]); img.alt = 'View 2'; }
+                    g1.addEventListener('click', () => setMainImage(productImages[1]));
+                } else if (g1) { g1.style.display = 'none'; }
+
+                // Grid slot 2 (bottom-right) — show "View all X" overlay if 3+ images
+                const g2 = $id('grid-img-2');
+                const badge = $id('view-all-badge');
+                const count = $id('view-all-count');
+                if (g2 && productImages[2]) {
+                    const img = g2.querySelector('img');
+                    if (img) { img.src = encodeImgPath(productImages[2]); img.alt = 'View 3'; }
+                    if (productImages.length > 3 && badge && count) {
+                        badge.style.display = 'flex';
+                        count.textContent = '+' + (productImages.length - 2) + ' photos';
+                    }
+                    g2.addEventListener('click', () => {
+                        // Scroll to thumbnail strip and focus first thumb
+                        const ts = $id('thumb-gallery');
+                        if (ts) ts.scrollIntoView({ behavior:'smooth', block:'nearest' });
+                    });
+                } else if (g2) { g2.style.display = 'none'; }
+            })();
+
+            // ── Thumbnail strip ──
+            if (thumbGallery && productImages.length > 0) {
+                productImages.forEach((img, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'shrink-0 w-16 h-16 md:w-20 md:h-20 snap-start overflow-hidden border-2 transition-all rounded ' +
+                        (idx === 0 ? 'border-gray-900' : 'border-transparent hover:border-gray-300');
+                    const encodedImg = encodeImgPath(img);
+                    btn.innerHTML = '<img src="' + encodedImg + '" alt="View ' + (idx+1) + '" class="w-full h-full object-cover pointer-events-none" onerror="this.parentElement.style.display=\'none\'">';
+                    btn.addEventListener('click', () => setMainImage(img));
+                    thumbGallery.appendChild(btn);
+                });
+            }
+
+
+            $on('thumb-prev', 'click', () => thumbGallery && thumbGallery.scrollBy({ left: -150, behavior: 'smooth' }));
+            $on('thumb-next', 'click', () => thumbGallery && thumbGallery.scrollBy({ left: 150, behavior: 'smooth' }));
+
+            // ── Hover Zoom ──
+            const mainImgContainer = $id('main-image-container');
+            if (mainImgContainer && mainImage) {
+                mainImgContainer.addEventListener('mousemove', (e) => {
+                    const { left, top, width, height } = mainImgContainer.getBoundingClientRect();
+                    mainImage.style.transformOrigin = `${((e.clientX - left) / width) * 100}% ${((e.clientY - top) / height) * 100}%`;
+                });
+                mainImgContainer.addEventListener('mouseenter', () => mainImage.classList.add('scale-150'));
+                mainImgContainer.addEventListener('mouseleave', () => mainImage.classList.remove('scale-150'));
+            }
+
+            // ── Pricing ──
+            const basePrice = design ? (design.price || 899) : 899;
+            let qty = 1;
+
+            function updatePriceDisplay() {
+                const total = basePrice * qty;
+                const fmt = '₹' + total.toLocaleString('en-IN');
+                $setText('main-price', fmt);
+                $setText('cart-price', '• ' + fmt);
+                $setText('compare-price', '₹' + basePrice.toLocaleString('en-IN'));
+            }
+            updatePriceDisplay();
+
+            // ── Order buttons ──
+            // Both buttons open the same confirm-your-order modal (with the
+            // product photo) so the shopper can pick WhatsApp or Instagram
+            // from there — neither platform's link can attach a photo on
+            // its own, so the modal keeps it in view either way.
+            function openOrderFor(waNumber) {
+                const sz = document.querySelector('select') ? document.querySelector('select').value : '___';
+                openOrderModal({
+                    title: design ? design.title : 'Nail Set',
+                    cat: design ? (catLabels[design.cat] || design.cat) : '',
+                    design: design ? design.design : '',
+                    size: sz,
+                    qty,
+                    price: basePrice,
+                    img: productImages[0],
+                    waNumber: waNumber || '919913091744',
+                    igLink: 'https://ig.me/m/theenaiilsclub'
+                });
+            }
+            $on('ig-order-btn', 'click', () => openOrderFor());
+            $on('wa-order-btn', 'click', () => openOrderFor());
+
+            // ── Wishlist ──
+            const WISHLIST_KEY = 'tnc_wishlist';
+
+            function getWishlist() {
+                try { return JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]'); } catch(e) { return []; }
+            }
+
+            function saveWishlist(list) {
+                try { localStorage.setItem(WISHLIST_KEY, JSON.stringify(list)); } catch(e) {}
+            }
+
+            function showToast(msg, isAdd) {
+                const toast = $id('wishlist-toast');
+                const toastMsg = $id('toast-msg');
+                const toastIcon = $id('toast-icon');
+                if (!toast) return;
+                if (toastMsg) toastMsg.textContent = msg;
+                if (toastIcon) toastIcon.className = isAdd ? 'ph ph-heart-fill' : 'ph ph-heart';
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(-50%) translateY(0)';
+                clearTimeout(toast._hideTimer);
+                toast._hideTimer = setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-50%) translateY(20px)';
+                }, 2200);
+            }
+
+            function updateWishlistBtn(isInWishlist) {
+                const btn = $id('wishlist-btn');
+                const icon = $id('wishlist-icon');
+                const label = $id('wishlist-label');
+                if (!btn) return;
+                if (isInWishlist) {
+                    if (icon) icon.className = 'ph ph-heart-fill';
+                    if (label) label.textContent = 'Saved to Wishlist';
+                    btn.style.color = '#e11d48';
+                } else {
+                    if (icon) icon.className = 'ph ph-heart';
+                    if (label) label.textContent = 'Add to Wishlist';
+                    btn.style.color = '';
+                }
+            }
+
+            // Set initial state on page load
+            if (design) {
+                const wl = getWishlist();
+                updateWishlistBtn(wl.some(item => item.idx === designIdx));
+            }
+
+            // ── Header wishlist badge ──
+            (function() {
+                try {
+                    const wl = getWishlist();
+                    const badge = document.getElementById('header-wl-count');
+                    const icon  = document.getElementById('header-wl-icon');
+                    if (badge && wl.length > 0) {
+                        badge.textContent = wl.length;
+                        badge.style.display = 'flex';
+                        if (icon) { icon.setAttribute('fill','#BC1423'); icon.setAttribute('stroke','#BC1423'); }
+                    }
+                } catch(e) {}
+            })();
+
+            $on('wishlist-btn', 'click', () => {
+                if (!design) return;
+                let wl = getWishlist();
+                const existing = wl.findIndex(item => item.idx === designIdx);
+                if (existing >= 0) {
+                    // Already in wishlist — remove it
+                    wl.splice(existing, 1);
+                    saveWishlist(wl);
+                    updateWishlistBtn(false);
+                    showToast('Removed from Wishlist', false);
+                } else {
+                    // Add to wishlist
+                    wl.push({
+                        idx: designIdx,
+                        title: design.title,
+                        price: design.price,
+                        cat: design.cat,
+                        img: design.photos[0] || ''
+                    });
+                    saveWishlist(wl);
+                    updateWishlistBtn(true);
+                    showToast('Added to Wishlist ♥', true);
+                }
+            });
+
+            // ── Quantity ──
+            const qtyVal = $id('qty-val');
+            $on('qty-minus', 'click', () => { if (qty > 1) { qty--; if(qtyVal) qtyVal.textContent = qty; updatePriceDisplay(); } });
+            $on('qty-plus',  'click', () => { qty++; if(qtyVal) qtyVal.textContent = qty; updatePriceDisplay(); });
+
+            // ── Nail shape buttons ──
+            document.querySelectorAll('.fit-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+
+                    fitBtns.forEach(b => {
+                        b.className = 'fit-btn px-6 py-2.5 rounded-full border text-sm font-medium transition-colors border-borderGray bg-white text-gray-700 hover:border-gray-400';
+                    });
+                    btn.className = 'fit-btn px-6 py-2.5 rounded-full border text-sm font-medium transition-colors border-gray-900 bg-gray-900 text-white';
+                });
+            });
+
+            // Fit Logic
+
+            // Accordion Data & Logic
+            const accordionData = [
+                { title: "How to Apply", content: "Clean your natural nails and push back cuticles. Select the best size for each finger. Apply nail glue or adhesive tabs. Press firmly for 10-15 seconds. Wear for 2-3 weeks!" },
+                { title: "How to Remove", content: "Soak nails in warm water for 10-15 minutes. Gently wiggle the press-on from the sides. Never force or rip off. Store removed nails in the original tray for reuse." },
+                { title: "How to Order", content: "DM us on Instagram @theenaiilsclub or WhatsApp us at +91 99130 91744. Share your size (XS/S/M/L/XL) and preferred design. We will confirm and ship within 2-3 business days." },
+                { title: "What's Included", content: "1 full set of 5-10 press-on nails (multiple sizes). Nail glue packet. Adhesive tabs. Nail file. Care instruction card." },
+                { title: "Sizing Guide", content: "Measure the widest part of your nail bed. XS: under 12mm · S: 12-14mm · M: 14-16mm · L: 16-18mm · XL: 18mm+. We recommend ordering a size kit if unsure." },
+                { title: "Care & Storage", content: "Store in a cool dry place. Keep away from water when using adhesive tabs. Remove gently to reuse. Each set can be worn 8-10+ times when cared for properly." }
+            ];
+
+            const accContainer = document.getElementById('accordion-container');
+            accordionData.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'border-b border-borderGray';
+                
+                const btn = document.createElement('button');
+                btn.className = 'w-full py-6 flex justify-between items-center text-left hover:text-gray-600 transition-colors accordion-btn';
+                btn.innerHTML = `
+                    <span class="font-medium text-lg">${item.title}</span>
+                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                `;
+
+                const content = document.createElement('div');
+                content.className = 'accordion-content text-gray-600 leading-relaxed text-sm md:text-base';
+                content.innerHTML = `<div class="pb-6">${item.content}</div>`;
+
+                btn.addEventListener('click', function() {
+                    const icon = this.querySelector('.accordion-icon');
+                    const isOpen = content.style.maxHeight;
+
+                    // Close all others
+                    document.querySelectorAll('.accordion-content').forEach(c => {
+                        c.style.maxHeight = null;
+                        c.classList.remove('active');
+                    });
+                    document.querySelectorAll('.accordion-icon').forEach(i => {
+                        i.style.transform = 'rotate(0deg)';
+                    });
+
+                    // Open current if it was closed
+                    if (!isOpen) {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        content.classList.add('active');
+                        icon.style.transform = 'rotate(45deg)';
+                    }
+                });
+
+                div.appendChild(btn);
+                div.appendChild(content);
+                accContainer.appendChild(div);
+                
+                // Open first by default
+                if(idx === 0) btn.click();
+            });
+
+            // Carousels Logic — pick designs from other categories dynamically
+            const otherDesigns = DESIGNS ? DESIGNS.filter((d, i) => i !== designIdx).slice(0, 8) : [];
+            const similarProducts = otherDesigns.length > 0 ? otherDesigns.map(d => ({
+                name: d.title,
+                price: `₹${d.price || 999}`,
+                color: d.design || (catLabels ? catLabels[d.cat] : d.cat),
+                img1: encodeImgPath(d.photos[0]),
+                img2: encodeImgPath(d.photos[1] || d.photos[0]),
+                idx: DESIGNS.indexOf(d)
+            })) : [
+                { name: "Chrome Luxe", price: "₹1199", color: "Mirror · Aurora", img1: "Images/chrome/Chrome1.jpeg", img2: "Images/chrome/mirror-chrome.jpg", idx:1 },
+                { name: "Floral Romance", price: "₹1149", color: "Hand-Painted", img1: "Images/Floral/floral4.jpeg", img2: "Images/Floral/floral-bloom.jpg", idx:28 },
+                { name: "Navratri Festive", price: "₹1249", color: "Festive · Vibrant", img1: "Images/Festive/Mahashivrati.jpeg", img2: "Images/Festive/navrati%20vibe%20(1).JPG", idx:40 },
+                { name: "Cat Eye Magnetic", price: "₹1099", color: "Magnetic · Velvet", img1: "Images/CatEye/Cateye.jpg", img2: "Images/CatEye/Cateye1.jpg", idx:36 }
+            ];
+
+            const populateCarousel = (containerId, data) => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = "shrink-0 w-[75vw] md:w-[35vw] lg:w-[22vw] snap-start group cursor-pointer flex flex-col gap-3 relative";
+                    div.style.cursor = 'pointer';
+                    div.onclick = () => { if (item.idx !== undefined) window.location.href = 'premium_product_page.html?design=' + item.idx; };
+                    div.innerHTML = `
+                        <div class="relative aspect-[4/3] bg-gray-100 overflow-hidden rounded-sm image-swap-wrapper">
+                            <img src="${item.img1}" alt="${item.name}" class="absolute inset-0 w-full h-full object-cover" />
+                            <img src="${item.img2}" alt="${item.name} alt" class="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-500" />
+                            <button class="absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 z-10 shadow-sm border border-borderGray">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            </button>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-sm group-hover:underline underline-offset-4">${item.name}</h3>
+                            <p class="text-gray-500 text-sm mt-1">${item.color}</p>
+                            <p class="font-medium mt-2">${item.price}</p>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            };
+
+            populateCarousel('similar-slider', similarProducts);
+            populateCarousel('recommended-slider', similarProducts); // Reusing data for demo
+
+            // Carousel scroll buttons
+            document.querySelectorAll('.slider-btn-prev').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const targetId = e.currentTarget.getAttribute('data-target');
+                    document.getElementById(targetId).scrollBy({ left: -300, behavior: 'smooth' });
+                });
+            });
+            document.querySelectorAll('.slider-btn-next').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const targetId = e.currentTarget.getAttribute('data-target');
+                    document.getElementById(targetId).scrollBy({ left: 300, behavior: 'smooth' });
+                });
+            });
+        });
+    </script>
+
+<!-- ── SUPPORT MEDIA LIGHTBOX ── -->
+<div id="support-lightbox" onclick="closeSupportMedia(event)" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:20px;">
+    <button onclick="closeSupportLightbox()" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.15);border:none;border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.2s;" onmouseenter="this.style.background='rgba(255,255,255,0.3)'" onmouseleave="this.style.background='rgba(255,255,255,0.15)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <p id="support-lightbox-title" style="font-family:'Inter',sans-serif;font-size:15px;font-weight:600;color:#fff;letter-spacing:0.04em;text-align:center;max-width:500px;"></p>
+    <div id="support-lightbox-content" style="max-width:min(90vw,500px);max-height:80vh;display:flex;align-items:center;justify-content:center;border-radius:16px;overflow:hidden;background:#111;"></div>
+</div>
+
+<script>
+function openSupportMedia(type, src, title) {
+    const lb = document.getElementById('support-lightbox');
+    const content = document.getElementById('support-lightbox-content');
+    const titleEl = document.getElementById('support-lightbox-title');
+    titleEl.innerHTML = title;
+    content.innerHTML = '';
+    if (type === 'video') {
+        const v = document.createElement('video');
+        v.src = src;
+        v.controls = true;
+        v.autoplay = true;
+        v.loop = true;
+        v.setAttribute('playsinline', '');
+        v.style.cssText = 'max-width:100%;max-height:75vh;border-radius:12px;display:block;';
+        content.appendChild(v);
+    } else {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = title;
+        img.style.cssText = 'max-width:100%;max-height:75vh;border-radius:12px;display:block;object-fit:contain;';
+        content.appendChild(img);
+    }
+    lb.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSupportLightbox() {
+    const lb = document.getElementById('support-lightbox');
+    lb.style.display = 'none';
+    document.body.style.overflow = '';
+    const content = document.getElementById('support-lightbox-content');
+    content.querySelectorAll('video').forEach(v => { v.pause(); v.src = ''; });
+    content.innerHTML = '';
+}
+
+function closeSupportMedia(e) {
+    if (e.target === document.getElementById('support-lightbox')) closeSupportLightbox();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSupportLightbox(); });
+</script>
+
+<script>
+// ── GOOGLE SHEET URL — paste your Apps Script Web App URL here ──
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxs4Oiak8MMNgfkqnmZUhdhd0770EF9BxIQ3onQfjigzUJf0fiCNvCH0VTrjgYKz0Xg/exec';
+
+function submitFooterEmail() {
+    const input = document.getElementById('footer-email');
+    const email = input ? input.value.trim() : '';
+    if (!email || !email.includes('@')) {
+        if (input) { input.style.borderColor = 'red'; input.focus(); }
+        return;
+    }
+    // Show success immediately
+    document.getElementById('footer-newsletter-form').style.display = 'none';
+    document.getElementById('footer-newsletter-success').style.display = 'block';
+    localStorage.setItem('tnc_subscribed', '1');
+
+    // Send to Google Sheet
+    fetch(SHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            email: email,
+            page: 'product-page',
+            title: document.title,
+            time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+            userAgent: navigator.userAgent
+        })
+    }).catch(() => {});
+}
+</script>
+
+<!-- ── WISHLIST TOAST ── -->
+<div id="wishlist-toast" style="
+    position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:#111; color:#fff; padding:12px 22px; border-radius:99px;
+    font-size:13px; font-weight:500; display:flex; align-items:center; gap:8px;
+    opacity:0; pointer-events:none; transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:9999; white-space:nowrap; box-shadow:0 4px 20px rgba(0,0,0,0.25);">
+  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+  <span id="toast-msg">Added to Wishlist</span>
+</div>
+
+</body>
+</html>
