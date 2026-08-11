@@ -1,0 +1,922 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Nails Club | Luxury Press-On Nails</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#BC1423', gold: '#C6A35B', beige: '#F5F0ED', dark: '#322C2C', ivory: '#FAF8F5'
+      },
+      fontFamily: {
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        sans: ['"DM Sans"', 'system-ui', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: #fff; color: #322C2C; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Hamburger */
+.ham-line { display: block; width: 22px; height: 1.5px; background: #322C2C; transition: all 0.35s cubic-bezier(0.4,0,0.2,1); transform-origin: center; }
+#menu-btn.is-open .ham-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+#menu-btn.is-open .ham-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+#menu-btn.is-open .ham-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* Nav Overlay */
+#nav-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: #322C2C;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.45s cubic-bezier(0.4,0,0.2,1);
+}
+#nav-overlay.is-open { opacity: 1; pointer-events: all; }
+#nav-overlay .nav-link {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  color: #F5F0ED; line-height: 1.15; letter-spacing: -0.01em;
+  transition: color 0.25s ease; text-decoration: none; display: block;
+}
+#nav-overlay .nav-link:hover { color: #C6A35B; }
+/* hro section */
+.hero-section {
+        background-image: url('background image.jpg'); /* Path to your image */
+        background-size: cover;                 /* Make image cover the section */
+        background-position: center;            /* Center the image */
+        background-repeat: no-repeat;           /* Prevent tiling */
+        height: 400px;                           /* Set section height */
+        display: flex;                           /* For centering content */
+        align-items: center;
+        justify-content: center;
+        color: white;                            /* Text color */
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.7); /* Make text readable */
+        
+    }
+
+/* Filter buttons */
+.filter-btn {
+  padding: 8px 20px; border-radius: 9999px;
+  border: 1px solid rgba(50,44,44,0.2);
+  color: rgba(50,44,44,0.55); font-family: 'DM Sans', sans-serif;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer; white-space: nowrap;
+  transition: all 0.2s ease; background: transparent;
+}
+.filter-btn:hover { border-color: rgba(50,44,44,0.5); color: #322C2C; }
+.filter-btn.active { background: #BC1423; color: #fff; border-color: #BC1423; }
+
+/* ── Design Showcase Card ── */
+.design-card {
+  border-radius: 20px; overflow: hidden; background: #FAF8F5;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.design-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.13); }
+
+/* Slideshow inside card */
+.slide-wrap { position: relative; aspect-ratio: 4/5; overflow: hidden; background: #e8e0db; }
+.slide-wrap img, .slide-wrap video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transition: opacity 0.5s ease;
+}
+.slide-wrap img.active, .slide-wrap video.active { opacity: 1; }
+
+/* Slide dots */
+.slide-dots { display: flex; gap: 5px; justify-content: center; padding: 8px 0 4px; }
+.slide-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(50,44,44,0.2); border: none; cursor: pointer;
+  transition: background 0.2s ease; padding: 0;
+}
+.slide-dot.active { background: #BC1423; width: 14px; border-radius: 99px; }
+
+
+
+/* Video play badge */
+.video-badge {
+  position: absolute; top: 10px; right: 10px; z-index: 5;
+  background: rgba(50,44,44,0.6); color: #fff; border-radius: 99px;
+  font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 3px 8px; font-family: 'DM Sans', sans-serif;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* Reel card */
+.reel-card {
+  flex-shrink: 0; border-radius: 24px; overflow: hidden;
+  position: relative; background: #322C2C;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); cursor: pointer;
+}
+.reel-card:hover { transform: translateY(-8px); }
+.reel-card video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.reel-card .reel-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.3s ease;
+  background: rgba(50,44,44,0.12);
+}
+.reel-card:hover .reel-overlay { opacity: 1; }
+.reel-card .reel-meta {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 40px 20px 20px;
+  background: linear-gradient(to top, rgba(50,44,44,0.85) 0%, transparent 100%);
+}
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: #322C2C; color: #fff;
+  padding: 12px 26px; border-radius: 999px;
+  font-size: 13px; opacity: 0; transition: all 0.3s ease;
+  z-index: 9999; pointer-events: none; white-space: nowrap;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Detail panel hidden state */
+#detail-panel.hidden { display: none !important; }
+@keyframes bounce-y { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+.bounce-arrow { animation: bounce-y 1.8s ease-in-out infinite; }
+.gs-up { opacity: 0; transform: translateY(40px); }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- FIXED HEADER -->
+<header id="site-header" class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 md:px-10 py-3.5 bg-white/92 backdrop-blur-md border-b border-black/5 transition-shadow duration-300">
+  <a href="#hero" class="flex items-center shrink-0 rounded-xl overflow-hidden" style="background:#000;padding:5px 11px;">
+    <img src="logo.png" alt="The Nails Club" class="h-8 md:h-9 w-auto object-contain block">
+  </a>
+  <nav class="hidden md:flex items-center gap-10">
+    <a href="#collection" class="font-sans text-[10px] tracking-[0.18em] uppercase text-dark/55 hover:text-dark transition-colors duration-200">Collection</a>
+    <a href="#reels" class="font-sans text-[10px] tracking-[0.18em] uppercase text-dark/55 hover:text-dark transition-colors duration-200">Reels</a>
+    <a href="#about" class="font-sans text-[10px] tracking-[0.18em] uppercase text-dark/55 hover:text-dark transition-colors duration-200">About</a>
+  </nav>
+  <button id="menu-btn" class="flex flex-col gap-[5px] p-2 cursor-pointer" aria-label="Open menu" onclick="toggleMenu()">
+    <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+  </button>
+</header>
+
+<!-- NAV OVERLAY -->
+<div id="nav-overlay" aria-modal="true" role="dialog">
+  <button class="absolute top-7 right-7 p-2 text-white/60 hover:text-white transition-colors" onclick="closeMenu()" aria-label="Close menu">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <ul class="text-center space-y-5 mb-14 list-none">
+    <li><a href="#hero"       class="nav-link" onclick="closeMenu()">Home</a></li>
+    <li><a href="#collection" class="nav-link" onclick="closeMenu()">Collection</a></li>
+    <li><a href="#reels"      class="nav-link" onclick="closeMenu()">Reels</a></li>
+    <li><a href="#about"      class="nav-link" onclick="closeMenu()">About</a></li>
+  </ul>
+  <div class="flex gap-8 text-[10px] tracking-[0.2em] uppercase text-white/35">
+    <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" class="hover:text-white/80 transition-colors">Instagram</a>
+    <span>&middot;</span>
+    <a href="https://wa.me/919913091744" target="_blank" class="hover:text-white/80 transition-colors">WhatsApp 1</a>
+    <span>&middot;</span>
+    <a href="https://wa.me/919016242187" target="_blank" class="hover:text-white/80 transition-colors">WhatsApp 2</a>
+  </div>
+</div>
+
+<div id="toast">Inquiry sent &mdash; we'll DM you shortly! &#128…</div>
+
+<!-- SECTION 1 — HERO -->
+<section id="hero" class="relative flex flex-col items-center justify-center min-h-screen pt-16 overflow-hidden" style="background:#fff;">
+  <div class="absolute inset-0 pointer-events-none" style="background:url('Images/reels_bg.jpg') center center / cover no-repeat; opacity:0.30;"></div>
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 90% 80% at 50% 40%,rgba(245,240,237,0.72) 0%,rgba(255,255,255,0.88) 65%,rgba(255,255,255,1) 100%)"></div>
+  <div class="relative z-10 text-center flex flex-col items-center px-6">
+    <p class="gs-up font-sans text-[9px] md:text-[10px] tracking-[0.42em] uppercase text-dark/40 mb-8">Handcrafted Press-On Nails</p>
+    <h1 class="gs-up font-serif text-[clamp(3rem,12vw,9rem)] tracking-tighter text-dark leading-[0.92] mb-6" style="font-weight:400;">The Nails Club</h1>
+    <p class="gs-up font-sans text-[10px] md:text-xs tracking-[0.32em] uppercase text-dark/50 mb-12">Luxury Press-On Nails</p>
+    <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+       class="gs-up inline-flex items-center gap-3 px-8 py-4 border border-dark/22 rounded-full font-sans text-[10px] uppercase tracking-[0.18em] text-dark hover:bg-dark hover:text-white hover:border-dark transition-all duration-300">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      Order via Instagram DM
+    </a>
+  </div>
+  <div class="absolute bottom-10 flex flex-col items-center z-10 gap-2.5 cursor-pointer" onclick="document.getElementById('collection').scrollIntoView({behavior:'smooth'})">
+    <span class="font-sans text-[9px] tracking-[0.28em] uppercase text-dark/30">Explore</span>
+    <svg class="bounce-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+  </div>
+</section>
+
+<!-- SECTION 2 — COLLECTION (Design Showcase) -->
+<section id="collection" class="bg-white pt-24 pb-16 px-5 md:px-10">
+  <div class="max-w-screen-2xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-7 gap-4">
+      <div class="gs-up">
+        <h2 class="font-serif text-[clamp(2.2rem,5vw,4rem)] text-dark mb-1" style="font-weight:400;">Our Collection</h2>
+        <p class="font-sans text-[10px] tracking-[0.22em] uppercase text-dark/40">Each design — photos &amp; video showcase</p>
+      </div>
+    </div>
+
+    <!-- Browse by Category Cards -->
+    <div class="mb-10">
+      <p class="font-sans text-[9px] tracking-[0.28em] uppercase text-dark/35 mb-5">Browse by Category</p>
+      <div id="cat-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="flex gap-2 overflow-x-auto pb-3 mb-8 no-scrollbar">
+      <button class="filter-btn active" data-filter="all"       onclick="setFilter(this,'all')">All</button>
+      <button class="filter-btn" data-filter="chrome"           onclick="setFilter(this,'chrome')">Chrome</button>
+      <button class="filter-btn" data-filter="french"           onclick="setFilter(this,'french')">French</button>
+      <button class="filter-btn" data-filter="gloss"            onclick="setFilter(this,'gloss')">Gloss</button>
+      <button class="filter-btn" data-filter="bridal"           onclick="setFilter(this,'bridal')">Bridal</button>
+      <button class="filter-btn" data-filter="floral"           onclick="setFilter(this,'floral')">Floral</button>
+      <button class="filter-btn" data-filter="polka"            onclick="setFilter(this,'polka')">Polka</button>
+      <button class="filter-btn" data-filter="cateye"           onclick="setFilter(this,'cateye')">Cat Eye</button>
+      <button class="filter-btn" data-filter="festive"          onclick="setFilter(this,'festive')">Festive</button>
+      <button class="filter-btn" data-filter="babyshower"       onclick="setFilter(this,'babyshower')">Baby Shower</button>
+      <button class="filter-btn" data-filter="pressOn"          onclick="setFilter(this,'pressOn')">Press-On</button>
+      <button class="filter-btn" data-filter="manicure"         onclick="setFilter(this,'manicure')">Manicure</button>
+    </div>
+
+    <!-- Design Grid -->
+    <div id="design-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
+    <p id="no-results" class="hidden text-center font-serif italic text-xl text-dark/35 mt-16 py-8">No designs found.</p>
+
+    <!-- Load More -->
+    <div id="load-more-wrap" class="flex justify-center mt-10">
+      <button id="load-more-btn" onclick="loadMore()"
+        class="inline-flex items-center gap-3 px-10 py-4 border border-dark/20 rounded-full font-sans text-[10px] uppercase tracking-[0.18em] text-dark hover:bg-dark hover:text-white transition-all duration-300">
+        Load More
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 — REELS -->
+<section id="reels" class="pt-24 pb-16 px-5 md:px-10 overflow-hidden relative" style="background:linear-gradient(rgba(250,248,245,0.82),rgba(245,240,237,0.88)),url('Images/reels_bg.jpg') center center/cover no-repeat;background-color:#F5F0ED;">
+  <div class="max-w-screen-2xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+      <div class="gs-up">
+        <h2 class="font-serif text-[clamp(2.2rem,5vw,4rem)] text-dark mb-1" style="font-weight:400;">In Motion</h2>
+        <p class="font-sans text-[10px] tracking-[0.22em] uppercase text-dark/40">Behind the scenes &amp; featured sets</p>
+      </div>
+      <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+         class="gs-up inline-flex items-center gap-2 font-sans text-[10px] uppercase tracking-[0.2em] text-dark/50 hover:text-dark transition-colors border-b border-dark/15 pb-0.5">
+        View on Instagram
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <div id="reels-strip" class="flex gap-5 overflow-x-auto pb-4 no-scrollbar items-stretch">
+
+      <!-- Reel 1 -->
+      <div class="reel-card shrink-0" style="width:clamp(200px,44vw,280px);height:clamp(340px,65vh,500px);" onclick="toggleReel(this)">
+        <video src="videos/1_2.mp4" poster="Images/rose-gloss.jpg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Collection Preview</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">01 &middot; Preview</p>
+        </div>
+      </div>
+
+      <!-- Reel 2 -->
+      <div class="reel-card shrink-0" style="width:clamp(200px,44vw,280px);height:clamp(340px,65vh,500px);" onclick="toggleReel(this)">
+        <video src="videos/2nd reel.mp4" poster="Images/Floral/floral4.jpeg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Bridal Dreams</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">02 &middot; Bridal</p>
+        </div>
+      </div>
+
+      <!-- Reel 3 -->
+      <div class="reel-card shrink-0" style="width:clamp(200px,44vw,280px);height:clamp(340px,65vh,500px);" onclick="toggleReel(this)">
+        <video src="videos/Bridal2.mp4" poster="Images/Bridal/bridal1.jpg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Bridal Showcase</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">03 &middot; Bridal</p>
+        </div>
+      </div>
+
+      <!-- Reel 4 -->
+      <div class="reel-card shrink-0" style="width:clamp(200px,44vw,280px);height:clamp(340px,65vh,500px);" onclick="toggleReel(this)">
+        <video src="videos/chrome3.mp4" poster="Images/chrome/Chrome1.jpeg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Chrome Luxe</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">04 &middot; Chrome</p>
+        </div>
+      </div>
+
+      <!-- Reel 5 -->
+      <div class="reel-card shrink-0" style="width:clamp(200px,44vw,280px);height:clamp(340px,65vh,500px);" onclick="toggleReel(this)">
+        <video src="videos/Navrati.mp4" poster="Images/Festive/navrati vibe (1).JPG" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Navratri Festive</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">05 &middot; Navratri</p>
+        </div>
+      </div>
+
+      <!-- Reel 5b -->
+      <div class="reel-card shrink-0" style="width:clamp(200px,44vw,280px);height:clamp(340px,65vh,500px);" onclick="toggleReel(this)">
+        <video src="videos/Navrati2.mp4" poster="Images/Festive/navrati vibe 1 (1).JPG" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Navratri Special</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">05b &middot; Navratri</p>
+        </div>
+      </div>
+
+      <!-- Reel 6 -->
+      <div class="reel-card shrink-0" style="width:clamp(200px,44vw,280px);height:clamp(340px,65vh,500px);" onclick="toggleReel(this)">
+        <video src="videos/sea view.mp4" poster="Images/chrome/mirror-chrome.jpg" playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+        <div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+        <div class="reel-meta pointer-events-none">
+          <p class="font-serif italic text-white text-base leading-tight mb-0.5">Sea View Chrome</p>
+          <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">06 &middot; Chrome</p>
+        </div>
+      </div>
+
+      <div class="shrink-0 w-4"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4 — ABOUT -->
+<section id="about" class="bg-white min-h-screen flex flex-col md:flex-row pt-16 md:pt-0">
+  <div class="md:w-1/2 flex items-center justify-center p-10 md:p-20">
+    <div class="max-w-md">
+      <p class="font-sans text-[9px] tracking-[0.4em] uppercase text-dark/35 mb-6">Our Story</p>
+      <h2 class="font-serif text-[clamp(2rem,4vw,3.5rem)] text-dark mb-6 leading-tight" style="font-weight:400;">Crafted with<br><em>love &amp; precision</em></h2>
+      <p class="font-sans text-[13px] leading-relaxed text-dark/60 mb-8">
+        The Nails Club was born from a passion for wearable nail art. Every set is handcrafted — from bridal to festive, chrome to floral — designed to make you feel your most beautiful self, instantly.
+      </p>
+      <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+         class="inline-flex items-center gap-3 px-7 py-3.5 bg-dark text-white rounded-full font-sans text-[10px] uppercase tracking-[0.18em] hover:bg-primary transition-colors duration-300">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        @theenaiilsclub
+      </a>
+    </div>
+  </div>
+  <div class="md:w-1/2 relative min-h-[50vh] md:min-h-screen overflow-hidden">
+    <img src="about.jpeg" alt="The Nails Club" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0" style="background:linear-gradient(to right,rgba(255,255,255,0.3),transparent)"></div>
+  </div>
+</section>
+
+<footer class="bg-dark text-white" style="padding: 56px 40px 32px;">
+  <div style="max-width:1200px;margin:0 auto;">
+
+    <!-- Top row -->
+    <div style="display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;align-items:flex-start;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.08);">
+
+      <!-- Brand column -->
+      <div style="min-width:200px;flex:1;">
+        <a href="#hero" style="display:inline-flex;align-items:center;background:#000;padding:5px 11px;border-radius:10px;margin-bottom:20px;">
+          <img src="logo.png" alt="The Nails Club" style="height:36px;width:auto;object-fit:contain;display:block;">
+        </a>
+        <p style="font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:rgba(255,255,255,0.45);max-width:240px;">
+          Handcrafted luxury press-on nails — bridal, festive, chrome &amp; more. Every set made with love.
+        </p>
+        <div style="display:flex;gap:14px;margin-top:20px;">
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+             style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#BC1423'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://wa.me/919913091744" target="_blank" rel="noopener"
+             style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#25D366'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          </a>
+          
+          <!-- Pinterest button -->
+          <a href="https://pin.it/7ibXsm1GV" target="_blank" rel="noopener" title="Pinterest"
+             style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='#E60023'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div style="min-width:140px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">Navigate</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+          <li><a href="#hero"       style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Home</a></li>
+          <li><a href="#collection" style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Collection</a></li>
+          <li><a href="#reels"      style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">Reels</a></li>
+          <li><a href="#about"      style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">About</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div style="min-width:160px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">Contact</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+             style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#C6A35B'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">
+            @theenaiilsclub
+          </a>
+          <a href="https://wa.me/919913091744" target="_blank"
+             style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#25D366'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">
+            +91 99130 91744
+          </a>
+          <a href="https://wa.me/919016242187" target="_blank"
+             style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#25D366'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">
+            +91 90162 42187
+          </a>
+          <a href="https://pin.it/7ibXsm1GV" target="_blank" rel="noopener"
+             style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseenter="this.style.color='#E60023'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">&#128205; Pinterest
+          </a>
+          <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+             style="display:inline-flex;align-items:center;gap:7px;margin-top:6px;background:#BC1423;color:#fff;border-radius:99px;padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            Order via DM
+          </a>
+        </div>
+      </div>
+
+      <!-- QR Code -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.3);">Scan to visit</p>
+        <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+           style="display:block;padding:10px;background:#fff;border-radius:16px;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='scale(1.04)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.3)'" onmouseleave="this.style.transform='scale(1)';this.style.boxShadow='none'">
+          <img src="theenaiilsclub_qr.png" alt="Scan QR to visit @theenaiilsclub on Instagram"
+               style="width:120px;height:120px;display:block;object-fit:contain;">
+        </a>
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(255,255,255,0.3);text-align:center;">Opens Instagram</p>
+      </div>
+
+    </div>
+
+    <!-- Bottom row -->
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding-top:24px;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.25);">&copy; 2025 The Nails Club. All rights reserved.</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,0.2);">Crafted with love &amp; precision</p>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════
+// REEL TOGGLE (click to play/pause)
+// ═══════════════════════════════════════
+function toggleReel(card) {
+  const video = card.querySelector('video');
+  const overlay = card.querySelector('.reel-overlay');
+  if (!video) return;
+  if (video.paused) {
+    // Pause all other reels first
+    document.querySelectorAll('.reel-card video').forEach(v => {
+      if (v !== video) { v.pause(); v.closest('.reel-card').querySelector('.reel-overlay').style.opacity='1'; }
+    });
+    video.play();
+    overlay.style.opacity = '0';
+  } else {
+    video.pause();
+    overlay.style.opacity = '1';
+  }
+}
+
+// ═══════════════════════════════════════
+// DESIGN DATA
+// ═══════════════════════════════════════
+const catLabels = { chrome:'Chrome', french:'French', gloss:'Gloss', bridal:'Bridal', floral:'Floral', polka:'Polka', cateye:'Cat Eye', festive:'Festive',  babyshower:'Baby Shower', pressOn:'Press-On', manicure:'Manicure' };
+
+const DESIGNS = [
+  { title:'Rose Gloss',         cat:'gloss',      size:'XS · S · M · L · XL', design:'Glazed Sheer',        desc:'Luminous rose-glazed finish. Soft, feminine and effortlessly elegant.',           photos:['Images/rose-gloss.jpg','Images/rose-gloss1.JPG','Images/rose-gloss 2.JPG','Images/rose-gloss 3.JPG','Images/rose-gloss 4.JPG','Images/rose-gloss5.JPG','Images/ross-gloss6.JPG','Images/ross-gloss6 (1).JPG','Images/ross-gloss6 (2).JPG','Images/ross-gloss6 (3).JPG','Images/ross-gloss6 (4).JPG'], video:null },
+  
+  { title:'Chrome Luxe',        cat:'chrome',     size:'XS · S · M · L · XL', design:'Mirror Chrome',       desc:'Seamless liquid chrome that reflects every angle. Bold and impossibly sleek.',    photos:['Images/chrome/Chrome1.jpeg','Images/chrome-silver-fade.jpg','Images/chrome/mirror-chrome.jpg','Images/chrome/silver-mirror-chrome.jpg'], video:'videos/chrome3.mp4' },
+  { title:'Chrome Luxe',        cat:'chrome',     size:'XS · S · M · L · XL', design:'Mirror Chrome',       desc:'Seamless liquid chrome that reflects every angle. Bold and impossibly sleek.',    photos:['Images/chrome-silver-fade.jpg','Images/chrome/Chrome1.jpeg','Images/chrome/mirror-chrome.jpg','Images/chrome/silver-mirror-chrome.jpg'], video:'videos/chrome3.mp4' },
+  { title:'Chrome Luxe',        cat:'chrome',     size:'XS · S · M · L · XL', design:'Mirror Chrome',       desc:'Seamless liquid chrome that reflects every angle. Bold and impossibly sleek.',    photos:['Images/chrome/mirror-chrome.jpg','Images/chrome-silver-fade.jpg','Images/chrome/Chrome1.jpeg','Images/chrome/silver-mirror-chrome.jpg'], video:'videos/chrome3.mp4' },
+  { title:'Sea View Chrome',    cat:'chrome',     size:'XS · S · M · L · XL', design:'Aurora Chrome',       desc:'Cool iridescent chrome inspired by the ocean. Mesmerising at every angle.',      photos:['Images/CatEye/silver-mirror-chrome.jpg'], video:'videos/sea view.mp4' },
+  
+  { title:'Press-On Set 01',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/Pree-on-nails (1).JPG'], video:null },
+  { title:'Press-On Set 02',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/Pree-on-nails (2).JPG'], video:null },
+  { title:'Press-On Set 03',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/Pree-on-nails (3).JPG'], video:null },
+  { title:'Press-On Set 04',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/Pree-on-nails (4).JPG'], video:null },
+  { title:'Press-On Set 05',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/Pree-on-nails (5).JPG'], video:null },
+  { title:'Press-On Set 06',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/Pree-on-nails (6).JPG'], video:null },
+  { title:'Press-On Set 07',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/Pree-on-nails (7).JPG'], video:null },
+  { title:'Press-On Set 08',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/Pree-on-nails (8).JPG'], video:null },
+  { title:'Press-On Set 09',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/Polka/press-on-nails.JPG'], video:null },
+  { title:'Press-On Set 10',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/press-on-nails (1).JPG'], video:null },
+  { title:'Press-On Set 11',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/Polka/press-on-nails (2).JPG'], video:null },
+  { title:'Press-On Set 12',    cat:'pressOn',    size:'XS · S · M · L · XL', design:'Custom Press-On',     desc:'Handcrafted press-on set. Reusable, salon-finished and ready to wear instantly.',  photos:['Images/press-on-set.jpg'], video:null },
+  
+  { title:'French Elegance',    cat:'french',     size:'XS · S · M · L · XL', design:'Classic French Tip',  desc:'The timeless French tip perfected. Crisp, clean and forever chic.',              photos:['Images/french/French nails.jpg','Images/french/French1.jpg','Images/french/French2.jpg'], video:null },
+  { title:'French Elegance',    cat:'french',     size:'XS · S · M · L · XL', design:'Classic French Tip',  desc:'The timeless French tip perfected. Crisp, clean and forever chic.',              photos:['Images/french/French1.jpg','Images/french/French nails.jpg','Images/french/French2.jpg'], video:null },
+  { title:'French Elegance',    cat:'french',     size:'XS · S · M · L · XL', design:'Classic French Tip',  desc:'The timeless French tip perfected. Crisp, clean and forever chic.',              photos:['Images/french/French2.jpg','Images/french/French1.jpg','Images/french/French nails.jpg'], video:null },
+  { title:'French Elegance',    cat:'french',     size:'XS · S · M · L · XL', design:'Classic French Tip',  desc:'The timeless French tip perfected. Crisp, clean and forever chic.',              photos:['Images/french/soft-gel-extension.jpg','Images/french/French1.jpg','Images/french/French2.jpg'], video:null },
+  { title:'French Elegance',    cat:'french',     size:'XS · S · M · L · XL', design:'Classic French Tip',  desc:'The timeless French tip perfected. Crisp, clean and forever chic.',              photos:['Images/french/IMG_0180.JPG','Images/french/French1.jpg','Images/french/French2.jpg'], video:null },
+  { title:'French Elegance',    cat:'french',     size:'XS · S · M · L · XL', design:'Classic French Tip',  desc:'The timeless French tip perfected. Crisp, clean and forever chic.',              photos:['Images/french/IMG_0187.JPG','Images/french/French1.jpg','Images/french/French2.jpg'], video:null },
+  
+  { title:'Gloss Collection',   cat:'gloss',      size:'XS · S · M · L · XL', design:'High Gloss',          desc:'High-shine gloss finishes in stunning shades. Pure polished luxury.',            photos:['Images/Gloss1.JPG','Images/Gloss2.JPG','Images/Gloss3.JPG','Images/Festive/gloss.JPG'], video:null },
+  { title:'Pink Gloss Gems',    cat:'gloss',      size:'XS · S · M · L · XL', design:'Gloss with Gems',     desc:'Glossy pink with sparkling crystal gems. Playful and eye-catching.',             photos:['Images/Festive/pink-gloss-gems.jpg','Images/Festive/pink-gloss-gems1.jpg','Images/Festive/pink-chrome-oval.jpg'], video:null },
+  { title:'Nude Gold Accent',   cat:'gloss',      size:'XS · S · M · L · XL', design:'Nude & Gold',         desc:'Quiet nude lifted with a fine gold accent line. Elegant and wearable daily.',    photos:['Images/nude-gold-accent.jpg','Images/Festive/nude-marble-swirl.jpg','Images/marble-swirl-gold.jpg'], video:null },
+  { title:'Red Statement',      cat:'gloss',      size:'XS · S · M · L · XL', design:'Mirror Gloss',        desc:'Bold saturated red in a mirror-glass gloss finish. Classic and always in style.',photos:['Images/classic-red-gloss.jpg'], video:'videos/Red.mp4' },
+  { title:'Bridal Dreams',      cat:'bridal',     size:'XS · S · M · L · XL', design:'Pearl & Lace',        desc:'Pure pearl and lace crafted for your most important day.',                       photos:['Images/Bridal/bridal1.jpg','Images/Bridal/pearl-lace-bridal.jpg'], video:'videos/Bridal2.mp4' },
+  
+  { title:'Floral Romance',     cat:'floral',     size:'XS · S · M · L · XL', design:'Hand-Painted Floral', desc:'Delicate hand-painted florals. A poetic celebration of femininity and nature.',  photos:['Images/Floral/floral4.jpeg','Images/Floral/floral-bloom.jpg','Images/Floral/floral-delicate.jpg','Images/Floral/Brown floral.JPG','Images/Floral/hand-painted-floral.jpg'], video:'videos/2nd reel.mp4' },
+  { title:'Cherry Blossom',     cat:'floral',     size:'XS · S · M · L · XL', design:'Cherry Blossom Art',  desc:'Soft cherry blossom art with delicate pink petals and spring-time charm.',       photos:['Images/Floral/Brown floral.JPG','Images/Cherry 1.JPG'], video:null },
+  { title:'Cherry Blossom',     cat:'floral',     size:'XS · S · M · L · XL', design:'Cherry Blossom Art',  desc:'Soft cherry blossom art with delicate pink petals and spring-time charm.',       photos:['Images/Floral/floral-bloom.jpg','Images/Cherry 1.JPG'], video:null },
+  { title:'Cherry Blossom',     cat:'floral',     size:'XS · S · M · L · XL', design:'Cherry Blossom Art',  desc:'Soft cherry blossom art with delicate pink petals and spring-time charm.',       photos:['Images/Floral/floral-delicate.jpg','Images/Cherry 1.JPG'], video:null },
+  { title:'Cherry Blossom',     cat:'floral',     size:'XS · S · M · L · XL', design:'Cherry Blossom Art',  desc:'Soft cherry blossom art with delicate pink petals and spring-time charm.',       photos:['Images/Floral/hand-painted-floral.jpg','Images/Cherry 1.JPG'], video:null },
+  
+  { title:'Polka Play',         cat:'polka',      size:'XS · S · M · L · XL', design:'Polka Dot Gloss',     desc:'Bold polka dots meet gloss. Playful, chic and impossible to ignore.',            photos:['Images/Polka/Polka1.JPG','Images/Polka/Polka2.JPG','Images/Polka/polka brown.JPG','Images/Polka/polka brown (2).JPG','Images/Polka/polka brown 3.JPG','Images/Polka/Polka 2 (1).JPG','Images/Polka/Polka 2 (2).JPG','Images/Polka/polkar (1).JPG','Images/Polka/polkar (2).JPG'], video:'videos/Polka.mp4' },
+  { title:'Polka Play',         cat:'polka',      size:'XS · S · M · L · XL', design:'Polka Dot Gloss',     desc:'Bold polka dots meet gloss. Playful, chic and impossible to ignore.',            photos:['Images/Polka/Polka2.JPG','Images/Polka/Polka1.JPG','Images/Polka/polka brown.JPG','Images/Polka/polka brown (2).JPG','Images/Polka/polka brown 3.JPG','Images/Polka/Polka 2 (1).JPG','Images/Polka/Polka 2 (2).JPG','Images/Polka/polkar (1).JPG','Images/Polka/polkar (2).JPG'], video:'videos/Polka.mp4' },
+  { title:'Polka Play',         cat:'polka',      size:'XS · S · M · L · XL', design:'Polka Dot Gloss',     desc:'Bold polka dots meet gloss. Playful, chic and impossible to ignore.',            photos:['Images/Polka/polka brown.JPG','Images/Polka/Polka2.JPG','Images/Polka/Polka1.JPG','Images/Polka/polka brown (2).JPG','Images/Polka/polka brown 3.JPG','Images/Polka/Polka 2 (1).JPG','Images/Polka/Polka 2 (2).JPG','Images/Polka/polkar (1).JPG','Images/Polka/polkar (2).JPG'], video:'videos/Polka.mp4' },
+  { title:'Polka Play',         cat:'polka',      size:'XS · S · M · L · XL', design:'Polka Dot Gloss',     desc:'Bold polka dots meet gloss. Playful, chic and impossible to ignore.',            photos:['Images/Polka/polka brown (2).JPG','Images/Polka/Polka2.JPG','Images/Polka/polka brown.JPG','Images/Polka/Polka1.JPG','Images/Polka/polka brown 3.JPG','Images/Polka/Polka 2 (1).JPG','Images/Polka/Polka 2 (2).JPG','Images/Polka/polkar (1).JPG','Images/Polka/polkar (2).JPG'], video:'videos/Polka.mp4' },
+  { title:'Polka Play',         cat:'polka',      size:'XS · S · M · L · XL', design:'Polka Dot Gloss',     desc:'Bold polka dots meet gloss. Playful, chic and impossible to ignore.',            photos:['Images/Polka/polka brown 3.JPG','Images/Polka/Polka2.JPG','Images/Polka/polka brown.JPG','Images/Polka/polka brown (2).JPG','Images/Polka/Polka1.JPG','Images/Polka/Polka 2 (1).JPG','Images/Polka/Polka 2 (2).JPG','Images/Polka/polkar (1).JPG','Images/Polka/polkar (2).JPG'], video:'videos/Polka.mp4' },
+  { title:'Polka Play',         cat:'polka',      size:'XS · S · M · L · XL', design:'Polka Dot Gloss',     desc:'Bold polka dots meet gloss. Playful, chic and impossible to ignore.',            photos:['Images/Polka/Polka 2 (1).JPG','Images/Polka/Polka2.JPG','Images/Polka/polka brown.JPG','Images/Polka/polka brown (2).JPG','Images/Polka/polka brown 3.JPG','Images/Polka/Polka1.JPG','Images/Polka/Polka 2 (2).JPG','Images/Polka/polkar (1).JPG','Images/Polka/polkar (2).JPG'], video:'videos/Polka.mp4' },
+  { title:'Polka Play',         cat:'polka',      size:'XS · S · M · L · XL', design:'Polka Dot Gloss',     desc:'Bold polka dots meet gloss. Playful, chic and impossible to ignore.',            photos:['Images/Polka/Polka 2 (2).JPG','Images/Polka/Polka2.JPG','Images/Polka/polka brown.JPG','Images/Polka/polka brown (2).JPG','Images/Polka/polka brown 3.JPG','Images/Polka/Polka 2 (1).JPG','Images/Polka/Polka1.JPG','Images/Polka/polkar (1).JPG','Images/Polka/polkar (2).JPG'], video:'videos/Polka.mp4' },
+  { title:'Polka Play',         cat:'polka',      size:'XS · S · M · L · XL', design:'Polka Dot Gloss',     desc:'Bold polka dots meet gloss. Playful, chic and impossible to ignore.',            photos:['Images/Polka/polkar (1).JPG','Images/Polka/Polka2.JPG','Images/Polka/polka brown.JPG','Images/Polka/polka brown (2).JPG','Images/Polka/polka brown 3.JPG','Images/Polka/Polka 2 (1).JPG','Images/Polka/Polka 2 (2).JPG','Images/Polka/Polkar1.JPG','Images/Polka/polkar (2).JPG'], video:'videos/Polka.mp4' },
+ 
+  { title:'Cat Eye Magnetic',   cat:'cateye',     size:'XS · S · M · L · XL', design:'Magnetic Cat Eye',    desc:'Deep magnetic cat eye with velvet depth that shifts with the light.',            photos:['Images/CatEye/Cateye.jpg','Images/CatEye/Cateye1.jpg','Images/CatEye/Cateye2.jpg'], video:null },
+  { title:'Cat Eye Magnetic',   cat:'cateye',     size:'XS · S · M · L · XL', design:'Magnetic Cat Eye',    desc:'Deep magnetic cat eye with velvet depth that shifts with the light.',            photos:['Images/CatEye/Cateye1.jpg','Images/CatEye/Cateye.jpg','Images/CatEye/Cateye2.jpg'], video:null },
+  { title:'Cat Eye Magnetic',   cat:'cateye',     size:'XS · S · M · L · XL', design:'Magnetic Cat Eye',    desc:'Deep magnetic cat eye with velvet depth that shifts with the light.',            photos:['Images/CatEye/Cateye2.jpg','Images/CatEye/Cateye1.jpg','Images/CatEye/Cateye.jpg'], video:null },
+  
+  { title:'Navratri Festive',   cat:'festive',   size:'XS · S · M · L · XL', design:'Navratri Art',        desc:'Vibrant Navratri nails with bold colours and festive patterns — made to celebrate.',   photos:['Images/Festive/Mahashivrati.jpeg','Images/Festive/navrati vibe (1).JPG','Images/Festive/navrati vibe (2).JPG','Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG','Images/Festive/navrati vibe 1 (1).JPG','Images/Festive/navrati vibe 1 (2).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Navratri Special',   cat:'festive',   size:'XS · S · M · L · XL', design:'Navratri Collection',  desc:'Exclusive Navratri collection featuring vibrant hues and intricate festive motifs.',  photos:['Images/Festive/navrati vibe 1 (1).JPG','Images/Festive/navrati vibe 1 (2).JPG','Images/Festive/navrati vibe (1).JPG','Images/Festive/navrati vibe (2).JPG'], video:'videos/Navrati2.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/nude-marble-swirl.jpg','Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/gloss.JPG','Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/pink-chrome-oval.jpg','Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/pink-gloss-gems.jpg','Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/pink-gloss-gems1.jpg','Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/navrati vibe (2).JPG','Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/navrati vibe (5).JPG','Images/Festive/navrati vibe (3).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/navrati vibe 1 (1).JPG','Images/Festive/navrati vibe 1 (2).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  { title:'Festive Glam',       cat:'festive',    size:'XS · S · M · L · XL', design:'Festive Collection',   desc:'Glam festive nails crafted to light up every celebration. Bold colour, big personality.', photos:['Images/Festive/navrati vibe 1 (2).JPG','Images/Festive/navrati vibe 1 (1).JPG','Images/Festive/navrati vibe (4).JPG','Images/Festive/navrati vibe (5).JPG'], video:'videos/Navrati.mp4' },
+  
+  { title:'Baby Shower',        cat:'babyshower', size:'XS · S · M · L · XL', design:'Soft Pastel',         desc:'Sweet and delicate designs perfect for baby shower celebrations.',               photos:['Images/babyshower/Babby shower.JPG','Images/babyshower/Babby shower1.JPG','Images/babyshower/Babby shower2.JPG','Images/babyshower/babyshower.JPG'], video:null },
+  { title:'Baby Shower',        cat:'babyshower', size:'XS · S · M · L · XL', design:'Soft Pastel',         desc:'Sweet and delicate designs perfect for baby shower celebrations.',               photos:['Images/babyshower/Babby shower1.JPG','Images/babyshower/Babby shower.JPG','Images/babyshower/Babby shower2.JPG','Images/babyshower/babyshower.JPG'], video:null },
+  { title:'Baby Shower',        cat:'babyshower', size:'XS · S · M · L · XL', design:'Soft Pastel',         desc:'Sweet and delicate designs perfect for baby shower celebrations.',               photos:['Images/babyshower/Babby shower2.JPG','Images/babyshower/Babby shower1.JPG','Images/babyshower/Babby shower.JPG','Images/babyshower/babyshower.JPG'], video:null },
+  { title:'Baby Shower',        cat:'babyshower', size:'XS · S · M · L · XL', design:'Soft Pastel',         desc:'Sweet and delicate designs perfect for baby shower celebrations.',               photos:['Images/babyshower/Babby shower.JPG','Images/babyshower/babyshower.JPG','Images/babyshower/Babby shower2.JPG','Images/babyshower/Baby shower1.JPG'], video:null },
+  
+  {title:'Bridal', cat:'bridal', size:'XS · S · M · L · XL', design:'Soft Pastel', desc:'Sweet and delicate designs perfect for bridal celebrations.',               photos:['Images/Bridal/bridal1.jpg','Images/Bridal/pearl-lace-bridal.jpg']},
+  {title:'Bridal', cat:'bridal', size:'XS · S · M · L · XL', design:'Soft Pastel', desc:'Sweet and delicate designs perfect for bridal celebrations.',               photos:['Images/Bridal/pearl-lace-bridal.jpg','Images/Bridal/bridal1.jpg']},
+
+  { title:'Classic Manicure',   cat:'manicure',   size:'XS · S · M · L · XL', design:'Gel Extensions',      desc:'Clean classic manicure and soft gel extensions. Healthy, neat and salon-finished.',photos:['Images/classic-manicure.jpg','Images/french/soft-gel-extension.jpg'], video:null },
+
+ ];
+
+
+// Representative cover image for each category (first image of first design in that cat)
+const catCovers = {
+  chrome:     { img:'Images/chrome/Chrome1.jpeg',              sub:'Mirror · Aurora' },
+  french:     { img:'Images/french/French nails.jpg',           sub:'Classic · Tip' },
+  gloss:      { img:'Images/Gloss1.JPG',                        sub:'High Shine · Sheer' },
+  bridal:     { img:'Images/Bridal/bridal1.jpg',                sub:'Pearl · Lace' },
+  floral:     { img:'Images/Floral/floral4.jpeg',               sub:'Hand-Painted' },
+  polka:      { img:'Images/Polka/Polka1.JPG',                  sub:'Dots · Gloss' },
+  cateye:     { img:'Images/CatEye/Cateye.jpg',                 sub:'Magnetic · Velvet' },
+  festive:    { img:'Images/Festive/Mahashivrati.jpeg',         sub:'Festive · Vibrant' },
+  babyshower: { img:'Images/babyshower/Babby shower.JPG',       sub:'Soft · Pastel' },
+  pressOn:    { img:'Images/Pree-on-nails (1).JPG',             sub:'Custom · Ready-to-wear' },
+  manicure:   { img:'Images/classic-manicure.jpg',              sub:'Gel · Classic' },
+};
+
+let currentFilter = 'all';
+let visibleCount = 6;
+
+// ─── Render category cards ───
+function renderCategoryCards() {
+  const grid = document.getElementById('cat-cards-grid');
+  if (!grid) return;
+  const cats = Object.keys(catLabels);
+  grid.innerHTML = cats.map(cat => {
+    const cover = catCovers[cat] || { img: '', sub: '' };
+    const count = DESIGNS.filter(d => d.cat === cat).length;
+    return `
+    <button onclick="setCatFilter('${cat}')" class="cat-card" style="position:relative;border-radius:18px;overflow:hidden;aspect-ratio:3/4;background:#e8e0db;cursor:pointer;border:none;padding:0;text-align:left;transition:transform 0.28s ease,box-shadow 0.28s ease;" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 14px 40px rgba(0,0,0,0.15)';" onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='none';">
+      <img src="${cover.img}" alt="${catLabels[cat]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(50,44,44,0.82) 0%,rgba(50,44,44,0.12) 55%,transparent 100%);"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:14px 13px;">
+        <p style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:#fff;line-height:1.2;margin-bottom:2px;">${catLabels[cat]}</p>
+        <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);">${cover.sub}</p>
+      </div>
+      <div style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.18);backdrop-filter:blur(4px);border-radius:99px;padding:3px 9px;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.1em;color:#fff;">${count}</div>
+    </button>`;
+  }).join('');
+}
+
+function setCatFilter(cat) {
+  const btn = document.querySelector(`.filter-btn[data-filter="${cat}"]`);
+  if (btn) setFilter(btn, cat);
+  else {
+    currentFilter = cat; visibleCount = 6; renderDesigns();
+  }
+  document.getElementById('collection').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// ─── Build grid card (no arrows, click opens detail) ───
+function buildCard(design, idx) {
+  const thumb = design.photos[0];
+  return `
+  <div class="design-card cursor-pointer" onclick="openDetail(${idx})">
+    <div class="slide-wrap">
+      <img data-src="${thumb}" alt="${design.title}" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:1;" onerror="this.closest('.design-card').style.display='none'">
+      ${design.video ? `<div style="position:absolute;bottom:10px;right:10px;background:rgba(50,44,44,0.65);color:#fff;border-radius:99px;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;padding:3px 9px;font-family:DM Sans,sans-serif;display:flex;align-items:center;gap:4px;"><svg width="7" height="7" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>+Video</div>` : ''}
+    </div>
+    <div class="px-3 pb-4 pt-2">
+      <p class="font-sans text-[9px] tracking-[0.18em] uppercase text-dark/40 mb-0.5">${catLabels[design.cat]||design.cat}</p>
+      <p class="font-serif text-base text-dark leading-tight">${design.title}</p>
+      <p class="font-sans text-[11px] text-dark/50 mt-1 leading-snug" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${design.desc}</p>
+    </div>
+  </div>`;
+}
+
+function renderDesigns() {
+  const grid = document.getElementById('design-grid');
+  grid.innerHTML = '';
+  const filtered = DESIGNS.filter(d => currentFilter==='all' || d.cat===currentFilter);
+  document.getElementById('no-results').style.display = filtered.length===0 ? 'block' : 'none';
+  filtered.slice(0, visibleCount).forEach(d => {
+    grid.insertAdjacentHTML('beforeend', buildCard(d, DESIGNS.indexOf(d)));
+  });
+  const wrap = document.getElementById('load-more-wrap');
+  if (wrap) wrap.style.display = filtered.length > visibleCount ? 'flex' : 'none';
+  // Trigger lazy load observer
+  if (window._observeAfterRender) window._observeAfterRender();
+}
+
+function loadMore() { visibleCount += 6; renderDesigns(); }
+
+function setFilter(btn, cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = cat; visibleCount = 6; renderDesigns();
+}
+
+// ═══════════════════════════════════════
+// DETAIL PANEL (Titan-style)
+// ═══════════════════════════════════════
+let detailActiveIdx = 0;
+let detailDesign = null;
+
+function openDetail(designIdx) {
+  detailDesign = DESIGNS[designIdx];
+  detailActiveIdx = 0;
+  const panel = document.getElementById('detail-panel');
+  panel.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  renderDetail();
+}
+
+function closeDetail() {
+  const panel = document.getElementById('detail-panel');
+  panel.classList.add('hidden');
+  document.body.style.overflow = '';
+  // Pause any playing video
+  panel.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+}
+
+function renderDetail() {
+  if (!detailDesign) return;
+  const d = detailDesign;
+  const allMedia = [...d.photos];
+  if (d.video) allMedia.push({ type:'video', src:d.video });
+
+  // Thumbnail strip
+  const thumbStrip = document.getElementById('detail-thumbs');
+  thumbStrip.innerHTML = allMedia.map((m, i) => {
+    const isVideo = typeof m === 'object';
+    const border = i===0 ? '#BC1423' : 'transparent';
+    const inner = isVideo
+      ? '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#322C2C;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>'
+      : '<img src="' + m + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display=\'none\'">';
+    return '<button onclick="setDetailMedia(' + i + ')" class="detail-thumb" data-i="' + i + '" style="width:70px;height:85px;border-radius:10px;overflow:hidden;border:2px solid ' + border + ';flex-shrink:0;background:#e8e0db;cursor:pointer;">' + inner + '</button>';
+  }).join('');
+
+  setDetailMedia(0);
+
+  // Info panel
+  document.getElementById('detail-cat').textContent    = catLabels[d.cat] || d.cat;
+  document.getElementById('detail-title').textContent  = d.title;
+  document.getElementById('detail-count').textContent  = `${d.photos.length} photo${d.photos.length>1?'s':''}${d.video?' + 1 video':''}`;
+  document.getElementById('detail-design').textContent = d.design || '—';
+  document.getElementById('detail-desc').textContent   = d.desc;
+
+  // Size chips — clickable selection
+  const sizes = (d.size || 'XS · S · M · L · XL').split('·').map(s => s.trim());
+  let selectedSize = '';
+  function updateOrderLinks() {
+    const sizeText = selectedSize || '___';
+    const igMsg = encodeURIComponent(`Hi! I'm interested in ordering the "${d.title}" (${d.design}) nails. Size: ${sizeText}. Could you please share more details? 💅`);
+    const waMsg = encodeURIComponent(`Hi The Nails Club! 💅 I'd like to order the *${d.title}* (${d.design}) design. Size: ${sizeText}. Please share availability & price. Thank you!`);
+    document.getElementById('detail-ig-btn').href = 'https://www.instagram.com/theenaiilsclub';
+    document.getElementById('detail-ig-btn').setAttribute('data-msg', igMsg);
+    document.getElementById('detail-wa-btn').href = `https://wa.me/919913091744?text=${waMsg}`;
+    const btn2 = document.getElementById('detail-wa-btn2');
+    if (btn2) btn2.href = `https://wa.me/919016242187?text=${waMsg}`;
+  }
+
+  document.getElementById('detail-size-chips').innerHTML = sizes.map(s =>
+    `<button onclick="selectSize(this,'${s}')" class="size-chip" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 12px;border:1.5px solid rgba(50,44,44,0.2);border-radius:99px;color:#322C2C;cursor:pointer;background:transparent;transition:all 0.18s ease;"
+      onmouseenter="if(!this.classList.contains('selected'))this.style.borderColor='rgba(50,44,44,0.5)'"
+      onmouseleave="if(!this.classList.contains('selected'))this.style.borderColor='rgba(50,44,44,0.2)'"
+    >${s}</button>`
+  ).join('');
+
+  // Contact links initial state (no size selected)
+  updateOrderLinks();
+  window._updateOrderLinks = updateOrderLinks;
+  window._setSelectedSize  = function(s) { selectedSize = s; };
+}
+
+function setDetailMedia(i) {
+  if (!detailDesign) return;
+  const d = detailDesign;
+  const allMedia = [...d.photos];
+  if (d.video) allMedia.push({ type:'video', src:d.video });
+
+  detailActiveIdx = i;
+  const m = allMedia[i];
+  const mainArea = document.getElementById('detail-main');
+  const isVideo = typeof m === 'object';
+
+  // Stop any playing video
+  mainArea.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+
+  if (isVideo) {
+    mainArea.innerHTML = `<video src="${m.src}" controls autoplay playsinline loop style="width:100%;height:100%;object-fit:contain;border-radius:16px;background:#000;max-height:100%;"></video>`;
+  } else {
+    mainArea.innerHTML = `<img src="${m}" alt="${d.title}" style="width:100%;height:100%;object-fit:contain;border-radius:16px;max-height:100%;">`;
+  }
+
+  // Update thumb borders
+  document.querySelectorAll('.detail-thumb').forEach((t, ti) => {
+    t.style.borderColor = ti === i ? '#BC1423' : 'transparent';
+  });
+}
+
+// ═══════════════════════════════════════
+// SIZE SELECTION
+// ═══════════════════════════════════════
+function selectSize(btn, size) {
+  // Deselect all chips
+  document.querySelectorAll('.size-chip').forEach(c => {
+    c.classList.remove('selected');
+    c.style.background    = 'transparent';
+    c.style.borderColor   = 'rgba(50,44,44,0.2)';
+    c.style.color         = '#322C2C';
+  });
+  // Select clicked chip
+  btn.classList.add('selected');
+  btn.style.background  = '#BC1423';
+  btn.style.borderColor = '#BC1423';
+  btn.style.color       = '#fff';
+  // Update order links with selected size
+  if (window._setSelectedSize)  window._setSelectedSize(size);
+  if (window._updateOrderLinks) window._updateOrderLinks();
+}
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+function toggleMenu() {
+  document.getElementById('nav-overlay').classList.toggle('is-open');
+  document.getElementById('menu-btn').classList.toggle('is-open');
+}
+function closeMenu() {
+  document.getElementById('nav-overlay').classList.remove('is-open');
+  document.getElementById('menu-btn').classList.remove('is-open');
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  renderCategoryCards();
+  renderDesigns();
+
+  // ── Intersection Observer for lazy image loading ──
+  const imgObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+        imgObserver.unobserve(img);
+      }
+    });
+  }, { rootMargin: '200px' });
+
+  function observeCards() {
+    document.querySelectorAll('img[data-src]').forEach(img => imgObserver.observe(img));
+  }
+  observeCards();
+
+  // Re-observe after render/filter/loadmore
+  const origRender = renderDesigns;
+  window._observeAfterRender = observeCards;
+  if (window.gsap) {
+    gsap.to('.gs-up', { opacity:1, y:0, duration:1, stagger:0.15, ease:'power3.out', delay:0.2 });
+  }
+  window.addEventListener('scroll', () => {
+    document.getElementById('site-header').style.boxShadow =
+      window.scrollY > 20 ? '0 4px 24px rgba(0,0,0,0.07)' : 'none';
+  });
+  // Close detail on backdrop click
+  document.getElementById('detail-panel').addEventListener('click', function(e) {
+    if (e.target === this) closeDetail();
+  });
+  // ESC to close
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+});
+</script>
+
+<!-- ═══ DETAIL PANEL ═══ -->
+<div id="detail-panel" class="hidden" style="position:fixed;inset:0;z-index:400;background:rgba(50,44,44,0.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#FAF8F5;border-radius:24px;width:100%;max-width:900px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;position:relative;">
+    
+    <!-- Close button -->
+    <button onclick="closeDetail()" style="position:absolute;top:14px;right:14px;z-index:10;background:#322C2C;color:#fff;border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- Body: thumb strip + main image + info -->
+    <div style="display:flex;flex:1;overflow:hidden;min-height:0;">
+      
+      <!-- Left: Thumbnail strip -->
+      <div id="detail-thumbs" style="display:flex;flex-direction:column;gap:8px;padding:16px 10px 16px 16px;overflow-y:auto;width:90px;flex-shrink:0;background:#F5F0ED;border-radius:24px 0 0 24px;" class="no-scrollbar"></div>
+
+      <!-- Center: Main image/video -->
+      <div id="detail-main" style="flex:1;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:16px;min-height:0;"></div>
+
+      <!-- Right: Info panel -->
+      <div style="width:260px;flex-shrink:0;padding:24px 20px;display:flex;flex-direction:column;gap:0;overflow-y:auto;border-left:1px solid rgba(50,44,44,0.07);" class="no-scrollbar">
+
+        <!-- Category + Title -->
+        <div style="margin-bottom:12px;">
+          <p id="detail-cat" style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(50,44,44,0.4);margin-bottom:5px;"></p>
+          <h3 id="detail-title" style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:#322C2C;line-height:1.2;"></h3>
+        </div>
+
+        <!-- Media count -->
+        <p id="detail-count" style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#BC1423;margin-bottom:16px;"></p>
+
+        <!-- Divider -->
+        <div style="height:1px;background:rgba(50,44,44,0.08);margin-bottom:16px;"></div>
+
+        <!-- Design Name -->
+        <div style="margin-bottom:12px;">
+          <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(50,44,44,0.35);margin-bottom:3px;">Design</p>
+          <p id="detail-design" style="font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;font-weight:500;"></p>
+        </div>
+
+        <!-- Size -->
+        <div style="margin-bottom:12px;">
+          <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(50,44,44,0.35);margin-bottom:6px;">Available Sizes</p>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;" id="detail-size-chips"></div>
+        </div>
+
+        <!-- Description -->
+        <div style="margin-bottom:16px;">
+          <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(50,44,44,0.35);margin-bottom:4px;">About</p>
+          <p id="detail-desc" style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(50,44,44,0.6);line-height:1.65;"></p>
+        </div>
+
+        <!-- Divider -->
+        <div style="height:1px;background:rgba(50,44,44,0.08);margin-bottom:16px;"></div>
+
+        <!-- Contact Note -->
+        <p style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(50,44,44,0.5);margin-bottom:12px;line-height:1.5;">To order, contact us via Instagram DM or WhatsApp with this design name &amp; your size.</p>
+
+        <!-- Instagram button -->
+        <a id="detail-ig-btn" href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
+           style="display:flex;align-items:center;justify-content:center;gap:8px;background:#BC1423;color:#fff;border-radius:99px;padding:11px 16px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;margin-bottom:8px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          Order via Instagram DM
+        </a>
+
+        <!-- WhatsApp button -->
+        <a id="detail-wa-btn" href="https://wa.me/919913091744" target="_blank" rel="noopener"
+           style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;border-radius:99px;padding:11px 16px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.523 5.855L0 24l6.335-1.506A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.502-5.178-1.381l-.371-.22-3.763.895.952-3.658-.242-.378A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          Order via WhatsApp
+        </a>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
