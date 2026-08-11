@@ -266,12 +266,12 @@ function renderCategoryCards() {
   }).join('');
 }
 
-let catVisibleCount = 12;
+let catVisibleCount = 4;
 let currentCat = '';
 
 function openCategory(cat) {
   currentCat = cat;
-  catVisibleCount = 12;
+  catVisibleCount = 4;
   document.getElementById('cat-cards-grid').style.display = 'none';
   document.getElementById('cat-filter-panel').style.display = 'block';
   document.getElementById('cat-filter-label').textContent = catLabels[cat] || cat;
@@ -285,7 +285,7 @@ function closeCatFilter() {
   currentCat = '';
 }
 
-function catLoadMore() { catVisibleCount += 8; renderCatDesigns(); }
+function catLoadMore() { catVisibleCount += 4; renderCatDesigns(); }
 
 function renderCatDesigns() {
   const grid = document.getElementById('cat-design-grid');

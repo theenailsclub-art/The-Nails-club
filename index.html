@@ -700,12 +700,12 @@ function renderCategoryCards() {
   }).join('');
 }
 
-let catVisibleCount = 8;
+let catVisibleCount = 4;
 let currentCatFilter = '';
 
 function setCatFilter(cat) {
   currentCatFilter = cat;
-  catVisibleCount = 8;
+  catVisibleCount = 4;
   document.getElementById('cat-cards-grid').style.display = 'none';
   document.getElementById('cat-see-more-wrap').style.display = 'none';
   document.getElementById('cat-filter-panel').style.display = 'block';
@@ -718,7 +718,7 @@ function setCatFilter(cat) {
 // (this replaces the old standalone collection.html page)
 function showAllDesigns() {
   currentCatFilter = 'all';
-  catVisibleCount = 8;
+  catVisibleCount = 4;
   document.getElementById('cat-cards-grid').style.display = 'none';
   document.getElementById('cat-see-more-wrap').style.display = 'none';
   document.getElementById('cat-filter-panel').style.display = 'block';
@@ -735,7 +735,7 @@ function closeCatFilter() {
 }
 
 function catLoadMore() {
-  catVisibleCount += 8;
+  catVisibleCount += 4;
   renderCatDesigns();
 }
 

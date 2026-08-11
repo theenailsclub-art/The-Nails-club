@@ -1,4 +1,4 @@
-# Requirements Document
+ # Requirements Document
 
 ## 1. Application Overview
 
@@ -333,7 +333,3 @@ Admin Dashboard
 - Webhook configuration
 - API documentation viewer
 - Developer tools and sandbox mode
-
-
-
-
