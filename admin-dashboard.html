@@ -310,6 +310,39 @@ tbody tr:hover{background:var(--panel-sunk);}
 .skel{background:linear-gradient(100deg,var(--panel-sunk) 30%,var(--line-soft) 50%,var(--panel-sunk) 70%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;border-radius:8px;}
 @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 .skel-line{height:12px;margin-top:8px;}
+/* MULTI-PHOTO GALLERY STRIP */
+.photo-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.photo-thumb{position:relative;width:72px;height:72px;border-radius:9px;overflow:hidden;border:1px solid var(--line);flex-shrink:0;background:var(--panel-sunk);}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-thumb .pt-remove{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.55);border:none;color:#fff;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;transition:background .15s;}
+.photo-thumb .pt-remove:hover{background:var(--rust);}
+.photo-thumb .pt-main-badge{position:absolute;bottom:3px;left:3px;font-size:9px;font-weight:700;padding:2px 5px;background:var(--rosewood);color:#fff;border-radius:4px;pointer-events:none;}
+.photo-add-btn{width:72px;height:72px;border:1.5px dashed var(--line);border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:var(--panel-sunk);cursor:pointer;font-size:10px;color:var(--muted);font-weight:600;transition:border-color .15s;flex-shrink:0;}
+.photo-add-btn:hover{border-color:var(--rosewood);color:var(--rosewood);}
+.photo-add-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
+/* VIDEO UPLOAD ZONE */
+.video-upload-zone{border:1.5px dashed var(--line);border-radius:var(--radius-md);padding:18px 20px;display:flex;align-items:center;gap:14px;background:var(--panel-sunk);cursor:pointer;transition:border-color .15s;}
+.video-upload-zone:hover{border-color:var(--rosewood);}
+.video-upload-zone svg{width:24px;height:24px;stroke:var(--muted);fill:none;stroke-width:1.6;stroke-linecap:round;flex-shrink:0;}
+.video-upload-zone.has-video{border-color:var(--sage);background:var(--sage-tint);}
+.video-upload-zone.has-video svg{stroke:var(--sage);}
+/* REEL CARDS */
+.reel-admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.reel-admin-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-soft);position:relative;}
+.reel-admin-card .rac-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--panel-sunk);}
+.reel-admin-card .rac-media video{width:100%;height:100%;object-fit:cover;display:block;}
+.reel-admin-card .rac-media img{width:100%;height:100%;object-fit:cover;display:block;}
+.reel-admin-card .rac-body{padding:12px 14px;}
+.reel-admin-card .rac-title{font-family:var(--font-display);font-size:14px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.reel-admin-card .rac-sub{font-size:11.5px;color:var(--muted);}
+.reel-admin-card .rac-actions{display:flex;gap:8px;padding:0 14px 14px;}
+.rac-drag-handle{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.45);border-radius:6px;padding:5px 6px;cursor:grab;display:flex;align-items:center;gap:2px;}
+.rac-drag-handle svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2;}
+.rac-visible-badge{position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;padding:4px 8px;border-radius:6px;}
+.rac-visible-badge.on{background:var(--sage-tint);color:var(--sage);}
+.rac-visible-badge.off{background:var(--panel-sunk);color:var(--muted);}
+@media(max-width:1180px){.reel-admin-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:900px){.reel-admin-grid{grid-template-columns:1fr;}}
 .date-select{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel);}
 .date-select button{padding:8px 13px;border:none;background:none;font-size:12.5px;font-weight:600;color:var(--muted);border-right:1px solid var(--line);cursor:pointer;}
 .date-select button:last-child{border-right:none;}
@@ -377,6 +410,9 @@ tbody tr:hover{background:var(--panel-sunk);}
       <div class="nav-group-label">Manage</div>
       <a class="nav-item" data-page="products" onclick="goPage('products')">
         <svg viewBox="0 0 24 24"><path d="M6 8V6a3 3 0 0 1 6 0v2"/><rect x="3.5" y="8" width="17" height="13" rx="2"/></svg>Products
+      </a>
+      <a class="nav-item" data-page="reels" onclick="goPage('reels')">
+        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Reels
       </a>
       <a class="nav-item" data-page="orders" onclick="goPage('orders')">
         <svg viewBox="0 0 24 24"><path d="M3 7h18l-1.5 12.5a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5L3 7Z"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>Orders
@@ -495,6 +531,22 @@ tbody tr:hover{background:var(--panel-sunk);}
         </div>
       </div>
       <div id="productsContainer"></div>
+    </section>
+
+    <!-- REELS PAGE -->
+    <section class="page" id="page-reels">
+      <div class="section-head">
+        <div><h2>Reels</h2><p>Manage the "In Motion" video section on the homepage</p></div>
+        <button class="btn btn-primary" onclick="openReelEditor()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add Reel
+        </button>
+      </div>
+      <div class="card pad-lg" style="margin-bottom:20px;background:var(--gold-tint);border-color:var(--gold);">
+        <p style="font-size:12.5px;color:var(--ink-soft);margin:0;line-height:1.6;">
+          <strong>How it works:</strong> Reels you add here appear in the "In Motion" strip on the homepage. Upload a video file (MP4) and a poster image (shown before the video plays). Changes go live as soon as you save.
+        </p>
+      </div>
+      <div id="reelsContainer"></div>
     </section>
 
     <!-- â•â•â• ORDERS â•â•â• -->
@@ -827,13 +879,30 @@ tbody tr:hover{background:var(--panel-sunk);}
     <div class="drawer-body">
       <div class="editor-grid">
         <div>
-          <div class="field"><label>Product image</label>
-            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-              <img id="uploadPreviewImg" style="display:none;">
-              <svg viewBox="0 0 24 24"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>
-              <p><b>Click to upload</b> or drag &amp; drop<br>PNG, JPG up to 10MB</p>
+          <!-- MULTI-PHOTO UPLOAD -->
+          <div class="field">
+            <label>Product photos <span style="font-weight:400;color:var(--muted);">(first = main thumbnail)</span></label>
+            <div class="photo-strip" id="photoStrip"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+              <button type="button" class="photo-add-btn" onclick="document.getElementById('multiFileInput').click()">
+                <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add photos
+              </button>
+              <span style="font-size:11.5px;color:var(--muted);">Click thumbnails to set main · drag to reorder (coming soon)</span>
             </div>
-            <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+            <input type="file" id="multiFileInput" accept="image/*" multiple style="display:none" onchange="handleMultiImageUpload(event)">
+          </div>
+          <!-- VIDEO UPLOAD -->
+          <div class="field">
+            <label>Product video <span style="font-weight:400;color:var(--muted);">(optional · shown on product detail)</span></label>
+            <div class="video-upload-zone" id="videoUploadZone" onclick="document.getElementById('videoFileInput').click()">
+              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <div>
+                <div id="videoUploadLabel" style="font-size:13px;font-weight:600;color:var(--ink-soft);">Click to upload a video</div>
+                <div style="font-size:11.5px;color:var(--muted);margin-top:2px;">MP4, MOV · max 100MB</div>
+              </div>
+              <button type="button" id="videoClearBtn" style="display:none;margin-left:auto;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:12px;color:var(--muted);cursor:pointer;" onclick="event.stopPropagation();clearProductVideo()">Remove</button>
+            </div>
+            <input type="file" id="videoFileInput" accept="video/*" style="display:none" onchange="handleProductVideoUpload(event)">
           </div>
           <div class="field"><label>Product title</label><input class="input" id="fTitle" placeholder="e.g. French Pearl" oninput="updateLivePreview()"></div>
           <div class="field"><label>Description</label><textarea class="textarea" id="fDesc" placeholder="Short, elegant description…" oninput="updateLivePreview()"></textarea></div>
@@ -871,6 +940,7 @@ tbody tr:hover{background:var(--panel-sunk);}
               <div class="pc-price"><span class="now" id="prevNow">₹999</span><span class="was" id="prevWas"></span></div>
             </div>
           </div>
+          <div style="margin-top:12px;" id="prevPhotoCount"></div>
         </div>
       </div>
     </div>
@@ -878,6 +948,74 @@ tbody tr:hover{background:var(--panel-sunk);}
       <button class="btn btn-ghost" onclick="closeEditor()">Cancel</button>
       <button class="btn btn-outline" onclick="saveProduct('draft')">Save as Draft</button>
       <button class="btn btn-primary" onclick="saveProduct('publish')">Save &amp; Publish</button>
+    </div>
+  </div>
+</div>
+
+<!-- REEL EDITOR DRAWER -->
+<div class="overlay" id="reelEditorOverlay">
+  <div class="drawer" style="width:min(640px,100%);">
+    <div class="drawer-head"><h3 id="reelEditorTitle">Add Reel</h3><button class="drawer-close" onclick="closeReelEditor()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="drawer-body">
+      <div class="field">
+        <label>Video file <span style="font-weight:400;color:var(--muted);">(MP4, MOV) or paste a URL below</span></label>
+        <div class="video-upload-zone" id="reelVideoZone" onclick="document.getElementById('reelVideoFileInput').click()">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <div style="flex:1;">
+            <div id="reelVideoLabel" style="font-size:13px;font-weight:600;color:var(--ink-soft);">Click to upload video</div>
+            <div style="font-size:11.5px;color:var(--muted);margin-top:2px;">MP4, MOV &middot; max 100MB</div>
+          </div>
+          <button type="button" id="reelVideoClearBtn" style="display:none;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:12px;color:var(--muted);cursor:pointer;" onclick="event.stopPropagation();clearReelVideo()">Remove</button>
+        </div>
+        <input type="file" id="reelVideoFileInput" accept="video/*" style="display:none" onchange="handleReelVideoUpload(event)">
+        <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11.5px;color:var(--muted);white-space:nowrap;">or paste URL:</span>
+          <input class="input" id="reelVideoUrl" placeholder="e.g. videos/Bridal2.mp4 or https://…" oninput="onReelVideoUrlInput()">
+        </div>
+      </div>
+      <div class="field">
+        <label>Poster / thumbnail image</label>
+        <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+          <div id="reelPosterPreview" style="width:120px;height:90px;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--panel-sunk);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div style="flex:1;min-width:180px;">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('reelPosterFileInput').click()">
+              <svg viewBox="0 0 24 24"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>Upload poster
+            </button>
+            <input type="file" id="reelPosterFileInput" accept="image/*" style="display:none" onchange="handleReelPosterUpload(event)">
+            <div style="margin-top:8px;"><input class="input" id="reelPosterUrl" placeholder="Or paste image URL" oninput="onReelPosterUrlInput()"></div>
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Title</label><input class="input" id="reelTitle" placeholder="e.g. Chrome Luxe"></div>
+        <div class="field"><label>Subtitle / tag</label><input class="input" id="reelSubtitle" placeholder="e.g. 04 &middot; Chrome"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Sort order <span style="font-weight:400;color:var(--muted);">(lower = first)</span></label><input class="input" type="number" id="reelOrder" value="1" min="1"></div>
+        <div class="field" style="display:flex;align-items:center;gap:10px;padding-top:22px;">
+          <div class="toggle on" id="reelVisible" onclick="this.classList.toggle('on')"></div>
+          <span class="t-title">Visible on homepage</span>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn btn-ghost" onclick="closeReelEditor()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveReel()" id="reelSaveBtn">Save Reel</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE REEL MODAL -->
+<div class="modal-overlay" id="deleteReelOverlay">
+  <div class="modal">
+    <div class="modal-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m-9 0 1 12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-12"/></svg></div>
+    <h3>Delete this reel?</h3>
+    <p id="deleteReelText">This will permanently remove it from the homepage.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeDeleteReelModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDeleteReel()">Delete reel</button>
     </div>
   </div>
 </div>
@@ -1021,6 +1159,8 @@ function fromDbProduct(row) {
     category: row.category,
     tags: row.tags || '',
     img: row.img || '',
+    photos: row.photos || (row.img ? [row.img] : []),
+    video: row.video || null,
   };
 }
 // Maps the dashboard UI shape back to Supabase row (snake_case) columns.
@@ -1037,6 +1177,8 @@ function toDbProduct(p) {
     stock: p.stock,
     tags: p.tags,
     img: p.img,
+    photos: p.photos || (p.img ? [p.img] : []),
+    video: p.video || null,
   };
 }
 async function loadProducts() {
@@ -1175,7 +1317,7 @@ Chart.defaults.font.family="'Inter',sans-serif";
 Chart.defaults.color='#93867C';
 Chart.defaults.borderColor='#F0E8DC';
 let charts={};
-const pageTitles={overview:'Dashboard',products:'Products',orders:'Orders',customers:'Customers',analytics:'Analytics',marketing:'Marketing',settings:'Settings'};
+const pageTitles={overview:'Dashboard',products:'Products',reels:'Reels',orders:'Orders',customers:'Customers',analytics:'Analytics',marketing:'Marketing',settings:'Settings'};
 
 /* ── NAV ── */
 async function goPage(page){
@@ -1186,6 +1328,7 @@ async function goPage(page){
   document.getElementById('topbarTitle').textContent=pageTitles[page];
   closeSidebar();
   if(page==='products'){ await loadProducts(); renderProducts(); } // re-fetch so edits from other devices show up
+  if(page==='reels'){ await loadReels(); renderReels(); }
   if(page==='orders')renderOrders();
   if(page==='customers'){renderCustomerKpis();renderCustomers();}
   if(page==='analytics'){initAnalyticsCharts();renderAnalyticsData();refreshAnalyticsCharts();}
@@ -1540,98 +1683,200 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 <script>
 /* ============================================================
-   PRODUCT EDITOR
+   PRODUCT EDITOR — multi-photo + video
 ============================================================ */
-let uploadedImage=null;
-function openProductEditor(id){
-  state.editingId=id||null;uploadedImage=null;
-  document.getElementById('editorTitle').textContent=id?'Edit product':'Add product';
-  const uz=document.getElementById('uploadZone');uz.classList.remove('has-img');
-  document.getElementById('uploadPreviewImg').style.display='none';
-  if(id){
-    const p=PRODUCTS.find(p=>p.id===id);
-    document.getElementById('fTitle').value=p.title;
-    document.getElementById('fDesc').value=p.desc;
-    document.getElementById('fOriginal').value=p.original;
-    document.getElementById('fDiscounted').value=p.discounted;
-    document.getElementById('fStatus').value=p.status;
-    document.getElementById('fCategory').value=p.category;
-    document.getElementById('fStock').value=p.stock||0;
-    document.getElementById('fTags').value=p.tags||'';
-    document.getElementById('fFeatured').classList.toggle('on',p.featured);
-    document.getElementById('fNew').classList.toggle('on',p.isNew);
-    uploadedImage=p.img;
-    const pi=document.getElementById('uploadPreviewImg');pi.src=p.img;pi.style.display='block';uz.classList.add('has-img');
-  }else{
-    ['fTitle','fDesc','fOriginal','fDiscounted','fTags'].forEach(id=>{document.getElementById(id).value='';});
-    document.getElementById('fStock').value='';
-    document.getElementById('fStatus').value='published';
-    document.getElementById('fCategory').value='Bridal';
+let uploadedPhotos = []; // array of {url, uploading}
+let uploadedProductVideo = null;
+let productVideoUploading = false;
+
+function renderPhotoStrip() {
+  const strip = document.getElementById('photoStrip');
+  if (!strip) return;
+  strip.innerHTML = uploadedPhotos.map((p, i) => `
+    <div class="photo-thumb" title="${i===0?'Main thumbnail':('Photo '+(i+1))}">
+      <img src="${p.url}" alt="">
+      ${p.uploading ? '<div style="position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;">Uploading…</div>' : ''}
+      ${i===0 ? '<span class="pt-main-badge">Main</span>' : ''}
+      <button class="pt-remove" onclick="removePhoto(${i})" title="Remove">&times;</button>
+    </div>`).join('');
+  // Update live preview with first photo
+  if (uploadedPhotos.length > 0 && uploadedPhotos[0].url) {
+    const pi = document.getElementById('prevImg');
+    if (pi) pi.src = uploadedPhotos[0].url;
+  }
+  const pc = document.getElementById('prevPhotoCount');
+  if (pc) pc.innerHTML = uploadedPhotos.length > 0
+    ? `<span style="font-size:11.5px;color:var(--muted);">📷 ${uploadedPhotos.length} photo${uploadedPhotos.length>1?'s':''} attached</span>`
+    : '';
+}
+
+function removePhoto(idx) {
+  uploadedPhotos.splice(idx, 1);
+  renderPhotoStrip();
+  updateLivePreview();
+}
+
+async function handleMultiImageUpload(e) {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
+  // Add placeholders immediately for instant feedback
+  const startIdx = uploadedPhotos.length;
+  files.forEach((f, i) => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      uploadedPhotos[startIdx + i] = { url: ev.target.result, uploading: true };
+      renderPhotoStrip();
+    };
+    reader.readAsDataURL(f);
+    uploadedPhotos.push({ url: '', uploading: true });
+  });
+  // Upload all in parallel
+  const uploads = files.map((file, i) =>
+    window.sbUploadImage(file)
+      .then(url => { uploadedPhotos[startIdx + i] = { url, uploading: false }; renderPhotoStrip(); })
+      .catch(err => { console.warn('[TNC] Photo upload failed:', err); uploadedPhotos.splice(startIdx + i, 1); renderPhotoStrip(); showToast('One photo failed to upload'); })
+  );
+  await Promise.allSettled(uploads);
+  e.target.value = '';
+}
+
+async function handleProductVideoUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  productVideoUploading = true;
+  const zone = document.getElementById('videoUploadZone');
+  const lbl = document.getElementById('videoUploadLabel');
+  if (zone) zone.classList.add('has-video');
+  if (lbl) lbl.textContent = 'Uploading video…';
+  try {
+    const url = await window.sbUploadVideo(file);
+    uploadedProductVideo = url;
+    if (lbl) lbl.textContent = file.name;
+    const cb = document.getElementById('videoClearBtn');
+    if (cb) cb.style.display = '';
+  } catch (err) {
+    console.warn('[TNC] Video upload failed:', err);
+    showToast('Video upload failed — check your connection');
+    if (zone) zone.classList.remove('has-video');
+    if (lbl) lbl.textContent = 'Click to upload a video';
+  } finally {
+    productVideoUploading = false;
+    e.target.value = '';
+  }
+}
+
+function clearProductVideo() {
+  uploadedProductVideo = null;
+  const zone = document.getElementById('videoUploadZone');
+  const lbl = document.getElementById('videoUploadLabel');
+  const cb = document.getElementById('videoClearBtn');
+  if (zone) zone.classList.remove('has-video');
+  if (lbl) lbl.textContent = 'Click to upload a video';
+  if (cb) cb.style.display = 'none';
+}
+
+function openProductEditor(id) {
+  state.editingId = id || null;
+  uploadedPhotos = [];
+  uploadedProductVideo = null;
+  productVideoUploading = false;
+  document.getElementById('editorTitle').textContent = id ? 'Edit product' : 'Add product';
+  clearProductVideo();
+  if (id) {
+    const p = PRODUCTS.find(p => p.id === id);
+    document.getElementById('fTitle').value = p.title;
+    document.getElementById('fDesc').value = p.desc;
+    document.getElementById('fOriginal').value = p.original;
+    document.getElementById('fDiscounted').value = p.discounted;
+    document.getElementById('fStatus').value = p.status;
+    document.getElementById('fCategory').value = p.category;
+    document.getElementById('fStock').value = p.stock || 0;
+    document.getElementById('fTags').value = p.tags || '';
+    document.getElementById('fFeatured').classList.toggle('on', p.featured);
+    document.getElementById('fNew').classList.toggle('on', p.isNew);
+    // Load existing photos — support both legacy single img and multi photos array
+    const photos = p.photos && p.photos.length ? p.photos : (p.img ? [p.img] : []);
+    uploadedPhotos = photos.map(url => ({ url, uploading: false }));
+    // Load existing video
+    if (p.video) {
+      uploadedProductVideo = p.video;
+      const zone = document.getElementById('videoUploadZone');
+      const lbl = document.getElementById('videoUploadLabel');
+      const cb = document.getElementById('videoClearBtn');
+      if (zone) zone.classList.add('has-video');
+      if (lbl) lbl.textContent = p.video.split('/').pop();
+      if (cb) cb.style.display = '';
+    }
+  } else {
+    ['fTitle', 'fDesc', 'fOriginal', 'fDiscounted', 'fTags'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('fStock').value = '';
+    document.getElementById('fStatus').value = 'published';
+    document.getElementById('fCategory').value = 'Bridal';
     document.getElementById('fFeatured').classList.remove('on');
     document.getElementById('fNew').classList.remove('on');
   }
+  renderPhotoStrip();
   updateLivePreview();
   document.getElementById('editorOverlay').classList.add('open');
 }
-function closeEditor(){document.getElementById('editorOverlay').classList.remove('open');}
-function toggleField(el){el.classList.toggle('on');updateLivePreview();}
-function handleImageUpload(e){
-  const file=e.target.files[0];if(!file)return;
-  // Show an instant local preview while the real file uploads in the background
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    const pi=document.getElementById('uploadPreviewImg');pi.src=ev.target.result;pi.style.display='block';
-    document.getElementById('uploadZone').classList.add('has-img');updateLivePreview();
-  };reader.readAsDataURL(file);
 
-  const zone=document.getElementById('uploadZone');
-  zone.classList.add('uploading');
-  window.sbUploadImage(file).then(url=>{
-    uploadedImage=url; // real hosted URL — this is what gets saved to the product
-    zone.classList.remove('uploading');
-  }).catch(err=>{
-    zone.classList.remove('uploading');
-    showToast('Image upload failed — check your connection');
-    console.warn('[TNC] Image upload failed:', err);
-  });
+function closeEditor() { document.getElementById('editorOverlay').classList.remove('open'); }
+function toggleField(el) { el.classList.toggle('on'); updateLivePreview(); }
+
+function updateLivePreview() {
+  const title = document.getElementById('fTitle').value || 'Product title';
+  const desc = document.getElementById('fDesc').value || 'Short description goes here.';
+  const original = parseFloat(document.getElementById('fOriginal').value) || 0;
+  const discounted = parseFloat(document.getElementById('fDiscounted').value) || original;
+  const status = document.getElementById('fStatus').value;
+  const featured = document.getElementById('fFeatured').classList.contains('on');
+  const isNew = document.getElementById('fNew').classList.contains('on');
+  document.getElementById('prevTitle').textContent = title;
+  document.getElementById('prevDesc').textContent = desc;
+  document.getElementById('prevNow').textContent = fmtINR(discounted || 0);
+  const pw = document.getElementById('prevWas'); pw.style.display = original > discounted ? 'inline' : 'none'; pw.textContent = fmtINR(original);
+  const sp = document.getElementById('prevStatusPill'); sp.textContent = status === 'published' ? 'Active' : 'Draft'; sp.className = 'pill ' + (status === 'published' ? 'pill-published' : 'pill-draft');
+  const disc = original > discounted && original > 0 ? Math.round((1 - discounted / original) * 100) : 0;
+  const de = document.getElementById('prevDiscount'); de.style.display = disc > 0 ? 'block' : 'none'; de.textContent = disc + '% OFF';
+  document.getElementById('prevTags').innerHTML = (featured ? '<span class="badge badge-featured">Featured</span>' : '') + (isNew ? '<span class="badge badge-new">New</span>' : '');
+  if (uploadedPhotos.length > 0 && uploadedPhotos[0].url) document.getElementById('prevImg').src = uploadedPhotos[0].url;
 }
-function updateLivePreview(){
-  const title=document.getElementById('fTitle').value||'Product title';
-  const desc=document.getElementById('fDesc').value||'Short description goes here.';
-  const original=parseFloat(document.getElementById('fOriginal').value)||0;
-  const discounted=parseFloat(document.getElementById('fDiscounted').value)||original;
-  const status=document.getElementById('fStatus').value;
-  const featured=document.getElementById('fFeatured').classList.contains('on');
-  const isNew=document.getElementById('fNew').classList.contains('on');
-  document.getElementById('prevTitle').textContent=title;
-  document.getElementById('prevDesc').textContent=desc;
-  document.getElementById('prevNow').textContent=fmtINR(discounted||0);
-  const pw=document.getElementById('prevWas');pw.style.display=original>discounted?'inline':'none';pw.textContent=fmtINR(original);
-  const sp=document.getElementById('prevStatusPill');sp.textContent=status==='published'?'Active':'Draft';sp.className='pill '+(status==='published'?'pill-published':'pill-draft');
-  const disc=original>discounted&&original>0?Math.round((1-discounted/original)*100):0;
-  const de=document.getElementById('prevDiscount');de.style.display=disc>0?'block':'none';de.textContent=disc+'% OFF';
-  document.getElementById('prevTags').innerHTML=(featured?'<span class="badge badge-featured">Featured</span>':'')+(isNew?'<span class="badge badge-new">New</span>':'');
-  if(uploadedImage)document.getElementById('prevImg').src=uploadedImage;
-}
-async function saveProduct(mode){
-  const title=document.getElementById('fTitle').value.trim();
-  if(!title){showToast('Please add a product title');return;}
-  if(document.getElementById('uploadZone').classList.contains('uploading')){showToast('Image is still uploading — one moment');return;}
-  const data={title,desc:document.getElementById('fDesc').value.trim()||'Handcrafted press-on nail set.',original:parseFloat(document.getElementById('fOriginal').value)||999,discounted:parseFloat(document.getElementById('fDiscounted').value)||parseFloat(document.getElementById('fOriginal').value)||999,status:mode==='publish'?'published':'draft',featured:document.getElementById('fFeatured').classList.contains('on'),isNew:document.getElementById('fNew').classList.contains('on'),category:document.getElementById('fCategory').value,stock:parseInt(document.getElementById('fStock').value)||0,tags:document.getElementById('fTags').value,img:uploadedImage||PRODUCT_IMAGES[Math.floor(Math.random()*PRODUCT_IMAGES.length)]};
-  const saveBtn=document.querySelector(mode==='publish'?'.btn-primary':'.btn-outline');
-  try{
-    if(state.editingId){
-      const row=await window.sbUpdateProduct(state.editingId,toDbProduct(data));
-      const idx=PRODUCTS.findIndex(p=>p.id===state.editingId);
-      PRODUCTS[idx]=fromDbProduct(row);
+
+async function saveProduct(mode) {
+  const title = document.getElementById('fTitle').value.trim();
+  if (!title) { showToast('Please add a product title'); return; }
+  const uploading = uploadedPhotos.some(p => p.uploading);
+  if (uploading || productVideoUploading) { showToast('Still uploading files — one moment'); return; }
+  const validPhotos = uploadedPhotos.filter(p => p.url && !p.uploading).map(p => p.url);
+  const mainImg = validPhotos[0] || PRODUCT_IMAGES[Math.floor(Math.random() * PRODUCT_IMAGES.length)];
+  const data = {
+    title,
+    desc: document.getElementById('fDesc').value.trim() || 'Handcrafted press-on nail set.',
+    original: parseFloat(document.getElementById('fOriginal').value) || 999,
+    discounted: parseFloat(document.getElementById('fDiscounted').value) || parseFloat(document.getElementById('fOriginal').value) || 999,
+    status: mode === 'publish' ? 'published' : 'draft',
+    featured: document.getElementById('fFeatured').classList.contains('on'),
+    isNew: document.getElementById('fNew').classList.contains('on'),
+    category: document.getElementById('fCategory').value,
+    stock: parseInt(document.getElementById('fStock').value) || 0,
+    tags: document.getElementById('fTags').value,
+    img: mainImg,
+    photos: validPhotos,
+    video: uploadedProductVideo || null,
+  };
+  try {
+    if (state.editingId) {
+      const row = await window.sbUpdateProduct(state.editingId, toDbProduct(data));
+      const idx = PRODUCTS.findIndex(p => p.id === state.editingId);
+      PRODUCTS[idx] = fromDbProduct(row);
       showToast('Product updated');
-    }else{
-      const row=await window.sbInsertProduct(toDbProduct({...data,views:0}));
+    } else {
+      const row = await window.sbInsertProduct(toDbProduct({ ...data, views: 0 }));
       PRODUCTS.unshift(fromDbProduct(row));
-      showToast(mode==='publish'?'Product published':'Saved as draft');
+      showToast(mode === 'publish' ? 'Product published' : 'Saved as draft');
     }
-    closeEditor();renderProducts();renderTopDesignsMini();
-  }catch(e){
+    closeEditor(); renderProducts(); renderTopDesignsMini();
+  } catch (e) {
     showToast('Could not save — check your connection');
     console.warn('[TNC] saveProduct failed:', e);
   }
@@ -1702,6 +1947,336 @@ function openOrderDrawer(id){
 function findProductImg(title){const p=PRODUCTS.find(p=>p.title.toLowerCase()===title.toLowerCase());return p?`<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`:'';}
 function updateOrderStatus(id,status){const o=ORDERS.find(o=>o.id===id);if(!o)return;o.status=status;showToast('Order '+id+' marked as '+status);closeOrderDrawer();renderOrders();}
 function closeOrderDrawer(){document.getElementById('orderOverlay').classList.remove('open');}
+
+/* ============================================================
+   REELS PAGE
+============================================================ */
+// All reels that are hardcoded in index.html — used as fallback when
+// the Supabase reels table is empty (first-time setup).
+const STATIC_REELS = [
+  { id:'s1',  title:'Collection Preview',  subtitle:'01 · Preview',  video_url:'videos/1_2.mp4',                                                    poster_url:'Images/rose-gloss.jpg',                        sort_order:1,  visible:true, _static:true },
+  { id:'s2',  title:'Bridal Dreams',       subtitle:'02 · Bridal',   video_url:'videos/2nd reel.mp4',                                               poster_url:'Images/Floral/floral4.jpeg',                   sort_order:2,  visible:true, _static:true },
+  { id:'s3',  title:'Bridal Showcase',     subtitle:'03 · Bridal',   video_url:'videos/Bridal2.mp4',                                                poster_url:'Images/Bridal/bridal1.jpg',                    sort_order:3,  visible:true, _static:true },
+  { id:'s4',  title:'Chrome Luxe',         subtitle:'04 · Chrome',   video_url:'videos/chrome3.mp4',                                                poster_url:'Images/chrome/Chrome1.jpeg',                   sort_order:4,  visible:true, _static:true },
+  { id:'s5',  title:'Navratri Festive',    subtitle:'05 · Navratri', video_url:'videos/Navrati.mp4',                                                poster_url:'Images/Festive/navrati vibe (1).JPG',          sort_order:5,  visible:true, _static:true },
+  { id:'s6',  title:'Navratri Special',    subtitle:'05b · Navratri',video_url:'videos/Navrati2.mp4',                                               poster_url:'Images/Festive/navrati vibe 1 (1).JPG',        sort_order:6,  visible:true, _static:true },
+  { id:'s7',  title:'Sea View Chrome',     subtitle:'06 · Chrome',   video_url:'videos/sea view.mp4',                                               poster_url:'Images/chrome/mirror-chrome.jpg',              sort_order:7,  visible:true, _static:true },
+  { id:'s8',  title:'Latest Drop',         subtitle:'07 · New',      video_url:'videos/WhatsApp Video 2026-07-24 at 5.30.57 PM.mp4',               poster_url:'Images/Festive/pink-chrome-oval.jpg',          sort_order:8,  visible:true, _static:true },
+  { id:'s9',  title:'Behind the Craft',    subtitle:'08 · Process',  video_url:'videos/WhatsApp Video 2026-07-24 at 5.31.11 PM.mp4',               poster_url:'Images/CatEye/Cateye.jpg',                     sort_order:9,  visible:true, _static:true },
+  { id:'s10', title:'Polka Play',          subtitle:'09 · Polka',    video_url:'videos/Polka.mp4',                                                  poster_url:'Images/Polka/Polka1.JPG',                      sort_order:10, visible:true, _static:true },
+  { id:'s11', title:'Polka Dots',          subtitle:'10 · Polka',    video_url:'videos/polka (2).mp4',                                              poster_url:'Images/Polka/Polka2.JPG',                      sort_order:11, visible:true, _static:true },
+];
+
+let REELS = [];
+let reelState = { editingId: null, deleteTargetId: null, videoUrl: null, posterUrl: null, videoUploading: false, posterUploading: false };
+
+async function loadReels() {
+  try {
+    const dbReels = await window.sbFetchReels();
+    // If the database has reels, use those exclusively (admin has taken ownership)
+    if (dbReels && dbReels.length > 0) {
+      REELS = dbReels;
+    } else {
+      // First time — seed from the static list so the admin sees all existing videos
+      REELS = STATIC_REELS.map(r => ({ ...r }));
+    }
+  } catch(e) {
+    console.warn('[TNC] Could not load reels from database, using static list:', e);
+    REELS = STATIC_REELS.map(r => ({ ...r }));
+  }
+}
+
+function renderReels() {
+  const container = document.getElementById('reelsContainer');
+  if (!container) return;
+  if (!REELS.length) {
+    container.innerHTML = `<div class="state-block"><div class="state-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div><h3>No reels yet</h3><p>Add your first reel to feature it on the homepage.</p><button class="btn btn-primary" onclick="openReelEditor()">+ Add Reel</button></div>`;
+    return;
+  }
+  container.innerHTML = `<div class="reel-admin-grid">${REELS.map(r => reelCardHTML(r)).join('')}</div>`;
+}
+
+function reelCardHTML(r) {
+  const visible = r.visible !== false;
+  const hasPoster = r.poster_url;
+  const hasVideo = r.video_url;
+  const rid = JSON.stringify(r.id); // handles both numeric db ids and string static ids
+  const isStatic = !!r._static;
+  return `
+    <div class="reel-admin-card">
+      <div class="rac-media">
+        ${hasPoster
+          ? `<img src="${r.poster_url}" alt="${r.title||'Reel'}" onerror="this.style.display='none'">`
+          : hasVideo
+            ? `<video src="${r.video_url}" muted playsinline preload="none" style="width:100%;height:100%;object-fit:cover;display:block;"></video>`
+            : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--panel-sunk);"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.4" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>`}
+        <span class="rac-visible-badge ${visible?'on':'off'}">${visible?'Visible':'Hidden'}</span>
+        ${isStatic ? '<span style="position:absolute;top:8px;left:8px;font-size:9px;font-weight:700;padding:3px 7px;border-radius:5px;background:rgba(176,138,85,.85);color:#fff;">From website</span>' : ''}
+      </div>
+      <div class="rac-body">
+        <div class="rac-title">${r.title || 'Untitled reel'}</div>
+        <div class="rac-sub">${r.subtitle || ''}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Order: ${r.sort_order || 1} &middot; ${hasVideo ? '<span style="color:var(--sage);">✓ Video</span>' : '<span style="color:var(--rust);">No video</span>'} &middot; ${hasPoster ? '<span style="color:var(--sage);">✓ Poster</span>' : '<span style="color:var(--muted);">No poster</span>'}</div>
+      </div>
+      <div class="rac-actions">
+        <button class="btn btn-outline btn-sm" onclick="openReelEditor(${rid})">Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick="toggleReelVisibility(${rid})">${visible?'Hide':'Show'}</button>
+        <button class="btn btn-ghost btn-sm" onclick="askDeleteReel(${rid})" style="color:var(--rust);">Delete</button>
+      </div>
+    </div>`;
+}
+
+function openReelEditor(id) {
+  reelState.editingId = id || null;
+  reelState.videoUrl = null;
+  reelState.posterUrl = null;
+  reelState.videoUploading = false;
+  reelState.posterUploading = false;
+  document.getElementById('reelEditorTitle').textContent = id ? 'Edit Reel' : 'Add Reel';
+  // Reset video zone
+  const vz = document.getElementById('reelVideoZone');
+  const vl = document.getElementById('reelVideoLabel');
+  const vcb = document.getElementById('reelVideoClearBtn');
+  if (vz) vz.classList.remove('has-video');
+  if (vl) vl.textContent = 'Click to upload video';
+  if (vcb) vcb.style.display = 'none';
+  // Reset poster
+  const pp = document.getElementById('reelPosterPreview');
+  if (pp) pp.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+  // Reset fields
+  ['reelTitle','reelSubtitle','reelVideoUrl','reelPosterUrl'].forEach(fid => { const el = document.getElementById(fid); if (el) el.value = ''; });
+  document.getElementById('reelOrder').value = REELS.length + 1;
+  document.getElementById('reelVisible').classList.add('on');
+  if (id !== null && id !== undefined) {
+    const r = REELS.find(r => String(r.id) === String(id));
+    if (r) {
+      document.getElementById('reelTitle').value = r.title || '';
+      document.getElementById('reelSubtitle').value = r.subtitle || '';
+      document.getElementById('reelOrder').value = r.sort_order || 1;
+      document.getElementById('reelVisible').classList.toggle('on', r.visible !== false);
+      if (r.video_url) {
+        reelState.videoUrl = r.video_url;
+        document.getElementById('reelVideoUrl').value = r.video_url;
+        if (vz) vz.classList.add('has-video');
+        if (vl) vl.textContent = r.video_url.split('/').pop();
+        if (vcb) vcb.style.display = '';
+      }
+      if (r.poster_url) {
+        reelState.posterUrl = r.poster_url;
+        document.getElementById('reelPosterUrl').value = r.poster_url;
+        if (pp) pp.innerHTML = `<img src="${r.poster_url}" style="width:100%;height:100%;object-fit:cover;" alt="">`;
+      }
+    }
+  }
+  document.getElementById('reelEditorOverlay').classList.add('open');
+}
+
+function closeReelEditor() { document.getElementById('reelEditorOverlay').classList.remove('open'); }
+
+async function handleReelVideoUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  reelState.videoUploading = true;
+  const vz = document.getElementById('reelVideoZone');
+  const vl = document.getElementById('reelVideoLabel');
+  if (vz) vz.classList.add('has-video');
+  if (vl) vl.textContent = 'Uploading…';
+  try {
+    const url = await window.sbUploadVideo(file);
+    reelState.videoUrl = url;
+    document.getElementById('reelVideoUrl').value = url;
+    if (vl) vl.textContent = file.name;
+    const vcb = document.getElementById('reelVideoClearBtn');
+    if (vcb) vcb.style.display = '';
+  } catch (err) {
+    showToast('Video upload failed — check your connection');
+    if (vz) vz.classList.remove('has-video');
+    if (vl) vl.textContent = 'Click to upload video';
+  } finally {
+    reelState.videoUploading = false;
+    e.target.value = '';
+  }
+}
+
+function clearReelVideo() {
+  reelState.videoUrl = null;
+  document.getElementById('reelVideoUrl').value = '';
+  const vz = document.getElementById('reelVideoZone');
+  const vl = document.getElementById('reelVideoLabel');
+  const vcb = document.getElementById('reelVideoClearBtn');
+  if (vz) vz.classList.remove('has-video');
+  if (vl) vl.textContent = 'Click to upload video';
+  if (vcb) vcb.style.display = 'none';
+}
+
+function onReelVideoUrlInput() {
+  const val = document.getElementById('reelVideoUrl').value.trim();
+  reelState.videoUrl = val || null;
+  const vz = document.getElementById('reelVideoZone');
+  const vl = document.getElementById('reelVideoLabel');
+  const vcb = document.getElementById('reelVideoClearBtn');
+  if (val) {
+    if (vz) vz.classList.add('has-video');
+    if (vl) vl.textContent = val.split('/').pop();
+    if (vcb) vcb.style.display = '';
+  } else {
+    if (vz) vz.classList.remove('has-video');
+    if (vl) vl.textContent = 'Click to upload video';
+    if (vcb) vcb.style.display = 'none';
+  }
+}
+
+async function handleReelPosterUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  reelState.posterUploading = true;
+  const btn = document.getElementById('reelPosterBtn');
+  if (btn) btn.textContent = 'Uploading…';
+  try {
+    const url = await window.sbUploadBrandImage(file, 'reels');
+    reelState.posterUrl = url;
+    document.getElementById('reelPosterUrl').value = url;
+    const pp = document.getElementById('reelPosterPreview');
+    if (pp) pp.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;" alt="">`;
+  } catch (err) {
+    showToast('Poster upload failed — check your connection');
+  } finally {
+    reelState.posterUploading = false;
+    if (btn) btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px;"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>Upload poster';
+    e.target.value = '';
+  }
+}
+
+function onReelPosterUrlInput() {
+  const val = document.getElementById('reelPosterUrl').value.trim();
+  reelState.posterUrl = val || null;
+  const pp = document.getElementById('reelPosterPreview');
+  if (!pp) return;
+  if (val) {
+    pp.innerHTML = `<img src="${val}" style="width:100%;height:100%;object-fit:cover;" alt="" onerror="this.parentElement.innerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none stroke=var(--muted) stroke-width=1.5 stroke-linecap=round><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=&quot;21 15 16 10 5 21&quot;/></svg>'">`;
+  } else {
+    pp.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+  }
+}
+
+async function saveReel() {
+  if (reelState.videoUploading || reelState.posterUploading) { showToast('Still uploading — one moment'); return; }
+  const videoUrl = reelState.videoUrl || document.getElementById('reelVideoUrl').value.trim();
+  const posterUrl = reelState.posterUrl || document.getElementById('reelPosterUrl').value.trim();
+  if (!videoUrl && !posterUrl) { showToast('Please add a video or poster image'); return; }
+  const data = {
+    title: document.getElementById('reelTitle').value.trim() || 'Untitled Reel',
+    subtitle: document.getElementById('reelSubtitle').value.trim() || '',
+    video_url: videoUrl || null,
+    poster_url: posterUrl || null,
+    sort_order: parseInt(document.getElementById('reelOrder').value) || REELS.length + 1,
+    visible: document.getElementById('reelVisible').classList.contains('on'),
+  };
+  const btn = document.getElementById('reelSaveBtn');
+  if (btn) btn.disabled = true;
+  try {
+    const editId = reelState.editingId;
+    const existingReel = editId !== null && editId !== undefined ? REELS.find(r => String(r.id) === String(editId)) : null;
+    const isStaticReel = existingReel && existingReel._static;
+
+    if (editId !== null && editId !== undefined && !isStaticReel) {
+      // Normal db update
+      const row = await window.sbUpdateReel(editId, data);
+      const idx = REELS.findIndex(r => String(r.id) === String(editId));
+      if (idx >= 0) REELS[idx] = row; else REELS.push(row);
+      showToast('Reel updated');
+    } else {
+      // New reel OR promoting a static reel to the database
+      // When we save ANY reel (new or promoted static) to the db for the
+      // first time, we also need to save ALL static reels so the db
+      // becomes the source of truth and we don't lose the others.
+      const dbAlreadyHasReels = REELS.some(r => !r._static);
+      if (!dbAlreadyHasReels) {
+        // First time saving — bulk-insert all static reels first
+        const toInsert = REELS.filter(r => r._static && String(r.id) !== String(editId));
+        for (const sr of toInsert) {
+          try {
+            const row = await window.sbInsertReel({
+              title: sr.title, subtitle: sr.subtitle,
+              video_url: sr.video_url, poster_url: sr.poster_url,
+              sort_order: sr.sort_order, visible: sr.visible !== false,
+            });
+            const idx = REELS.findIndex(r => String(r.id) === String(sr.id));
+            if (idx >= 0) REELS[idx] = row;
+          } catch(e) { console.warn('[TNC] Could not promote static reel:', sr.title, e); }
+        }
+      }
+      // Now insert the edited/new reel
+      const row = await window.sbInsertReel(data);
+      if (isStaticReel) {
+        const idx = REELS.findIndex(r => String(r.id) === String(editId));
+        if (idx >= 0) REELS[idx] = row; else REELS.push(row);
+      } else {
+        REELS.push(row);
+        REELS.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+      }
+      showToast(isStaticReel ? 'Reel updated & saved to database' : 'Reel added to homepage');
+    }
+    closeReelEditor();
+    renderReels();
+  } catch (e) {
+    showToast('Could not save reel — check your connection');
+    console.warn('[TNC] saveReel failed:', e);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function toggleReelVisibility(id) {
+  const r = REELS.find(r => String(r.id) === String(id));
+  if (!r) return;
+  const newVis = !(r.visible !== false);
+  // For static reels, just toggle locally (no db row yet)
+  if (r._static) {
+    r.visible = newVis;
+    renderReels();
+    showToast('Reel ' + (newVis ? 'now visible' : 'hidden') + ' (save edits to persist)');
+    return;
+  }
+  try {
+    await window.sbUpdateReel(id, { visible: newVis });
+    r.visible = newVis;
+    renderReels();
+    showToast('Reel ' + (newVis ? 'now visible' : 'hidden'));
+  } catch (e) {
+    showToast('Could not update — check your connection');
+  }
+}
+
+function askDeleteReel(id) {
+  reelState.deleteTargetId = id;
+  const r = REELS.find(r => String(r.id) === String(id));
+  const el = document.getElementById('deleteReelText');
+  if (el && r) el.textContent = '"' + (r.title || 'This reel') + '" will be permanently removed from the homepage.';
+  document.getElementById('deleteReelOverlay').classList.add('open');
+}
+function closeDeleteReelModal() { document.getElementById('deleteReelOverlay').classList.remove('open'); reelState.deleteTargetId = null; }
+async function confirmDeleteReel() {
+  const id = reelState.deleteTargetId;
+  const r = REELS.find(r => String(r.id) === String(id));
+  // Static reels only exist locally — just remove from array
+  if (r && r._static) {
+    REELS = REELS.filter(r => String(r.id) !== String(id));
+    closeDeleteReelModal();
+    renderReels();
+    showToast('Reel removed');
+    return;
+  }
+  try {
+    await window.sbDeleteReel(id);
+    REELS = REELS.filter(r => String(r.id) !== String(id));
+    showToast('Reel deleted');
+  } catch (e) {
+    showToast('Could not delete — check your connection');
+  }
+  closeDeleteReelModal();
+  renderReels();
+}
 
 /* ============================================================
    CUSTOMERS PAGE
@@ -2199,7 +2774,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => { renderKpis(); renderTopDesignsMini(); renderRecentOrders(); initOverviewCharts(); }, 400);
     setTimeout(() => applyRoleRestrictions(role || getCurrentRole()), 500);
     // Close overlays on backdrop click
-    ['editorOverlay','customerOverlay','deleteOverlay','discountOverlay','orderOverlay','inviteOverlay','removeMemberOverlay'].forEach(id => {
+    ['editorOverlay','customerOverlay','deleteOverlay','discountOverlay','orderOverlay','inviteOverlay','removeMemberOverlay','reelEditorOverlay','deleteReelOverlay'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
     });

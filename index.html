@@ -345,7 +345,7 @@ body { background: #fff; color: #322C2C; font-family: 'DM Sans', sans-serif; ove
       </a>
     </div>
 
-    <div id="reels-strip" class="flex gap-5 overflow-x-auto pb-4 no-scrollbar items-stretch">
+    <div id="reels-strip" class="flex gap-5 overflow-x-auto pb-4 no-scrollbar items-stretch" data-static-count="10">
 
       <!-- Reel 1 -->
       <div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
@@ -933,6 +933,41 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Wait for products from the database to merge into DESIGNS
   // before rendering the collection, so newly-added items show up.
   if (window.DESIGNS_READY) { try { await window.DESIGNS_READY; } catch(e) {} }
+
+  // ── Dynamic Reels from Supabase ──
+  // If the admin has added reels via the dashboard, load them and replace
+  // the static hardcoded strip. Falls back to the static HTML if Supabase
+  // is unreachable or no reels are stored yet.
+  (async function loadDynamicReels() {
+    try {
+      if (!window.sbFetchReels) return;
+      const reels = await window.sbFetchReels();
+      const visible = reels.filter(r => r.visible !== false);
+      if (!visible.length) return; // keep static fallback
+      const strip = document.getElementById('reels-strip');
+      if (!strip) return;
+      const igBadge = `<a href="https://www.instagram.com/theenaiilsclub/reels/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="ig-reel-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Instagram</a>`;
+      const playBtn = `<div class="reel-overlay"><div class="w-14 h-14 rounded-full border border-white/60 flex items-center justify-center" style="background:rgba(50,44,44,0.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>`;
+      strip.innerHTML = visible.map(r => {
+        const poster = r.poster_url ? `poster="${r.poster_url}"` : '';
+        const media = r.video_url
+          ? `<video src="${r.video_url}" ${poster} playsinline preload="none" loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>`
+          : (r.poster_url ? `<img src="${r.poster_url}" style="width:100%;height:100%;object-fit:cover;display:block;" alt="${r.title||''}">` : '');
+        return `<div class="reel-card shrink-0" style="width:clamp(300px,58vw,440px);aspect-ratio:4/3;" onclick="toggleReel(this)">
+          ${media}
+          ${playBtn}
+          <div class="reel-meta pointer-events-none">
+            <p class="font-serif italic text-white text-base leading-tight mb-0.5">${r.title||''}</p>
+            <p class="font-sans text-[9px] tracking-widest uppercase text-white/55">${r.subtitle||''}</p>
+          </div>
+          ${igBadge}
+        </div>`;
+      }).join('') + '<div class="shrink-0 w-4"></div>';
+    } catch(e) {
+      console.warn('[TNC] Could not load dynamic reels:', e);
+    }
+  })();
+
   renderCategoryCards();
   if (typeof currentCatFilter !== 'undefined' && currentCatFilter) renderCatDesigns();
 

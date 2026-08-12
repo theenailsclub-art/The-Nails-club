@@ -350,6 +350,44 @@ window.sbUpdateTeamMemberRole = async function(id, role) {
 };
 
 // ═══════════════════════════════════════
+// REELS — homepage "In Motion" section
+// Each reel has: title, subtitle, video_url, poster_url, sort_order, visible
+// ═══════════════════════════════════════
+window.sbFetchReels = async function() {
+  if (!sb) return [];
+  var res = await sb.from('reels').select('*').order('sort_order', { ascending: true });
+  if (res.error) { console.warn('[TNC] Fetch reels failed:', res.error.message); return []; }
+  return res.data || [];
+};
+
+window.sbInsertReel = async function(data) {
+  var res = await sb.from('reels').insert([data]).select().single();
+  if (res.error) throw res.error;
+  return res.data;
+};
+
+window.sbUpdateReel = async function(id, data) {
+  var res = await sb.from('reels').update(data).eq('id', id).select().single();
+  if (res.error) throw res.error;
+  return res.data;
+};
+
+window.sbDeleteReel = async function(id) {
+  var res = await sb.from('reels').delete().eq('id', id);
+  if (res.error) throw res.error;
+};
+
+// Uploads a video file to the 'product-images' bucket under a 'reels/' subfolder.
+window.sbUploadVideo = async function(file) {
+  var ext = (file.name.split('.').pop() || 'mp4').toLowerCase();
+  var path = 'reels/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.' + ext;
+  var res = await sb.storage.from('product-images').upload(path, file);
+  if (res.error) throw res.error;
+  var pub = sb.storage.from('product-images').getPublicUrl(path);
+  return pub.data.publicUrl;
+};
+
+// ═══════════════════════════════════════
 // SHARED ORDER MODAL — used by index.html, collection.html
 // and premium_product_page.html whenever someone taps
 // "Order via WhatsApp" / "Order via Instagram DM".
