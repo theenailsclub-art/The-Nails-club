@@ -172,8 +172,8 @@ const DESIGNS = [
 // Products added/edited in the admin dashboard are stored in a real
 // Supabase (Postgres) database, not localStorage — so they show up
 // for every visitor, on any device/browser, immediately.
-const SUPABASE_URL = 'https://cjpocvqilirddqwdpima.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_2mocdWKpjhDGPDPkQmcHcA_ocgmnIMO';
+const SUPABASE_URL = 'https://tggzcajcmjyfubdxfldw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_XtRBmgvzgVbS9OiXTFZV6w_h97QYq-n';
 
 // window.supabase is provided by the supabase-js CDN script tag,
 // which must be included on every page BEFORE this file.
