@@ -2057,16 +2057,19 @@ let CATEGORIES = [];
 let categoryState = { editingId: null, deleteTargetId: null, imgUrl: null, imgUploading: false };
 
 async function loadCategories() {
+  // NOTE: no more falling back to STATIC_CATEGORIES when the table is
+  // empty — the database is now always the source of truth. An empty
+  // table means an empty Categories page, ready for you to add fresh
+  // ones from the dashboard. This also removes the old bug where an
+  // empty read (bad connection, blocked storage, etc.) would silently
+  // re-seed the 11 old hardcoded categories and cause duplicate-key
+  // conflicts when deleting.
   try {
     const dbCats = await window.sbFetchCategories();
-    if (dbCats && dbCats.length > 0) {
-      CATEGORIES = dbCats;
-    } else {
-      CATEGORIES = STATIC_CATEGORIES.map(c => ({ ...c }));
-    }
+    CATEGORIES = dbCats || [];
   } catch (e) {
-    console.warn('[TNC] Could not load categories from database, using static list:', e);
-    CATEGORIES = STATIC_CATEGORIES.map(c => ({ ...c }));
+    console.warn('[TNC] Could not load categories from database:', e);
+    CATEGORIES = [];
   }
   renderCategoryDropdown();
 }
