@@ -1789,21 +1789,36 @@ async function handleMultiImageUpload(e) {
   // Add placeholders immediately for instant feedback
   const startIdx = uploadedPhotos.length;
   files.forEach((f, i) => {
+    uploadedPhotos.push({ url: '', uploading: true, failed: false });
     const reader = new FileReader();
     reader.onload = ev => {
-      uploadedPhotos[startIdx + i] = { url: ev.target.result, uploading: true };
-      renderPhotoStrip();
+      // Guard with the object reference, not the index — indices must
+      // stay stable while uploads are in flight (see note below).
+      const slot = uploadedPhotos[startIdx + i];
+      if (slot) { slot.url = ev.target.result; renderPhotoStrip(); }
     };
     reader.readAsDataURL(f);
-    uploadedPhotos.push({ url: '', uploading: true });
   });
-  // Upload all in parallel
+  // Upload all in parallel. IMPORTANT: never splice() out of
+  // uploadedPhotos while other uploads in this same batch are still in
+  // flight — splicing shifts every later index down by one, so a
+  // still-running upload writing to its original "startIdx+i" slot would
+  // land on/overwrite the wrong photo. Instead just mark failures and
+  // clean them up once every upload in the batch has settled.
   const uploads = files.map((file, i) =>
     window.sbUploadImage(file)
-      .then(url => { uploadedPhotos[startIdx + i] = { url, uploading: false }; renderPhotoStrip(); })
-      .catch(err => { console.warn('[TNC] Photo upload failed:', err); uploadedPhotos.splice(startIdx + i, 1); renderPhotoStrip(); showToast('One photo failed to upload'); })
+      .then(url => { uploadedPhotos[startIdx + i] = { url, uploading: false, failed: false }; renderPhotoStrip(); })
+      .catch(err => {
+        console.warn('[TNC] Photo upload failed:', err);
+        uploadedPhotos[startIdx + i] = { url: '', uploading: false, failed: true };
+        renderPhotoStrip();
+      })
   );
   await Promise.allSettled(uploads);
+  const failedCount = uploadedPhotos.slice(startIdx).filter(p => p.failed).length;
+  uploadedPhotos = uploadedPhotos.filter(p => !p.failed);
+  if (failedCount > 0) showToast(failedCount === 1 ? 'One photo failed to upload' : failedCount + ' photos failed to upload');
+  renderPhotoStrip();
   e.target.value = '';
 }
 
@@ -2244,20 +2259,32 @@ function closeDeleteCategoryModal() { document.getElementById('deleteCategoryOve
 async function confirmDeleteCategory() {
   const id = categoryState.deleteTargetId;
   const c = CATEGORIES.find(c => String(c.id) === String(id));
-  if (c && c._static) {
-    CATEGORIES = CATEGORIES.filter(c => String(c.id) !== String(id));
-    closeDeleteCategoryModal();
-    renderCategories();
-    renderCategoryDropdown();
-    showToast('Category removed');
-    return;
-  }
   try {
-    await window.sbDeleteCategory(id);
-    CATEGORIES = CATEGORIES.filter(c => String(c.id) !== String(id));
+    if (c && c._static) {
+      // This category was never actually saved to the database — the
+      // whole list is still coming from the static fallback. Removing it
+      // only from memory means the next page load sees an empty table
+      // and reloads all 11 statics again, deleted one included. So we
+      // promote every OTHER static category into the database now (same
+      // logic saveCategory() uses), skipping this one — the database
+      // becomes the source of truth and the deletion sticks.
+      const toInsert = CATEGORIES.filter(cat => cat._static && String(cat.id) !== String(id));
+      for (const sc of toInsert) {
+        try {
+          const row = await window.sbInsertCategory({ key: sc.key, label: sc.label, subtitle: sc.subtitle, cover_img: sc.cover_img, sort_order: sc.sort_order });
+          const idx = CATEGORIES.findIndex(cat => String(cat.id) === String(sc.id));
+          if (idx >= 0) CATEGORIES[idx] = row;
+        } catch (e) { console.warn('[TNC] Could not promote static category:', sc.label, e); }
+      }
+      CATEGORIES = CATEGORIES.filter(cat => String(cat.id) !== String(id));
+    } else {
+      await window.sbDeleteCategory(id);
+      CATEGORIES = CATEGORIES.filter(cat => String(cat.id) !== String(id));
+    }
     showToast('Category deleted');
   } catch (e) {
     showToast('Could not delete — check your connection');
+    console.warn('[TNC] confirmDeleteCategory failed:', e);
   }
   closeDeleteCategoryModal();
   renderCategories();
