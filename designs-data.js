@@ -145,6 +145,33 @@ function mergeDbProductIntoDesigns(p) {
   });
 }
 
+// ── CATEGORIES ──
+// Resolves once categories from the database have been merged into
+// catLabels / catCovers (mutated IN PLACE — never reassigned — so
+// every page that already reads these two objects picks up admin
+// edits automatically, with no changes needed on those pages).
+window.CATEGORIES_READY = (async function loadCategoriesFromDb() {
+  if (!sb) return;
+  try {
+    var res = await sb.from('categories').select('*').order('sort_order', { ascending: true });
+    if (res.error) { console.warn('[TNC] Could not load categories from database:', res.error.message); return; }
+    var rows = res.data || [];
+    // Only once the admin has saved at least one category to the
+    // database do we treat it as the source of truth — until then,
+    // the hardcoded defaults above keep the site looking normal.
+    if (rows.length > 0) {
+      Object.keys(catLabels).forEach(function(k) { delete catLabels[k]; });
+      Object.keys(catCovers).forEach(function(k) { delete catCovers[k]; });
+      rows.forEach(function(c) {
+        catLabels[c.key] = c.label;
+        catCovers[c.key] = { img: c.cover_img || '', sub: c.subtitle || '' };
+      });
+    }
+  } catch (e) {
+    console.warn('[TNC] Could not load categories from database:', e);
+  }
+})();
+
 // ── PUBLIC-FACING FETCH ──
 // Resolves once published products from the database have been merged
 // into DESIGNS. Every page that renders the collection grid should
@@ -152,6 +179,7 @@ function mergeDbProductIntoDesigns(p) {
 window.DESIGNS_READY = (async function loadPublishedProducts() {
   if (!sb) { console.warn('[TNC] Supabase client not available (check script include order)'); return; }
   try {
+    await window.CATEGORIES_READY; // make sure catLabels/catCovers reflect the db first
     var res = await sb.from('products').select('*').eq('status', 'published').order('created_at', { ascending: false });
     if (res.error) { console.warn('[TNC] Could not load products from database:', res.error.message); return; }
     (res.data || []).forEach(mergeDbProductIntoDesigns);
@@ -184,6 +212,31 @@ window.sbUpdateProduct = async function(id, data) {
 
 window.sbDeleteProduct = async function(id) {
   var res = await sb.from('products').delete().eq('id', id);
+  if (res.error) throw res.error;
+};
+
+// ── CATEGORY MANAGEMENT (admin dashboard) ──
+window.sbFetchCategories = async function() {
+  if (!sb) return [];
+  var res = await sb.from('categories').select('*').order('sort_order', { ascending: true });
+  if (res.error) { console.warn('[TNC] Fetch categories failed:', res.error.message); return []; }
+  return res.data || [];
+};
+
+window.sbInsertCategory = async function(data) {
+  var res = await sb.from('categories').insert([data]).select().single();
+  if (res.error) throw res.error;
+  return res.data;
+};
+
+window.sbUpdateCategory = async function(id, data) {
+  var res = await sb.from('categories').update(data).eq('id', id).select().single();
+  if (res.error) throw res.error;
+  return res.data;
+};
+
+window.sbDeleteCategory = async function(id) {
+  var res = await sb.from('categories').delete().eq('id', id);
   if (res.error) throw res.error;
 };
 

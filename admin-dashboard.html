@@ -411,6 +411,9 @@ tbody tr:hover{background:var(--panel-sunk);}
       <a class="nav-item" data-page="products" onclick="goPage('products')">
         <svg viewBox="0 0 24 24"><path d="M6 8V6a3 3 0 0 1 6 0v2"/><rect x="3.5" y="8" width="17" height="13" rx="2"/></svg>Products
       </a>
+      <a class="nav-item" data-page="categories" onclick="goPage('categories')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Categories
+      </a>
       <a class="nav-item" data-page="reels" onclick="goPage('reels')">
         <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Reels
       </a>
@@ -534,6 +537,22 @@ tbody tr:hover{background:var(--panel-sunk);}
     </section>
 
     <!-- REELS PAGE -->
+    <!-- ══ CATEGORIES ══ -->
+    <section class="page" id="page-categories">
+      <div class="section-head">
+        <div><h2>Categories</h2><p>Edit category names, taglines, and cover photos shown across the site</p></div>
+        <button class="btn btn-primary" onclick="openCategoryEditor()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add Category
+        </button>
+      </div>
+      <div class="card pad-lg" style="margin-bottom:20px;background:var(--gold-tint);border-color:var(--gold);">
+        <p style="font-size:12.5px;color:var(--ink-soft);margin:0;line-height:1.6;">
+          <strong>How it works:</strong> These are the categories customers filter by on the homepage and collection page. Editing a name, tagline, or cover photo here updates it everywhere on the live site — no code changes needed. The internal key used to link products to a category can't be changed after a category is created, to avoid breaking existing products.
+        </p>
+      </div>
+      <div id="categoriesContainer"></div>
+    </section>
+
     <section class="page" id="page-reels">
       <div class="section-head">
         <div><h2>Reels</h2><p>Manage the "In Motion" video section on the homepage</p></div>
@@ -915,7 +934,7 @@ tbody tr:hover{background:var(--panel-sunk);}
             <div class="field"><label>Stock quantity</label><input class="input" type="number" id="fStock" placeholder="50" min="0"></div>
             <div class="field"><label>Category</label>
               <select class="select" id="fCategory">
-                <option>Bridal</option><option>Festive</option><option>Chrome</option><option>Floral</option><option>Minimal</option><option>French</option><option>CatEye</option><option>Polka</option><option>Gloss</option><option>BabyShower</option><option>PressOn</option><option>Manicure</option>
+                <!-- populated at runtime by renderCategoryDropdown() from the Categories page -->
               </select>
             </div>
           </div>
@@ -1003,6 +1022,53 @@ tbody tr:hover{background:var(--panel-sunk);}
     <div class="drawer-foot">
       <button class="btn btn-ghost" onclick="closeReelEditor()">Cancel</button>
       <button class="btn btn-primary" onclick="saveReel()" id="reelSaveBtn">Save Reel</button>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY EDITOR -->
+<div class="overlay" id="categoryEditorOverlay">
+  <div class="drawer" style="width:min(560px,100%);">
+    <div class="drawer-head"><h3 id="categoryEditorTitle">Add Category</h3><button class="drawer-close" onclick="closeCategoryEditor()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="drawer-body">
+      <div class="field">
+        <label>Cover photo</label>
+        <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+          <div id="categoryImgPreview" style="width:140px;height:105px;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--panel-sunk);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div style="flex:1;min-width:180px;">
+            <button type="button" id="categoryImgBtn" class="btn btn-ghost btn-sm" onclick="document.getElementById('categoryImgFileInput').click()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px;"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>Upload cover photo
+            </button>
+            <input type="file" id="categoryImgFileInput" accept="image/*" style="display:none" onchange="handleCategoryImageUpload(event)">
+            <div style="margin-top:8px;"><input class="input" id="categoryImgUrl" placeholder="Or paste image URL" oninput="onCategoryImageUrlInput()"></div>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label>Category name</label><input class="input" id="categoryLabel" placeholder="e.g. Chrome" oninput="onCategoryLabelInput()"></div>
+      <div class="field"><label>Tagline <span style="font-weight:400;color:var(--muted);">(shown under the name on the cover tile)</span></label><input class="input" id="categorySubtitle" placeholder="e.g. Mirror · Aurora"></div>
+      <div class="field-row">
+        <div class="field"><label>Sort order <span style="font-weight:400;color:var(--muted);">(lower = first)</span></label><input class="input" type="number" id="categoryOrder" value="1" min="1"></div>
+        <div class="field"><label>Internal key <span style="font-weight:400;color:var(--muted);">(auto, can't be changed)</span></label><input class="input" id="categoryKey" disabled style="opacity:.6;"></div>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn btn-ghost" onclick="closeCategoryEditor()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCategory()" id="categorySaveBtn">Save Category</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CATEGORY MODAL -->
+<div class="modal-overlay" id="deleteCategoryOverlay">
+  <div class="modal">
+    <div class="modal-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m-9 0 1 12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-12"/></svg></div>
+    <h3>Delete this category?</h3>
+    <p id="deleteCategoryText">This will remove it from the homepage and collection filters. Products already tagged with it will just show under an unlabeled category until reassigned.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeDeleteCategoryModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDeleteCategory()">Delete category</button>
     </div>
   </div>
 </div>
@@ -1317,7 +1383,7 @@ Chart.defaults.font.family="'Inter',sans-serif";
 Chart.defaults.color='#93867C';
 Chart.defaults.borderColor='#F0E8DC';
 let charts={};
-const pageTitles={overview:'Dashboard',products:'Products',reels:'Reels',orders:'Orders',customers:'Customers',analytics:'Analytics',marketing:'Marketing',settings:'Settings'};
+const pageTitles={overview:'Dashboard',products:'Products',categories:'Categories',reels:'Reels',orders:'Orders',customers:'Customers',analytics:'Analytics',marketing:'Marketing',settings:'Settings'};
 
 /* ── NAV ── */
 async function goPage(page){
@@ -1328,6 +1394,7 @@ async function goPage(page){
   document.getElementById('topbarTitle').textContent=pageTitles[page];
   closeSidebar();
   if(page==='products'){ await loadProducts(); renderProducts(); } // re-fetch so edits from other devices show up
+  if(page==='categories'){ await loadCategories(); renderCategories(); }
   if(page==='reels'){ await loadReels(); renderReels(); }
   if(page==='orders')renderOrders();
   if(page==='customers'){renderCustomerKpis();renderCustomers();}
@@ -1789,7 +1856,10 @@ function openProductEditor(id) {
     document.getElementById('fOriginal').value = p.original;
     document.getElementById('fDiscounted').value = p.discounted;
     document.getElementById('fStatus').value = p.status;
-    document.getElementById('fCategory').value = p.category;
+    // Older products stored the display name (e.g. "Chrome") rather
+    // than the category key — CAT_MAP (from designs-data.js) resolves
+    // those so the right option is still selected in the dropdown.
+    document.getElementById('fCategory').value = (typeof CAT_MAP !== 'undefined' && CAT_MAP[p.category]) || p.category;
     document.getElementById('fStock').value = p.stock || 0;
     document.getElementById('fTags').value = p.tags || '';
     document.getElementById('fFeatured').classList.toggle('on', p.featured);
@@ -1811,7 +1881,7 @@ function openProductEditor(id) {
     ['fTitle', 'fDesc', 'fOriginal', 'fDiscounted', 'fTags'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     document.getElementById('fStock').value = '';
     document.getElementById('fStatus').value = 'published';
-    document.getElementById('fCategory').value = 'Bridal';
+    document.getElementById('fCategory').value = (CATEGORIES[0] && CATEGORIES[0].key) || 'bridal';
     document.getElementById('fFeatured').classList.remove('on');
     document.getElementById('fNew').classList.remove('on');
   }
@@ -1947,6 +2017,252 @@ function openOrderDrawer(id){
 function findProductImg(title){const p=PRODUCTS.find(p=>p.title.toLowerCase()===title.toLowerCase());return p?`<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`:'';}
 function updateOrderStatus(id,status){const o=ORDERS.find(o=>o.id===id);if(!o)return;o.status=status;showToast('Order '+id+' marked as '+status);closeOrderDrawer();renderOrders();}
 function closeOrderDrawer(){document.getElementById('orderOverlay').classList.remove('open');}
+
+/* ============================================================
+   CATEGORIES PAGE
+============================================================ */
+// The 11 categories that are hardcoded on the site today — used as
+// the starting point the first time the database has no categories
+// saved yet, same idea as STATIC_REELS below.
+const STATIC_CATEGORIES = [
+  { id:'c1',  key:'chrome',     label:'Chrome',      subtitle:'Mirror · Aurora',           cover_img:'Images/chrome/Chrome1.jpeg',           sort_order:1,  _static:true },
+  { id:'c2',  key:'french',     label:'French',      subtitle:'Classic · Tip',             cover_img:'Images/french/French nails.jpg',       sort_order:2,  _static:true },
+  { id:'c3',  key:'gloss',      label:'Gloss',       subtitle:'High Shine · Sheer',        cover_img:'Images/Gloss1.JPG',                    sort_order:3,  _static:true },
+  { id:'c4',  key:'bridal',     label:'Bridal',      subtitle:'Pearl · Lace',              cover_img:'Images/Bridal/bridal1.jpg',            sort_order:4,  _static:true },
+  { id:'c5',  key:'floral',     label:'Floral',      subtitle:'Hand-Painted',              cover_img:'Images/Floral/floral4.jpeg',           sort_order:5,  _static:true },
+  { id:'c6',  key:'polka',      label:'Polka',       subtitle:'Dots · Gloss',              cover_img:'Images/Polka/Polka1.JPG',              sort_order:6,  _static:true },
+  { id:'c7',  key:'cateye',     label:'Cat Eye',     subtitle:'Magnetic · Velvet',         cover_img:'Images/CatEye/Cateye.jpg',             sort_order:7,  _static:true },
+  { id:'c8',  key:'festive',    label:'Festive',     subtitle:'Festive · Vibrant',         cover_img:'Images/Festive/Mahashivrati.jpeg',     sort_order:8,  _static:true },
+  { id:'c9',  key:'babyshower', label:'Baby Shower', subtitle:'Soft · Pastel',             cover_img:'Images/babyshower/Babby shower.JPG',   sort_order:9,  _static:true },
+  { id:'c10', key:'pressOn',    label:'Press-On',    subtitle:'Custom · Ready-to-wear',    cover_img:'Images/Pree-on-nails (1).JPG',         sort_order:10, _static:true },
+  { id:'c11', key:'manicure',   label:'Manicure',    subtitle:'Gel · Classic',             cover_img:'Images/classic-manicure.jpg',          sort_order:11, _static:true },
+];
+
+let CATEGORIES = [];
+let categoryState = { editingId: null, deleteTargetId: null, imgUrl: null, imgUploading: false };
+
+async function loadCategories() {
+  try {
+    const dbCats = await window.sbFetchCategories();
+    if (dbCats && dbCats.length > 0) {
+      CATEGORIES = dbCats;
+    } else {
+      CATEGORIES = STATIC_CATEGORIES.map(c => ({ ...c }));
+    }
+  } catch (e) {
+    console.warn('[TNC] Could not load categories from database, using static list:', e);
+    CATEGORIES = STATIC_CATEGORIES.map(c => ({ ...c }));
+  }
+  renderCategoryDropdown();
+}
+
+function renderCategories() {
+  const container = document.getElementById('categoriesContainer');
+  if (!container) return;
+  if (!CATEGORIES.length) {
+    container.innerHTML = `<div class="state-block"><div class="state-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div><h3>No categories yet</h3><p>Add your first category to organise your catalog.</p><button class="btn btn-primary" onclick="openCategoryEditor()">+ Add Category</button></div>`;
+    return;
+  }
+  const sorted = [...CATEGORIES].sort((a,b) => (a.sort_order||0) - (b.sort_order||0));
+  container.innerHTML = `<div class="reel-admin-grid">${sorted.map(c => categoryCardHTML(c)).join('')}</div>`;
+}
+
+function categoryCardHTML(c) {
+  const cid = JSON.stringify(c.id);
+  const isStatic = !!c._static;
+  return `
+    <div class="reel-admin-card">
+      <div class="rac-media">
+        ${c.cover_img
+          ? `<img src="${c.cover_img}" alt="${c.label||'Category'}" onerror="this.style.display='none'">`
+          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--panel-sunk);"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
+        ${isStatic ? '<span style="position:absolute;top:8px;left:8px;font-size:9px;font-weight:700;padding:3px 7px;border-radius:5px;background:rgba(176,138,85,.85);color:#fff;">From website</span>' : ''}
+      </div>
+      <div class="rac-body">
+        <div class="rac-title">${c.label || 'Untitled'}</div>
+        <div class="rac-sub">${c.subtitle || ''}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Order: ${c.sort_order || 1} &middot; key: <code>${c.key}</code></div>
+      </div>
+      <div class="rac-actions">
+        <button class="btn btn-outline btn-sm" onclick="openCategoryEditor(${cid})">Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick="askDeleteCategory(${cid})" style="color:var(--rust);">Delete</button>
+      </div>
+    </div>`;
+}
+
+// Fills the "Category" dropdown in the Add/Edit Product form from
+// the live categories list, so new categories show up there too.
+function renderCategoryDropdown() {
+  const sel = document.getElementById('fCategory');
+  if (!sel) return;
+  const current = sel.value;
+  const sorted = [...CATEGORIES].sort((a,b) => (a.sort_order||0) - (b.sort_order||0));
+  sel.innerHTML = sorted.map(c => `<option value="${c.key}">${c.label}</option>`).join('');
+  if (current && sorted.some(c => c.key === current)) sel.value = current;
+}
+
+function slugifyCategoryKey(label) {
+  return (label || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '');
+}
+
+function openCategoryEditor(id) {
+  categoryState.editingId = id || null;
+  categoryState.imgUrl = null;
+  categoryState.imgUploading = false;
+  document.getElementById('categoryEditorTitle').textContent = id ? 'Edit Category' : 'Add Category';
+  const pp = document.getElementById('categoryImgPreview');
+  if (pp) pp.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+  ['categoryLabel','categorySubtitle','categoryImgUrl','categoryKey'].forEach(fid => { const el = document.getElementById(fid); if (el) el.value = ''; });
+  document.getElementById('categoryOrder').value = CATEGORIES.length + 1;
+  if (id !== null && id !== undefined) {
+    const c = CATEGORIES.find(c => String(c.id) === String(id));
+    if (c) {
+      document.getElementById('categoryLabel').value = c.label || '';
+      document.getElementById('categorySubtitle').value = c.subtitle || '';
+      document.getElementById('categoryOrder').value = c.sort_order || 1;
+      document.getElementById('categoryKey').value = c.key || '';
+      if (c.cover_img) {
+        categoryState.imgUrl = c.cover_img;
+        document.getElementById('categoryImgUrl').value = c.cover_img;
+        if (pp) pp.innerHTML = `<img src="${c.cover_img}" style="width:100%;height:100%;object-fit:cover;" alt="">`;
+      }
+    }
+  } else {
+    document.getElementById('categoryKey').value = '(generated from name)';
+  }
+  document.getElementById('categoryEditorOverlay').classList.add('open');
+}
+
+function closeCategoryEditor() { document.getElementById('categoryEditorOverlay').classList.remove('open'); }
+
+// Only auto-fill the key preview for a brand-new category — existing
+// categories keep their original key no matter how the name changes.
+function onCategoryLabelInput() {
+  if (categoryState.editingId !== null && categoryState.editingId !== undefined) return;
+  const label = document.getElementById('categoryLabel').value;
+  document.getElementById('categoryKey').value = slugifyCategoryKey(label) || '(generated from name)';
+}
+
+async function handleCategoryImageUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  categoryState.imgUploading = true;
+  const btn = document.getElementById('categoryImgBtn');
+  if (btn) btn.textContent = 'Uploading…';
+  try {
+    const url = await window.sbUploadBrandImage(file, 'categories');
+    categoryState.imgUrl = url;
+    document.getElementById('categoryImgUrl').value = url;
+    const pp = document.getElementById('categoryImgPreview');
+    if (pp) pp.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;" alt="">`;
+  } catch (err) {
+    showToast('Cover photo upload failed — check your connection');
+  } finally {
+    categoryState.imgUploading = false;
+    if (btn) btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px;"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>Upload cover photo';
+    e.target.value = '';
+  }
+}
+
+function onCategoryImageUrlInput() {
+  const val = document.getElementById('categoryImgUrl').value.trim();
+  categoryState.imgUrl = val || null;
+  const pp = document.getElementById('categoryImgPreview');
+  if (!pp) return;
+  pp.innerHTML = val
+    ? `<img src="${val}" style="width:100%;height:100%;object-fit:cover;" alt="" onerror="this.parentElement.innerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none stroke=var(--muted) stroke-width=1.5 stroke-linecap=round><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=&quot;21 15 16 10 5 21&quot;/></svg>'">`
+    : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+}
+
+async function saveCategory() {
+  if (categoryState.imgUploading) { showToast('Still uploading — one moment'); return; }
+  const label = document.getElementById('categoryLabel').value.trim();
+  if (!label) { showToast('Please add a category name'); return; }
+  const imgUrl = categoryState.imgUrl || document.getElementById('categoryImgUrl').value.trim();
+  const editId = categoryState.editingId;
+  const existingCat = editId !== null && editId !== undefined ? CATEGORIES.find(c => String(c.id) === String(editId)) : null;
+  const isStaticCat = existingCat && existingCat._static;
+  const data = {
+    label,
+    subtitle: document.getElementById('categorySubtitle').value.trim() || '',
+    cover_img: imgUrl || null,
+    sort_order: parseInt(document.getElementById('categoryOrder').value) || CATEGORIES.length + 1,
+    key: existingCat ? existingCat.key : slugifyCategoryKey(label),
+  };
+  if (!data.key) { showToast('Category name must contain at least one letter or number'); return; }
+  const btn = document.getElementById('categorySaveBtn');
+  if (btn) btn.disabled = true;
+  try {
+    if (editId !== null && editId !== undefined && !isStaticCat) {
+      const row = await window.sbUpdateCategory(editId, data);
+      const idx = CATEGORIES.findIndex(c => String(c.id) === String(editId));
+      if (idx >= 0) CATEGORIES[idx] = row; else CATEGORIES.push(row);
+      showToast('Category updated');
+    } else {
+      // First time saving to the database — bulk-promote all the
+      // other static categories too, so none of them get lost once
+      // the database becomes the source of truth.
+      const dbAlreadyHasCats = CATEGORIES.some(c => !c._static);
+      if (!dbAlreadyHasCats) {
+        const toInsert = CATEGORIES.filter(c => c._static && String(c.id) !== String(editId));
+        for (const sc of toInsert) {
+          try {
+            const row = await window.sbInsertCategory({ key: sc.key, label: sc.label, subtitle: sc.subtitle, cover_img: sc.cover_img, sort_order: sc.sort_order });
+            const idx = CATEGORIES.findIndex(c => String(c.id) === String(sc.id));
+            if (idx >= 0) CATEGORIES[idx] = row;
+          } catch(e) { console.warn('[TNC] Could not promote static category:', sc.label, e); }
+        }
+      }
+      const row = await window.sbInsertCategory(data);
+      if (isStaticCat) {
+        const idx = CATEGORIES.findIndex(c => String(c.id) === String(editId));
+        if (idx >= 0) CATEGORIES[idx] = row; else CATEGORIES.push(row);
+      } else {
+        CATEGORIES.push(row);
+      }
+      showToast(isStaticCat ? 'Category updated & saved to database' : 'Category added');
+    }
+    closeCategoryEditor();
+    renderCategories();
+    renderCategoryDropdown();
+  } catch (e) {
+    showToast('Could not save — check your connection');
+    console.warn('[TNC] saveCategory failed:', e);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function askDeleteCategory(id) {
+  categoryState.deleteTargetId = id;
+  const c = CATEGORIES.find(c => String(c.id) === String(id));
+  const el = document.getElementById('deleteCategoryText');
+  if (el && c) el.textContent = '"' + (c.label || 'This category') + '" will be removed from the homepage and collection filters. Products already tagged with it will just show under an unlabeled category until reassigned.';
+  document.getElementById('deleteCategoryOverlay').classList.add('open');
+}
+function closeDeleteCategoryModal() { document.getElementById('deleteCategoryOverlay').classList.remove('open'); categoryState.deleteTargetId = null; }
+async function confirmDeleteCategory() {
+  const id = categoryState.deleteTargetId;
+  const c = CATEGORIES.find(c => String(c.id) === String(id));
+  if (c && c._static) {
+    CATEGORIES = CATEGORIES.filter(c => String(c.id) !== String(id));
+    closeDeleteCategoryModal();
+    renderCategories();
+    renderCategoryDropdown();
+    showToast('Category removed');
+    return;
+  }
+  try {
+    await window.sbDeleteCategory(id);
+    CATEGORIES = CATEGORIES.filter(c => String(c.id) !== String(id));
+    showToast('Category deleted');
+  } catch (e) {
+    showToast('Could not delete — check your connection');
+  }
+  closeDeleteCategoryModal();
+  renderCategories();
+  renderCategoryDropdown();
+}
 
 /* ============================================================
    REELS PAGE
@@ -2770,11 +3086,12 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDate();
     skeletonBoot();
     await loadProducts(); // pull the real product catalog from the database
+    await loadCategories(); // needed before the product form's category dropdown is usable
     await loadStoreSettings(); // store info + owner profile, shared across every device
     setTimeout(() => { renderKpis(); renderTopDesignsMini(); renderRecentOrders(); initOverviewCharts(); }, 400);
     setTimeout(() => applyRoleRestrictions(role || getCurrentRole()), 500);
     // Close overlays on backdrop click
-    ['editorOverlay','customerOverlay','deleteOverlay','discountOverlay','orderOverlay','inviteOverlay','removeMemberOverlay','reelEditorOverlay','deleteReelOverlay'].forEach(id => {
+    ['editorOverlay','customerOverlay','deleteOverlay','discountOverlay','orderOverlay','inviteOverlay','removeMemberOverlay','reelEditorOverlay','deleteReelOverlay','categoryEditorOverlay','deleteCategoryOverlay'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
     });
