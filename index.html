@@ -295,25 +295,25 @@ body { background: #fff; color: #322C2C; font-family: 'DM Sans', sans-serif; ove
   </div>
 </section>
 
-<!-- SECTION 2 — COLLECTION (Category Cards) -->
+<!-- SECTION 2 — COLLECTION (Top Products) -->
 <section id="collection" class="bg-white pt-24 pb-20 px-5 md:px-10">
   <div class="max-w-screen-xl mx-auto">
     <div class="mb-10">
       <div class="gs-up" style="animation-delay:0.1s">
         <h2 class="font-serif text-[clamp(2.2rem,5vw,4rem)] text-dark mb-1" style="font-weight:400;">Our Collection</h2>
-        <p class="font-sans text-[10px] tracking-[0.22em] uppercase text-dark/40">Explore handcrafted nail art for every occasion</p>
+        <p class="font-sans text-[10px] tracking-[0.22em] uppercase text-dark/40">Our most-loved designs, handpicked for you</p>
       </div>
     </div>
 
-    <!-- Category Cards Grid — one card per category -->
-    <div id="cat-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5"></div>
+    <!-- Top 4 Products Grid -->
+    <div id="top-products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5"></div>
 
     <!-- See More — reveals every design from every category, right here -->
     <div id="cat-see-more-wrap" style="display:flex;justify-content:center;margin-top:36px;">
       <button onclick="showAllDesigns()" style="padding:13px 36px;border:1.5px solid rgba(50,44,44,0.2);border-radius:99px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#322C2C;cursor:pointer;background:transparent;transition:all 0.2s;" onmouseenter="this.style.borderColor='#BC1423';this.style.color='#BC1423';" onmouseleave="this.style.borderColor='rgba(50,44,44,0.2)';this.style.color='#322C2C';">See More</button>
     </div>
 
-    <!-- Filtered designs panel (shown when category is clicked, or See More is clicked) -->
+    <!-- Filtered designs panel (shown when See More is clicked) -->
     <div id="cat-filter-panel" style="display:none;margin-top:40px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
         <div>
@@ -679,25 +679,25 @@ function toggleReel(card) {
 // DESIGN DATA (loaded from designs-data.js)
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-// ─── Render category cards ───
-function renderCategoryCards() {
-  const grid = document.getElementById('cat-cards-grid');
+// ─── Render top 4 products ───
+// Prioritises products marked "Featured" in the admin dashboard; if
+// there aren't 4 featured yet, fills the rest with the most-viewed
+// products, then falls back to the most recently added.
+function getTopProducts(n) {
+  n = n || 4;
+  const sorted = [...DESIGNS].sort((a, b) => {
+    const fa = a.featured ? 1 : 0, fb = b.featured ? 1 : 0;
+    if (fb !== fa) return fb - fa;
+    return (b.views || 0) - (a.views || 0);
+  });
+  return sorted.slice(0, n);
+}
+
+function renderTopProducts() {
+  const grid = document.getElementById('top-products-grid');
   if (!grid) return;
-  const cats = Object.keys(catLabels);
-  grid.innerHTML = cats.map(cat => {
-    const cover = catCovers[cat] || { img: '', sub: '' };
-    const count = DESIGNS.filter(d => d.cat === cat).length;
-    return `
-    <button onclick="setCatFilter('${cat}')" class="cat-card" style="position:relative;border-radius:34px;overflow:hidden;aspect-ratio:4/3;background:#e8e0db;cursor:pointer;border:none;padding:0;text-align:left;transition:transform 0.28s ease,box-shadow 0.28s ease;" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 14px 40px rgba(0,0,0,0.15)';" onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='none';">
-      <img src="${encodeImgPath(cover.img)}" alt="${catLabels[cat]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
-      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(50,44,44,0.82) 0%,rgba(50,44,44,0.12) 55%,transparent 100%);"></div>
-      <div style="position:absolute;bottom:0;left:0;right:0;padding:14px 13px;">
-        <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:#fff;line-height:1.2;margin-bottom:4px;">${catLabels[cat]}</p>
-        <p style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">${cover.sub}</p>
-      </div>
-      <div style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.18);backdrop-filter:blur(4px);border-radius:99px;padding:3px 9px;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.1em;color:#fff;">${count}</div>
-    </button>`;
-  }).join('');
+  const top = getTopProducts(4);
+  grid.innerHTML = top.map(d => buildCard(d, DESIGNS.indexOf(d))).join('');
 }
 
 let catVisibleCount = 4;
@@ -706,7 +706,7 @@ let currentCatFilter = '';
 function setCatFilter(cat) {
   currentCatFilter = cat;
   catVisibleCount = 4;
-  document.getElementById('cat-cards-grid').style.display = 'none';
+  document.getElementById('top-products-grid').style.display = 'none';
   document.getElementById('cat-see-more-wrap').style.display = 'none';
   document.getElementById('cat-filter-panel').style.display = 'block';
   document.getElementById('cat-filter-label').textContent = catLabels[cat] || cat;
@@ -719,7 +719,7 @@ function setCatFilter(cat) {
 function showAllDesigns() {
   currentCatFilter = 'all';
   catVisibleCount = 4;
-  document.getElementById('cat-cards-grid').style.display = 'none';
+  document.getElementById('top-products-grid').style.display = 'none';
   document.getElementById('cat-see-more-wrap').style.display = 'none';
   document.getElementById('cat-filter-panel').style.display = 'block';
   document.getElementById('cat-filter-label').textContent = 'All Designs';
@@ -728,7 +728,7 @@ function showAllDesigns() {
 }
 
 function closeCatFilter() {
-  document.getElementById('cat-cards-grid').style.display = '';
+  document.getElementById('top-products-grid').style.display = '';
   document.getElementById('cat-see-more-wrap').style.display = 'flex';
   document.getElementById('cat-filter-panel').style.display = 'none';
   currentCatFilter = '';
@@ -968,7 +968,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   })();
 
-  renderCategoryCards();
+  renderTopProducts();
   if (typeof currentCatFilter !== 'undefined' && currentCatFilter) renderCatDesigns();
 
   // ── Intersection Observer for lazy image loading ──

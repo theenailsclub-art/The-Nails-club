@@ -139,8 +139,10 @@ function mergeDbProductIntoDesigns(p) {
     size:   'XS · S · M · L · XL · Free Size',
     design: p.category,
     desc:   p.description || 'Handcrafted press-on nail set.',
-    photos: (p.photos && p.photos.length) ? p.photos : (p.img ? [p.img] : ['Images/Bridal/bridal1.jpg']),
-    video:  p.video || null,
+    photos: p.img ? [p.img] : ['Images/Bridal/bridal1.jpg'],
+    video:  null,
+    featured: !!p.featured,
+    views:  p.views || 0,
     _dbId:  p.id
   });
 }
