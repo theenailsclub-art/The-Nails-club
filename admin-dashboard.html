@@ -2084,8 +2084,8 @@ function categoryCardHTML(c) {
         <div style="font-size:11px;color:var(--muted);margin-top:4px;">Order: ${c.sort_order || 1} &middot; key: <code>${c.key}</code></div>
       </div>
       <div class="rac-actions">
-        <button class="btn btn-outline btn-sm" onclick="openCategoryEditor(${cid})">Edit</button>
-        <button class="btn btn-ghost btn-sm" onclick="askDeleteCategory(${cid})" style="color:var(--rust);">Delete</button>
+        <button class="btn btn-outline btn-sm" onclick='openCategoryEditor(${cid})'>Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick='askDeleteCategory(${cid})' style="color:var(--rust);">Delete</button>
       </div>
     </div>`;
 }
@@ -2335,9 +2335,9 @@ function reelCardHTML(r) {
         <div style="font-size:11px;color:var(--muted);margin-top:4px;">Order: ${r.sort_order || 1} &middot; ${hasVideo ? '<span style="color:var(--sage);">✓ Video</span>' : '<span style="color:var(--rust);">No video</span>'} &middot; ${hasPoster ? '<span style="color:var(--sage);">✓ Poster</span>' : '<span style="color:var(--muted);">No poster</span>'}</div>
       </div>
       <div class="rac-actions">
-        <button class="btn btn-outline btn-sm" onclick="openReelEditor(${rid})">Edit</button>
-        <button class="btn btn-ghost btn-sm" onclick="toggleReelVisibility(${rid})">${visible?'Hide':'Show'}</button>
-        <button class="btn btn-ghost btn-sm" onclick="askDeleteReel(${rid})" style="color:var(--rust);">Delete</button>
+        <button class="btn btn-outline btn-sm" onclick='openReelEditor(${rid})'>Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick='toggleReelVisibility(${rid})'>${visible?'Hide':'Show'}</button>
+        <button class="btn btn-ghost btn-sm" onclick='askDeleteReel(${rid})' style="color:var(--rust);">Delete</button>
       </div>
     </div>`;
 }
