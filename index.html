@@ -1062,8 +1062,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 function showPopup() {
   const p = document.getElementById('email-popup');
   if (!p) return;
-  // Don't show if already subscribed
+  // Don't show if already subscribed, or already shown once this visit
   if (localStorage.getItem('tnc_subscribed')) return;
+  if (sessionStorage.getItem('tnc_popup_shown')) return;
+  sessionStorage.setItem('tnc_popup_shown', '1');
   p.style.display = 'flex';
 }
 function closePopup() {

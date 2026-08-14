@@ -459,6 +459,12 @@ function _injectOrderModalStyles() {
 
 var _tncOrderModalOpts = null;
 
+function _tncDispatchDateLabel() {
+  var d = new Date();
+  d.setDate(d.getDate() + 3);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
 // opts: { title, cat, design, size, qty, price, img, waNumber, igLink }
 function openOrderModal(opts) {
   closeOrderModal();
@@ -486,6 +492,7 @@ function openOrderModal(opts) {
         '<h3 class="tnc-om-title">' + tncEscHtml(opts.title) + '</h3>' +
         '<p class="tnc-om-meta">' + tncEscHtml(opts.cat || '') + (opts.size ? ' · Size ' + tncEscHtml(opts.size) : '') + ' · ₹' + ((opts.price || 0) * (opts.qty || 1)).toLocaleString('en-IN') + '</p>' +
         '<textarea class="tnc-om-msg" readonly>' + tncEscHtml(text) + '</textarea>' +
+        '<p class="tnc-om-meta" style="margin-top:-4px;">Dispatched by ' + _tncDispatchDateLabel() + '</p>' +
         '<div class="tnc-om-actions">' +
           '<button class="tnc-om-btn tnc-om-wa" type="button" onclick="continueOrderModal(\'wa\')">Continue to WhatsApp</button>' +
           '<button class="tnc-om-btn tnc-om-ig" type="button" onclick="continueOrderModal(\'ig\')">Continue to Instagram DM</button>' +
