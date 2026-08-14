@@ -407,11 +407,10 @@ function buildOrderMessage(o) {
   var total = (o.price || 0) * qty;
   var lines = [
     'Hi The Nails Club! 💅 I\'d like to order the *' + (o.title || 'nail set') + '*' + (o.design ? ' (' + o.design + ')' : '') + ' design.',
-    'Size: ' + (o.size || '___'),
+    'Size: ' + (o.size || 'Free Size'),
     'Qty: ' + qty,
     'Total: ₹' + total.toLocaleString('en-IN')
   ];
-  if (o.imgUrl) lines.push('Photo: ' + o.imgUrl);
   lines.push('Please confirm availability. Thank you!');
   return lines.join('\n');
 }
@@ -478,10 +477,9 @@ function openOrderModal(opts) {
   closeOrderModal();
   _injectOrderModalStyles();
 
-  var imgUrl = absoluteImgUrl(opts.img);
   var text = buildOrderMessage({
     title: opts.title, design: opts.design, size: opts.size,
-    qty: opts.qty || 1, price: opts.price, imgUrl: imgUrl
+    qty: opts.qty || 1, price: opts.price, productUrl: opts.productUrl
   });
   _tncOrderModalOpts = {
     text: text,
