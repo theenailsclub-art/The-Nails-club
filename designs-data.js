@@ -453,7 +453,15 @@ function _injectOrderModalStyles() {
     '.tnc-om-ig{background:#BC1423;color:#fff;}' +
     '.tnc-om-copy{background:transparent;color:#322C2C;border:1.5px solid rgba(50,44,44,0.2);}' +
     '.tnc-om-hint{font-family:"DM Sans","Inter",sans-serif;font-size:10.5px;color:rgba(50,44,44,0.5);' +
-    'text-align:center;margin:12px 0 0;min-height:14px;}';
+    'text-align:center;margin:12px 0 0;min-height:14px;}' +
+    '.tnc-om-agree{display:flex;align-items:flex-start;gap:8px;margin:2px 0 14px;cursor:pointer;' +
+    'user-select:none;}' +
+    '.tnc-om-agree input{margin-top:2px;width:15px;height:15px;flex-shrink:0;accent-color:#BC1423;' +
+    'cursor:pointer;}' +
+    '.tnc-om-agree span{font-family:"DM Sans","Inter",sans-serif;font-size:11.5px;line-height:1.5;' +
+    'color:rgba(50,44,44,0.7);}' +
+    '.tnc-om-agree a{color:#BC1423;text-decoration:underline;}' +
+    '.tnc-om-btn:disabled{opacity:0.45;cursor:not-allowed;}';
   document.head.appendChild(style);
 }
 
@@ -493,9 +501,13 @@ function openOrderModal(opts) {
         '<p class="tnc-om-meta">' + tncEscHtml(opts.cat || '') + (opts.size ? ' · Size ' + tncEscHtml(opts.size) : '') + ' · ₹' + ((opts.price || 0) * (opts.qty || 1)).toLocaleString('en-IN') + '</p>' +
         '<textarea class="tnc-om-msg" readonly>' + tncEscHtml(text) + '</textarea>' +
         '<p class="tnc-om-meta" style="margin-top:-4px;">Dispatched by ' + _tncDispatchDateLabel() + '</p>' +
+        '<label class="tnc-om-agree">' +
+          '<input type="checkbox" id="tnc-om-agree-cb" onchange="_tncOmToggleAgree(this.checked)">' +
+          '<span>I agree to the <a href="return-policy.html" target="_blank">Return &amp; Refund Policy</a> before placing this order.</span>' +
+        '</label>' +
         '<div class="tnc-om-actions">' +
-          '<button class="tnc-om-btn tnc-om-wa" type="button" onclick="continueOrderModal(\'wa\')">Continue to WhatsApp</button>' +
-          '<button class="tnc-om-btn tnc-om-ig" type="button" onclick="continueOrderModal(\'ig\')">Continue to Instagram DM</button>' +
+          '<button class="tnc-om-btn tnc-om-wa" type="button" id="tnc-om-wa-btn" disabled onclick="continueOrderModal(\'wa\')">Continue to WhatsApp</button>' +
+          '<button class="tnc-om-btn tnc-om-ig" type="button" id="tnc-om-ig-btn" disabled onclick="continueOrderModal(\'ig\')">Continue to Instagram DM</button>' +
           '<button class="tnc-om-btn tnc-om-copy" type="button" onclick="continueOrderModal(\'copy\')">Copy message</button>' +
         '</div>' +
         '<p class="tnc-om-hint" id="tnc-om-hint">This photo &amp; order message go with you — WhatsApp pre-fills it, Instagram needs it pasted in.</p>' +
@@ -512,10 +524,22 @@ function closeOrderModal() {
   document.body.style.overflow = '';
 }
 
+function _tncOmToggleAgree(checked) {
+  var waBtn = document.getElementById('tnc-om-wa-btn');
+  var igBtn = document.getElementById('tnc-om-ig-btn');
+  if (waBtn) waBtn.disabled = !checked;
+  if (igBtn) igBtn.disabled = !checked;
+}
+
 async function continueOrderModal(channel) {
   var opts = _tncOrderModalOpts;
   if (!opts) return;
   var hint = document.getElementById('tnc-om-hint');
+  var agreeCb = document.getElementById('tnc-om-agree-cb');
+  if ((channel === 'wa' || channel === 'ig') && agreeCb && !agreeCb.checked) {
+    if (hint) hint.textContent = 'Please agree to the Return & Refund Policy to continue.';
+    return;
+  }
   if (channel === 'wa') {
     window.open('https://wa.me/' + opts.waNumber + '?text=' + encodeURIComponent(opts.text), '_blank');
     closeOrderModal();
@@ -538,5 +562,6 @@ async function continueOrderModal(channel) {
 window.openOrderModal = openOrderModal;
 window.closeOrderModal = closeOrderModal;
 window.continueOrderModal = continueOrderModal;
+window._tncOmToggleAgree = _tncOmToggleAgree;
 window.absoluteImgUrl = absoluteImgUrl;
 window.buildOrderMessage = buildOrderMessage;
