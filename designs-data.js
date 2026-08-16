@@ -219,6 +219,65 @@ window.sbDeleteProduct = async function(id) {
   if (res.error) throw res.error;
 };
 
+// ── ORDERS (admin dashboard + real customer checkouts) ──
+// Every order — whether typed in by the admin from a WhatsApp/Instagram
+// chat, or logged automatically when a signed-in customer completes the
+// order modal on the site — lives in this one real `orders` table, so
+// the dashboard's Orders page, Recent Orders, revenue/order charts and
+// KPIs, and each customer's order history all reflect the same data.
+window.sbFetchOrders = async function() {
+  if (!sb) return [];
+  var res = await sb.from('orders').select('*').order('created_at', { ascending: false });
+  if (res.error) { console.warn('[TNC] Fetch orders failed:', res.error.message); return []; }
+  return res.data || [];
+};
+
+window.sbInsertOrder = async function(data) {
+  if (!sb) throw new Error('Database unavailable — please try again shortly.');
+  var res = await sb.from('orders').insert([data]).select().single();
+  if (res.error) throw res.error;
+  return res.data;
+};
+
+window.sbUpdateOrder = async function(id, data) {
+  var res = await sb.from('orders').update(data).eq('id', id).select().single();
+  if (res.error) throw res.error;
+  return res.data;
+};
+
+window.sbDeleteOrder = async function(id) {
+  var res = await sb.from('orders').delete().eq('id', id);
+  if (res.error) throw res.error;
+};
+
+// Best-effort: log a real row in `orders` the moment a signed-in
+// customer actually continues to WhatsApp/Instagram to place an order,
+// so the admin dashboard shows real customer activity instead of only
+// orders the admin typed in by hand. Never blocks or breaks the
+// WhatsApp/Instagram handoff if it fails (e.g. offline) — it's a
+// nice-to-have record, not the order itself (the real order still
+// happens over WhatsApp/Instagram).
+async function _tncLogOrderToDb(opts, channel) {
+  try {
+    if (!sb) return;
+    var user = await window.sbGetCurrentUser();
+    var qty = opts.qty || 1;
+    var price = opts.price || 0;
+    await window.sbInsertOrder({
+      customer_id: user ? user.id : null,
+      customer_name: (user && (user.user_metadata && user.user_metadata.name)) || (user && user.email ? user.email.split('@')[0] : 'Guest'),
+      channel: channel === 'wa' ? 'WhatsApp' : channel === 'ig' ? 'Instagram' : 'Other',
+      items: [{ title: opts.title, img: opts.img || '', price: price }],
+      amount: price * qty,
+      payment_status: 'unpaid',
+      status: 'pending',
+      notes: [opts.design, opts.size ? ('Size ' + opts.size) : ''].filter(Boolean).join(' · '),
+    });
+  } catch (e) {
+    console.warn('[TNC] Could not log order to dashboard:', e);
+  }
+}
+
 // ── CATEGORY MANAGEMENT (admin dashboard) ──
 window.sbFetchCategories = async function() {
   if (!sb) return [];
@@ -473,7 +532,12 @@ function _tncDispatchDateLabel() {
 }
 
 // opts: { title, cat, design, size, qty, price, img, waNumber, igLink }
+// Requires an account before opening — see requireLogin() below.
 function openOrderModal(opts) {
+  requireLogin(function() { _openOrderModalDirect(opts); });
+}
+
+function _openOrderModalDirect(opts) {
   closeOrderModal();
   _injectOrderModalStyles();
 
@@ -484,7 +548,8 @@ function openOrderModal(opts) {
   _tncOrderModalOpts = {
     text: text,
     waNumber: opts.waNumber || '919913091744',
-    igLink: opts.igLink || 'https://ig.me/m/theenaiilsclub'
+    igLink: opts.igLink || 'https://ig.me/m/theenaiilsclub',
+    orderOpts: opts // kept so a real order row can be logged if the customer continues
   };
 
   var overlay = document.createElement('div');
@@ -539,6 +604,7 @@ async function continueOrderModal(channel) {
     return;
   }
   if (channel === 'wa') {
+    _tncLogOrderToDb(opts.orderOpts, 'wa'); // fire-and-forget — records the real order for the dashboard
     window.open('https://wa.me/' + opts.waNumber + '?text=' + encodeURIComponent(opts.text), '_blank');
     closeOrderModal();
     return;
@@ -551,6 +617,7 @@ async function continueOrderModal(channel) {
       if (hint) hint.textContent = 'Could not auto-copy — select the message above and copy it manually.';
     }
     if (channel === 'ig') {
+      _tncLogOrderToDb(opts.orderOpts, 'ig'); // fire-and-forget — records the real order for the dashboard
       window.open(opts.igLink, '_blank');
       closeOrderModal();
     }
@@ -563,3 +630,256 @@ window.continueOrderModal = continueOrderModal;
 window._tncOmToggleAgree = _tncOmToggleAgree;
 window.absoluteImgUrl = absoluteImgUrl;
 window.buildOrderMessage = buildOrderMessage;
+
+// ═══════════════════════════════════════
+// CUSTOMER ACCOUNTS — real Supabase Auth
+// ═══════════════════════════════════════
+// Replaces the old localStorage-only 'tnc_users' system. An account
+// created on any device now works when signing in from any other
+// device/browser, because the password check happens on Supabase's
+// server — not by reading tnc_users out of the current browser.
+
+window.sbSignUp = async function(name, email, password) {
+  if (!sb) throw new Error('Sign up is temporarily unavailable — please try again shortly.');
+  var res = await sb.auth.signUp({ email: email, password: password, options: { data: { name: name } } });
+  if (res.error) throw res.error;
+  var user = res.data.user;
+  // Save the public profile row so the admin dashboard's Customers
+  // page (and returning visits) can see this signup.
+  if (user) {
+    try { await sb.from('customers').upsert({ id: user.id, name: name, email: email }); }
+    catch (e) { console.warn('[TNC] Could not save customer profile:', e); }
+  }
+  return res.data; // { user, session } — session is null if email confirmation is required
+};
+
+window.sbSignIn = async function(email, password) {
+  if (!sb) throw new Error('Sign in is temporarily unavailable — please try again shortly.');
+  var res = await sb.auth.signInWithPassword({ email: email, password: password });
+  if (res.error) throw res.error;
+  return res.data;
+};
+
+window.sbSignOut = async function() {
+  if (!sb) return;
+  await sb.auth.signOut();
+};
+
+window.sbGetCurrentUser = async function() {
+  if (!sb) return null;
+  var res = await sb.auth.getUser();
+  return (res.data && res.data.user) || null;
+};
+
+// Admin dashboard helper — real signups instead of the old mock array.
+window.sbFetchCustomers = async function() {
+  if (!sb) return [];
+  var res = await sb.from('customers').select('*').order('created_at', { ascending: false });
+  if (res.error) { console.warn('[TNC] Fetch customers failed:', res.error.message); return []; }
+  return res.data || [];
+};
+
+// ═══════════════════════════════════════
+// SHARED LOGIN MODAL + LOGIN GATE — used by index.html,
+// collection.html and premium_product_page.html. Injected into the
+// page on first use, the same way the order modal is, so it works
+// even on pages that ship no auth markup of their own (previously
+// only index.html had a working modal at all).
+// ═══════════════════════════════════════
+
+var _tncAuthMode = 'login';
+var _tncAuthOnSuccess = null;
+var _tncAuthModalInjected = false;
+
+function _injectAuthModal() {
+  if (_tncAuthModalInjected) return;
+  _tncAuthModalInjected = true;
+  var wrap = document.createElement('div');
+  wrap.innerHTML =
+    '<div id="tnc-auth-modal" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(20,18,18,0.65);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">' +
+      '<div style="background:#fff;border-radius:24px;width:100%;max-width:440px;position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.22);">' +
+        '<div style="height:4px;background:linear-gradient(90deg,#BC1423,#C6A35B,#BC1423);"></div>' +
+        '<button onclick="closeAuthModal()" style="position:absolute;top:14px;right:14px;background:rgba(50,44,44,0.08);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#322C2C" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+        '</button>' +
+        '<div style="padding:32px 32px 28px;">' +
+          '<div style="display:flex;gap:0;border-bottom:1.5px solid rgba(50,44,44,0.1);margin-bottom:24px;">' +
+            '<button id="tnc-tab-login" onclick="switchAuthTab(\'login\')" style="flex:1;padding:10px 0;font-family:\'DM Sans\',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:#BC1423;border-bottom:2px solid #BC1423;margin-bottom:-1.5px;font-weight:500;">Sign In</button>' +
+            '<button id="tnc-tab-signup" onclick="switchAuthTab(\'signup\')" style="flex:1;padding:10px 0;font-family:\'DM Sans\',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:rgba(50,44,44,0.4);border-bottom:2px solid transparent;">Create Account</button>' +
+          '</div>' +
+          '<div style="text-align:center;margin-bottom:22px;">' +
+            '<h3 id="tnc-auth-modal-title" style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:400;color:#322C2C;">Welcome Back</h3>' +
+            '<p id="tnc-auth-modal-sub" style="font-family:\'DM Sans\',sans-serif;font-size:12px;color:rgba(50,44,44,0.45);margin-top:4px;">Sign in to your Nails Club account</p>' +
+          '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:12px;">' +
+            '<div id="tnc-auth-name-field" style="display:none;">' +
+              '<input id="tnc-auth-name" type="text" placeholder="Your Name" style="width:100%;padding:12px 14px;border:1.5px solid rgba(50,44,44,0.15);border-radius:10px;font-family:\'DM Sans\',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;">' +
+            '</div>' +
+            '<input id="tnc-auth-email" type="email" placeholder="Email Address" style="width:100%;padding:12px 14px;border:1.5px solid rgba(50,44,44,0.15);border-radius:10px;font-family:\'DM Sans\',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;" onkeydown="if(event.key===\'Enter\')authSubmit()">' +
+            '<input id="tnc-auth-password" type="password" placeholder="Password" style="width:100%;padding:12px 14px;border:1.5px solid rgba(50,44,44,0.15);border-radius:10px;font-family:\'DM Sans\',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;" onkeydown="if(event.key===\'Enter\')authSubmit()">' +
+            '<p id="tnc-auth-error" style="display:none;font-family:\'DM Sans\',sans-serif;font-size:11px;color:#BC1423;text-align:center;"></p>' +
+            '<button onclick="authSubmit()" id="tnc-auth-submit-btn" style="width:100%;padding:13px;background:#BC1423;color:#fff;border:none;border-radius:10px;font-family:\'DM Sans\',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;font-weight:500;">Sign In</button>' +
+          '</div>' +
+          '<p style="font-family:\'DM Sans\',sans-serif;font-size:11px;color:rgba(50,44,44,0.35);text-align:center;margin-top:14px;">' +
+            '<span id="tnc-auth-switch-text">Don\'t have an account?</span>' +
+            '<button id="tnc-auth-switch-btn" onclick="switchAuthTab(\'signup\')" style="background:none;border:none;color:#BC1423;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:11px;text-decoration:underline;margin-left:4px;">Create one</button>' +
+          '</p>' +
+          '<p id="tnc-auth-gate-note" style="display:none;font-family:\'DM Sans\',sans-serif;font-size:10px;color:rgba(50,44,44,0.4);text-align:center;margin-top:16px;">Please sign in to place your order — this helps us keep track of it and reach you if we need to.</p>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(wrap.firstElementChild);
+  $on('tnc-auth-modal', 'click', function(e) { if (e.target === document.getElementById('tnc-auth-modal')) closeAuthModal(); });
+}
+
+function openAuthModal(mode, onSuccess) {
+  _injectAuthModal();
+  _tncAuthOnSuccess = onSuccess || null;
+  var note = $id('tnc-auth-gate-note');
+  if (note) note.style.display = onSuccess ? 'block' : 'none';
+  switchAuthTab(mode || 'login');
+  var modal = $id('tnc-auth-modal');
+  if (modal) modal.style.display = 'flex';
+  var errEl = $id('tnc-auth-error'); if (errEl) errEl.style.display = 'none';
+  ['tnc-auth-email', 'tnc-auth-password', 'tnc-auth-name'].forEach(function(id) {
+    var el = $id(id); if (el) el.value = '';
+  });
+}
+
+function closeAuthModal() {
+  var el = $id('tnc-auth-modal');
+  if (el) el.style.display = 'none';
+  _tncAuthOnSuccess = null;
+}
+
+function switchAuthTab(mode) {
+  _tncAuthMode = mode;
+  var isLogin = mode === 'login';
+  var t1 = $id('tnc-tab-login'), t2 = $id('tnc-tab-signup');
+  if (t1) { t1.style.color = isLogin ? '#BC1423' : 'rgba(50,44,44,0.4)'; t1.style.borderBottomColor = isLogin ? '#BC1423' : 'transparent'; }
+  if (t2) { t2.style.color = !isLogin ? '#BC1423' : 'rgba(50,44,44,0.4)'; t2.style.borderBottomColor = !isLogin ? '#BC1423' : 'transparent'; }
+  $setText('tnc-auth-modal-title', isLogin ? 'Welcome Back' : 'Create Account');
+  $setText('tnc-auth-modal-sub', isLogin ? 'Sign in to your Nails Club account' : 'Join The Nails Club family');
+  var nf = $id('tnc-auth-name-field'); if (nf) nf.style.display = isLogin ? 'none' : 'block';
+  $setText('tnc-auth-submit-btn', isLogin ? 'Sign In' : 'Create Account');
+  $setText('tnc-auth-switch-text', isLogin ? "Don't have an account?" : 'Already have an account?');
+  var swBtn = $id('tnc-auth-switch-btn');
+  if (swBtn) { swBtn.textContent = isLogin ? 'Create one' : 'Sign in'; swBtn.onclick = function() { switchAuthTab(isLogin ? 'signup' : 'login'); }; }
+  var err = $id('tnc-auth-error'); if (err) err.style.display = 'none';
+}
+
+function showAuthError(msg) {
+  var el = $id('tnc-auth-error');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+  var btn = $id('tnc-auth-submit-btn');
+  if (btn) { btn.textContent = _tncAuthMode === 'login' ? 'Sign In' : 'Create Account'; btn.disabled = false; }
+}
+
+async function authSubmit() {
+  var email = ($id('tnc-auth-email') && $id('tnc-auth-email').value.trim()) || '';
+  var password = ($id('tnc-auth-password') && $id('tnc-auth-password').value) || '';
+  var name = ($id('tnc-auth-name') && $id('tnc-auth-name').value.trim()) || '';
+  if (!email || !email.includes('@')) { showAuthError('Please enter a valid email address.'); return; }
+  if (!password || password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
+  if (_tncAuthMode === 'signup' && !name) { showAuthError('Please enter your name.'); return; }
+
+  var btn = $id('tnc-auth-submit-btn');
+  if (btn) { btn.textContent = _tncAuthMode === 'login' ? 'Signing in...' : 'Creating account...'; btn.disabled = true; }
+
+  try {
+    if (_tncAuthMode === 'signup') {
+      var res = await window.sbSignUp(name, email, password);
+      if (!res.session) {
+        // The Supabase project has email confirmation turned on —
+        // the account exists but can't sign in until the
+        // confirmation link is clicked.
+        showAuthError('Account created — check your email to confirm, then sign in.');
+        switchAuthTab('login');
+        if (btn) { btn.textContent = 'Sign In'; btn.disabled = false; }
+        return;
+      }
+    } else {
+      await window.sbSignIn(email, password);
+    }
+    await _tncAuthLoginSuccess();
+  } catch (e) {
+    showAuthError((e && e.message) || 'Something went wrong. Please try again.');
+  }
+}
+
+async function _tncAuthLoginSuccess() {
+  closeAuthModal();
+  await updateAuthUI();
+  var cb = _tncAuthOnSuccess;
+  _tncAuthOnSuccess = null;
+  if (cb) cb();
+}
+
+async function authLogout() {
+  await window.sbSignOut();
+  var dd = $id('user-dropdown'); if (dd) dd.style.display = 'none';
+  await updateAuthUI();
+}
+
+function toggleUserDropdown() {
+  var dd = $id('user-dropdown');
+  if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(e) {
+  var btn = $id('auth-avatar-btn');
+  var dd = $id('user-dropdown');
+  if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) dd.style.display = 'none';
+});
+
+// Updates whichever header auth elements exist on the current page.
+// index.html / collection.html have them; premium_product_page.html
+// does not, so every $id() lookup here is a safe no-op there.
+async function updateAuthUI() {
+  var user = await window.sbGetCurrentUser();
+  var statusEl = $id('auth-status');
+  var loginBtn = $id('auth-login-btn');
+  var nameEl = $id('auth-user-name');
+  var emailEl = $id('auth-user-email');
+  var avatarEl = $id('auth-avatar');
+  var ddName = $id('dd-name');
+  var ddEmail = $id('dd-email');
+  if (user) {
+    var displayName = (user.user_metadata && user.user_metadata.name) || (user.email ? user.email.split('@')[0] : 'Account');
+    var initial = displayName.charAt(0).toUpperCase();
+    if (statusEl) statusEl.style.display = 'flex';
+    if (nameEl) nameEl.textContent = displayName;
+    if (emailEl) emailEl.textContent = user.email || '';
+    if (avatarEl) avatarEl.textContent = initial;
+    if (ddName) ddName.textContent = displayName;
+    if (ddEmail) ddEmail.textContent = user.email || '';
+    if (loginBtn) loginBtn.style.display = 'none';
+  } else {
+    if (statusEl) statusEl.style.display = 'none';
+    if (loginBtn) loginBtn.style.display = '';
+  }
+  return user;
+}
+
+// Gate: runs `action` immediately if signed in, otherwise opens the
+// sign-in modal first and runs `action` right after a successful
+// login/signup. This is what makes an account required before an
+// order can be placed (see openOrderModal above).
+async function requireLogin(action) {
+  var user = await window.sbGetCurrentUser();
+  if (user) { action(); return; }
+  openAuthModal('login', action);
+}
+
+window.openAuthModal = openAuthModal;
+window.closeAuthModal = closeAuthModal;
+window.switchAuthTab = switchAuthTab;
+window.authSubmit = authSubmit;
+window.authLogout = authLogout;
+window.toggleUserDropdown = toggleUserDropdown;
+window.updateAuthUI = updateAuthUI;
+window.requireLogin = requireLogin;
+
+document.addEventListener('DOMContentLoaded', function() { updateAuthUI(); });
+if (sb) {
+  sb.auth.onAuthStateChange(function() { updateAuthUI(); });
+}

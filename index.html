@@ -236,7 +236,7 @@ body { background: #fff; color: #322C2C; font-family: 'DM Sans', sans-serif; ove
       </div>
     </div>
     <!-- Sign In button (shown when logged out) -->
-    <button id="auth-login-btn" onclick="openAuthModal('login')" class="hidden md:inline-flex items-center gap-2 px-4 py-2 border border-dark/20 rounded-full font-sans text-[10px] uppercase tracking-[0.14em] text-dark hover:bg-dark hover:text-white transition-all duration-200">
+    <button id="auth-login-btn" onclick="openAuthModal('login')" class="inline-flex items-center gap-2 px-3 md:px-4 py-2 border border-dark/20 rounded-full font-sans text-[10px] uppercase tracking-[0.14em] text-dark hover:bg-dark hover:text-white transition-all duration-200">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Sign In
     </button>
@@ -1223,200 +1223,17 @@ window.addEventListener('load', () => {
   </div>
 </div>
 
-<!-- â•â•â• AUTH MODAL â•â•â• -->
-<div id="auth-modal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(20,18,18,0.65);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
-  <div style="background:#fff;border-radius:24px;width:100%;max-width:440px;position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.22);">
-    <!-- Top accent -->
-    <div style="height:4px;background:linear-gradient(90deg,#BC1423,#C6A35B,#BC1423);"></div>
-    <!-- Close -->
-    <button onclick="closeAuthModal()" style="position:absolute;top:14px;right:14px;background:rgba(50,44,44,0.08);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#322C2C" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <div style="padding:32px 32px 28px;">
-      <!-- Tabs -->
-      <div style="display:flex;gap:0;border-bottom:1.5px solid rgba(50,44,44,0.1);margin-bottom:24px;">
-        <button id="tab-login" onclick="switchTab('login')" style="flex:1;padding:10px 0;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:#BC1423;border-bottom:2px solid #BC1423;margin-bottom:-1.5px;font-weight:500;">Sign In</button>
-        <button id="tab-signup" onclick="switchTab('signup')" style="flex:1;padding:10px 0;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:rgba(50,44,44,0.4);border-bottom:2px solid transparent;margin-bottom:-1.5px;">Create Account</button>
-      </div>
-      <!-- Logo + title -->
-      <div style="text-align:center;margin-bottom:22px;">
-        <h3 id="auth-modal-title" style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:#322C2C;">Welcome Back</h3>
-        <p id="auth-modal-sub" style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(50,44,44,0.45);margin-top:4px;">Sign in to your Nails Club account</p>
-      </div>
-      <!-- Form -->
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div id="auth-name-field" style="display:none;">
-          <input id="auth-name" type="text" placeholder="Your Name" style="width:100%;padding:12px 14px;border:1.5px solid rgba(50,44,44,0.15);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#BC1423'" onblur="this.style.borderColor='rgba(50,44,44,0.15)'">
-        </div>
-        <input id="auth-email" type="email" placeholder="Email Address" style="width:100%;padding:12px 14px;border:1.5px solid rgba(50,44,44,0.15);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#BC1423'" onblur="this.style.borderColor='rgba(50,44,44,0.15)'" onkeydown="if(event.key==='Enter')authSubmit()">
-        <input id="auth-password" type="password" placeholder="Password" style="width:100%;padding:12px 14px;border:1.5px solid rgba(50,44,44,0.15);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#BC1423'" onblur="this.style.borderColor='rgba(50,44,44,0.15)'" onkeydown="if(event.key==='Enter')authSubmit()">
-        <p id="auth-error" style="display:none;font-family:'DM Sans',sans-serif;font-size:11px;color:#BC1423;text-align:center;"></p>
-        <button onclick="authSubmit()" id="auth-submit-btn" style="width:100%;padding:13px;background:#BC1423;color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;font-weight:500;transition:background 0.2s;" onmouseenter="this.style.background='#9e1020'" onmouseleave="this.style.background='#BC1423'">Sign In</button>
-      </div>
-      <p style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(50,44,44,0.35);text-align:center;margin-top:14px;">
-        <span id="auth-switch-text">Don't have an account?</span>
-        <button id="auth-switch-btn" onclick="switchTab('signup')" style="background:none;border:none;color:#BC1423;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;text-decoration:underline;margin-left:4px;">Create one</button>
-      </p>
-    </div>
-  </div>
-</div>
+<!-- Sign In / Create Account modal is now injected by designs-data.js
+     (shared with collection.html and premium_product_page.html) so
+     an account can be required before ordering from any page. -->
 
 <script>
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// AUTH SYSTEM
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
-// REPLACE THIS with your Google Apps Script Web App URL after setup
-const AUTH_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxs4Oiak8MMNgfkqnmZUhdhd0770EF9BxIQ3onQfjigzUJf0fiCNvCH0VTrjgYKz0Xg/exec';
-
-let authMode = 'login'; // 'login' or 'signup'
-
-function openAuthModal(mode) {
-  authMode = mode || 'login';
-  document.getElementById('auth-modal').style.display = 'flex';
-  document.getElementById('auth-error').style.display = 'none';
-  document.getElementById('auth-email').value = '';
-  document.getElementById('auth-password').value = '';
-  if (document.getElementById('auth-name')) document.getElementById('auth-name').value = '';
-  switchTab(authMode);
-}
-
-function closeAuthModal() {
-  document.getElementById('auth-modal').style.display = 'none';
-}
-
-function switchTab(mode) {
-  authMode = mode;
-  const isLogin = mode === 'login';
-  // Tab styles
-  document.getElementById('tab-login').style.color = isLogin ? '#BC1423' : 'rgba(50,44,44,0.4)';
-  document.getElementById('tab-login').style.borderBottomColor = isLogin ? '#BC1423' : 'transparent';
-  document.getElementById('tab-signup').style.color = !isLogin ? '#BC1423' : 'rgba(50,44,44,0.4)';
-  document.getElementById('tab-signup').style.borderBottomColor = !isLogin ? '#BC1423' : 'transparent';
-  // Title
-  document.getElementById('auth-modal-title').textContent = isLogin ? 'Welcome Back' : 'Create Account';
-  document.getElementById('auth-modal-sub').textContent = isLogin ? 'Sign in to your Nails Club account' : 'Join The Nails Club family';
-  // Name field
-  document.getElementById('auth-name-field').style.display = isLogin ? 'none' : 'block';
-  // Button
-  document.getElementById('auth-submit-btn').textContent = isLogin ? 'Sign In' : 'Create Account';
-  // Switch link
-  document.getElementById('auth-switch-text').textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
-  document.getElementById('auth-switch-btn').textContent = isLogin ? 'Create one' : 'Sign in';
-  document.getElementById('auth-switch-btn').onclick = () => switchTab(isLogin ? 'signup' : 'login');
-  document.getElementById('auth-error').style.display = 'none';
-}
-
-function authSubmit() {
-  const email = document.getElementById('auth-email').value.trim();
-  const password = document.getElementById('auth-password').value;
-  const name = document.getElementById('auth-name') ? document.getElementById('auth-name').value.trim() : '';
-  const errEl = document.getElementById('auth-error');
-
-  if (!email || !email.includes('@')) { showAuthError('Please enter a valid email address.'); return; }
-  if (!password || password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
-  if (authMode === 'signup' && !name) { showAuthError('Please enter your name.'); return; }
-
-  const btn = document.getElementById('auth-submit-btn');
-  btn.textContent = authMode === 'login' ? 'Signing in...' : 'Creating account...';
-  btn.disabled = true;
-
-  if (authMode === 'signup') {
-    // Check if already registered locally
-    const users = JSON.parse(localStorage.getItem('tnc_users') || '[]');
-    if (users.find(u => u.email === email)) {
-      showAuthError('This email is already registered. Please sign in.');
-      btn.textContent = 'Create Account'; btn.disabled = false; return;
-    }
-    // Save locally
-    users.push({ name, email, password, joined: new Date().toISOString() });
-    localStorage.setItem('tnc_users', JSON.stringify(users));
-    // Save to Google Sheet
-    fetch(AUTH_SHEET_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'signup', name, email, time: new Date().toISOString() })
-    }).catch(() => {});
-    // Log in immediately
-    loginSuccess(name, email);
-  } else {
-    // Login — check localStorage
-    const users = JSON.parse(localStorage.getItem('tnc_users') || '[]');
-    const user = users.find(u => u.email === email && u.password === password);
-    if (user) {
-      loginSuccess(user.name, user.email);
-    } else {
-      showAuthError('Incorrect email or password.');
-      btn.textContent = 'Sign In'; btn.disabled = false;
-    }
-  }
-}
-
-function loginSuccess(name, email) {
-  localStorage.setItem('tnc_logged_in', JSON.stringify({ name, email }));
-  closeAuthModal();
-  updateAuthUI();
-}
-
-function toggleUserDropdown() {
-  const dd = document.getElementById('user-dropdown');
-  if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
-}
-// Close dropdown when clicking outside
-document.addEventListener('click', function(e) {
-  const btn = document.getElementById('auth-avatar-btn');
-  const dd = document.getElementById('user-dropdown');
-  if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) dd.style.display = 'none';
-});
-
-function authLogout() {
-  localStorage.removeItem('tnc_logged_in');
-  const dd = document.getElementById('user-dropdown');
-  if (dd) dd.style.display = 'none';
-  updateAuthUI();
-}
-
-function updateAuthUI() {
-  const user = JSON.parse(localStorage.getItem('tnc_logged_in') || 'null');
-  const statusEl = document.getElementById('auth-status');
-  const loginBtn = document.getElementById('auth-login-btn');
-  const nameEl = document.getElementById('auth-user-name');
-  const emailEl = document.getElementById('auth-user-email');
-  const avatarEl = document.getElementById('auth-avatar');
-  const ddName = document.getElementById('dd-name');
-  const ddEmail = document.getElementById('dd-email');
-  if (user) {
-    const displayName = user.name || user.email.split('@')[0];
-    const initial = displayName.charAt(0).toUpperCase();
-    if (statusEl) { statusEl.style.display = 'flex'; }
-    if (nameEl) nameEl.textContent = displayName;
-    if (emailEl) emailEl.textContent = user.email;
-    if (avatarEl) avatarEl.textContent = initial;
-    if (ddName) ddName.textContent = displayName;
-    if (ddEmail) ddEmail.textContent = user.email;
-    if (loginBtn) loginBtn.style.display = 'none';
-  } else {
-    if (statusEl) statusEl.style.display = 'none';
-    if (loginBtn) loginBtn.style.display = '';
-  }
-}
-
-function showAuthError(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg; el.style.display = 'block';
-  const btn = document.getElementById('auth-submit-btn');
-  btn.textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
-  btn.disabled = false;
-}
-
 // DOMContentLoaded — safe event bindings
 document.addEventListener('DOMContentLoaded', () => {
   const detailPanel = $id('detail-panel');
   if (detailPanel) detailPanel.addEventListener('click', function(e) {
     if (e.target === this) closeDetail();
   });
-  const authModalBackdrop = $id('auth-modal');
-  if (authModalBackdrop) authModalBackdrop.addEventListener('click', function(e) { if (e.target === this) closeAuthModal(); });
   // ── Wishlist badge count ──
   try {
     const wl = JSON.parse(localStorage.getItem('tnc_wishlist') || '[]');
@@ -1429,9 +1246,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   } catch(e) {}
 });
-
-// Check login state on load
-document.addEventListener('DOMContentLoaded', updateAuthUI);
 </script>
 
 <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•

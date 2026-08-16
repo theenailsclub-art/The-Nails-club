@@ -492,7 +492,7 @@ tbody tr:hover{background:var(--panel-sunk);}
       <div class="kpi-grid" id="kpiGrid"></div>
       <div class="chart-grid">
         <div class="chart-card"><div class="chart-head"><div><h3>Revenue</h3><div class="cc-sub" id="revenueSub">Last 7 days gross revenue</div></div></div><canvas id="chartRevenue" height="220"></canvas></div>
-        <div class="chart-card"><div class="chart-head"><div><h3>Traffic sources</h3><div class="cc-sub">Where visitors come from</div></div></div><canvas id="chartTraffic" height="220"></canvas></div>
+        <div class="chart-card"><div class="chart-head"><div><h3>Order channels</h3><div class="cc-sub">Where orders come from</div></div></div><canvas id="chartTraffic" height="220"></canvas></div>
       </div>
       <div class="chart-grid">
         <div class="chart-card"><div class="chart-head"><div><h3>Orders over time</h3><div class="cc-sub" id="ordersSub">Order volume — last 7 days</div></div></div><canvas id="chartOrders" height="210"></canvas></div>
@@ -577,6 +577,9 @@ tbody tr:hover{background:var(--panel-sunk);}
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
             <input class="input" id="orderSearch" placeholder="Search order or customer…" oninput="renderOrders()">
           </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddOrderModal()">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add Order
+          </button>
         </div>
       </div>
       <div class="chip-row" id="orderFilters" style="margin-bottom:16px;">
@@ -1123,6 +1126,45 @@ tbody tr:hover{background:var(--panel-sunk);}
 </div>
 
 <!-- â•â•â• CUSTOMER DETAIL DRAWER â•â•â• -->
+<!-- ═══ ADD ORDER (admin logs a WhatsApp/Instagram order) ═══ -->
+<div class="modal-overlay" id="addOrderOverlay">
+  <div class="modal" style="max-width:520px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h3>Add Order</h3>
+      <button class="drawer-close" onclick="closeAddOrderModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin:-8px 0 16px;">For orders a customer placed with you directly over WhatsApp or Instagram.</p>
+    <form id="addOrderForm" onsubmit="event.preventDefault();saveNewOrder();">
+      <div class="field-row">
+        <div class="field"><label>Customer name</label><input class="input" id="aoCustomerName" placeholder="e.g. Riya Mehta"></div>
+        <div class="field"><label>Phone (optional)</label><input class="input" id="aoCustomerPhone" placeholder="+91…"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Ordered via</label><select class="select" id="aoChannel">
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="Instagram">Instagram</option>
+          <option value="Website">Website</option>
+          <option value="Other">Other</option>
+        </select></div>
+        <div class="field"><label>Payment</label><select class="select" id="aoPayment">
+          <option value="unpaid">Unpaid</option>
+          <option value="paid">Paid</option>
+        </select></div>
+      </div>
+      <div class="field"><label>Product / design</label><input class="input" id="aoProduct" list="aoProductList" placeholder="e.g. French Pearl"></div>
+      <datalist id="aoProductList"></datalist>
+      <div class="field"><label>Amount (₹)</label><input class="input" type="number" id="aoAmount" placeholder="999"></div>
+      <div class="field"><label>Shipping address (optional)</label><textarea class="textarea" id="aoAddress" rows="2"></textarea></div>
+      <div class="field"><label>Notes (optional)</label><textarea class="textarea" id="aoNotes" rows="2"></textarea></div>
+      <p id="addOrderError" style="display:none;color:#BC1423;font-size:12px;margin-bottom:8px;"></p>
+      <div class="modal-actions" style="margin-top:6px;">
+        <button type="button" class="btn btn-ghost" onclick="closeAddOrderModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="aoSaveBtn">Save Order</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="overlay" id="customerOverlay">
   <div class="drawer" style="width:min(560px,100%);">
     <div class="drawer-head"><h3>Customer details</h3><button class="drawer-close" onclick="closeCustomerDrawer()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -1151,23 +1193,91 @@ const PRODUCT_IMAGES = [
 ];
 let PRODUCTS = [];
 let nextProductId = 1; // unused now that Supabase assigns real ids; kept for compatibility
-const CUSTOMERS = [
-  {id:1,name:"Tisha Jariwala",email:"tisha.j@gmail.com",orders:6,spent:6840,lastOrder:"3 Aug 2026",status:"vip"},
-  {id:2,name:"Shruti K.",email:"shruti.k@gmail.com",orders:2,spent:2198,lastOrder:"29 Jul 2026",status:"repeat"},
-  {id:3,name:"Harsh Jariwala",email:"harsh.j@gmail.com",orders:4,spent:4560,lastOrder:"1 Aug 2026",status:"repeat"},
-  {id:4,name:"Riya Mehta",email:"riya.mehta@gmail.com",orders:1,spent:999,lastOrder:"6 Aug 2026",status:"new"},
-  {id:5,name:"Ananya Shah",email:"ananya.shah@gmail.com",orders:8,spent:9420,lastOrder:"4 Aug 2026",status:"vip"},
-  {id:6,name:"Pooja Rao",email:"pooja.rao@gmail.com",orders:1,spent:799,lastOrder:"5 Aug 2026",status:"new"},
-];
-let ORDERS = [
-  {id:"TNC-1042",customer:"Tisha Jariwala",date:"6 Aug 2026",products:"French Pearl, Chrome Luxe",amount:2298,payment:"paid",status:"processing",address:"12 Rose Apt, Surat, GJ 395001",notes:"Gift wrap please"},
-  {id:"TNC-1041",customer:"Riya Mehta",date:"6 Aug 2026",products:"French Pearl",amount:999,payment:"paid",status:"pending",address:"44 Sunrise Colony, Ahmedabad, GJ",notes:""},
-  {id:"TNC-1040",customer:"Ananya Shah",date:"5 Aug 2026",products:"Bridal Bloom",amount:1399,payment:"paid",status:"completed",address:"8 Palm Ave, Mumbai, MH",notes:""},
-  {id:"TNC-1039",customer:"Pooja Rao",date:"5 Aug 2026",products:"Rose Gloss",amount:899,payment:"unpaid",status:"pending",address:"21 MG Road, Bangalore, KA",notes:""},
-  {id:"TNC-1038",customer:"Harsh Jariwala",date:"3 Aug 2026",products:"Festive Glam, Silver Mirror Chrome",amount:2048,payment:"paid",status:"shipped",address:"12 Rose Apt, Surat, GJ 395001",notes:""},
-  {id:"TNC-1037",customer:"Shruti K.",date:"1 Aug 2026",products:"Bridal Bloom",amount:1399,payment:"paid",status:"cancelled",address:"5 Hill View, Pune, MH",notes:"Changed mind"},
-  {id:"TNC-1036",customer:"Tisha Jariwala",date:"29 Jul 2026",products:"Silver Mirror Chrome",amount:949,payment:"paid",status:"completed",address:"12 Rose Apt, Surat, GJ 395001",notes:""},
-];
+// Real signups from the website's Sign In / Create Account modal
+// (see designs-data.js: sbFetchCustomers()) — replaces the 6
+// hardcoded sample rows this page used to ship with. Populated by
+// loadCustomers() at startup; starts empty so the page still renders
+// while that fetch is in flight.
+let CUSTOMERS = [];
+
+// Maps a `customers` table row (id, name, email, created_at) to the
+// shape this page's UI expects. Order count / total spent aren't
+// tracked yet — the `orders` table doesn't link to a customer id or
+// email, only a typed-in name — so these default to 0 until that
+// link is added.
+function fromDbCustomer(c) {
+  return {
+    id: c.id,
+    name: c.name || (c.email ? c.email.split('@')[0] : 'Customer'),
+    email: c.email,
+    orders: 0,
+    spent: 0,
+    lastOrder: new Date(c.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+    createdAtRaw: c.created_at,
+    status: 'new',
+  };
+}
+
+async function loadCustomers() {
+  const rows = await window.sbFetchCustomers();
+  CUSTOMERS = rows.map(fromDbCustomer);
+}
+// Real orders — either logged automatically when a signed-in customer
+// continues to WhatsApp/Instagram from the site's order screen, or
+// entered manually here by the admin for orders that came in by DM.
+// Replaces the 7 hardcoded sample rows this page used to ship with.
+// Populated by loadOrders() below; starts empty so the page still
+// renders while that fetch is in flight.
+let ORDERS = [];
+
+// Maps an `orders` table row (snake_case) to the shape this page's UI
+// expects. dbId/createdAt are kept so edits and date-range math have
+// access to the raw values.
+function fromDbOrder(o) {
+  const items = Array.isArray(o.items) ? o.items : [];
+  return {
+    dbId: o.id,
+    id: o.order_no,
+    customer: o.customer_name,
+    phone: o.customer_phone || '',
+    channel: o.channel || 'Website',
+    date: new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+    createdAt: o.created_at,
+    products: items.length ? items.map(it => it.title).join(', ') : '—',
+    customerId: o.customer_id || null,
+    amount: Number(o.amount) || 0,
+    payment: o.payment_status || 'unpaid',
+    status: o.status || 'pending',
+    address: o.address || '',
+    notes: o.notes || '',
+  };
+}
+
+async function loadOrders() {
+  const rows = await window.sbFetchOrders();
+  ORDERS = rows.map(fromDbOrder);
+  linkOrdersToCustomers();
+}
+
+// Best-effort match of each customer's real order history by name,
+// since orders placed by admin over WhatsApp/Instagram are only typed
+// in with a name (no account). Orders placed from the site itself are
+// linked precisely via customer_id — matched here too when present.
+function linkOrdersToCustomers() {
+  CUSTOMERS.forEach(c => {
+    const mine = ORDERS.filter(o =>
+      (o.customerId && o.customerId === c.id) ||
+      (o.customer || '').trim().toLowerCase() === (c.name || '').trim().toLowerCase()
+    ).filter(o => o.status !== 'cancelled');
+    c.orders = mine.length;
+    c.spent = mine.reduce((s, o) => s + o.amount, 0);
+    if (mine.length) {
+      const latest = mine.reduce((a, b) => new Date(a.createdAt) > new Date(b.createdAt) ? a : b);
+      c.lastOrder = latest.date;
+    }
+    c.status = mine.length >= 3 ? 'vip' : mine.length >= 1 ? 'repeat' : 'new';
+  });
+}
 let DISCOUNTS = [
   {id:1,code:"NAVRATRI20",type:"percent",value:20,usage:34,limit:100,expiry:"25 Oct 2026",status:"active"},
   {id:2,code:"BRIDAL15",type:"percent",value:15,usage:58,limit:50,expiry:"31 Dec 2026",status:"active"},
@@ -1396,8 +1506,8 @@ async function goPage(page){
   if(page==='products'){ await loadProducts(); renderProducts(); } // re-fetch so edits from other devices show up
   if(page==='categories'){ await loadCategories(); renderCategories(); }
   if(page==='reels'){ await loadReels(); renderReels(); }
-  if(page==='orders')renderOrders();
-  if(page==='customers'){renderCustomerKpis();renderCustomers();}
+  if(page==='orders'){ await loadOrders(); renderOrders(); } // re-fetch so orders from any device show up
+  if(page==='customers'){ await loadCustomers(); await loadOrders(); renderCustomerKpis(); renderCustomers(); } // re-fetch so signups & orders from any device show up
   if(page==='analytics'){initAnalyticsCharts();renderAnalyticsData();refreshAnalyticsCharts();}
   if(page==='marketing'){renderDiscounts();renderCampaigns();renderBanners();}
   if(page==='settings'){renderIntegrations();applyStoreSettingsToUI();await refreshTeamMembers();}
@@ -1464,58 +1574,80 @@ document.addEventListener('DOMContentLoaded',()=>{
 /* ============================================================
    OVERVIEW PAGE
 ============================================================ */
-const RANGE_DATA={
-  today:{
-    label:'Today',
-    kpis:[
-      {label:'Total Revenue',value:'₹18,450',delta:'+6.2%',up:true},
-      {label:'Total Orders',value:'9',delta:'+2 orders',up:true},
-      {label:'New Customers',value:'4',delta:'+1',up:true},
-      {label:'Conversion Rate',value:'2.9%',delta:'-0.3%',up:false},
-    ],
-    labels:['12am','4am','8am','12pm','4pm','8pm','Now'],
-    revenue:[0,320,2100,5400,4200,3900,2530],
-    orders:[0,1,2,3,2,1,0],
-  },
-  '7d':{
-    label:'Last 7 days',
-    kpis:[
-      {label:'Total Revenue',value:'₹2,84,600',delta:'+18.4%',up:true},
-      {label:'Total Orders',value:'214',delta:'+9.2%',up:true},
-      {label:'New Customers',value:'186',delta:'+12.6%',up:true},
-      {label:'Conversion Rate',value:'3.4%',delta:'-0.4%',up:false},
-    ],
-    labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-    revenue:[32000,28500,41200,38900,52600,61200,45800],
-    orders:[18,22,26,24,31,38,29],
-  },
-  '30d':{
-    label:'Last 30 days',
-    kpis:[
-      {label:'Total Revenue',value:'₹9,86,400',delta:'+22.1%',up:true},
-      {label:'Total Orders',value:'742',delta:'+15.8%',up:true},
-      {label:'New Customers',value:'512',delta:'+19.3%',up:true},
-      {label:'Conversion Rate',value:'3.6%',delta:'+0.2%',up:true},
-    ],
-    labels:['Wk 1','Wk 2','Wk 3','Wk 4','Wk 5'],
-    revenue:[178000,205000,192000,238000,173400],
-    orders:[132,148,151,169,142],
-  },
-  '90d':{
-    label:'Last 90 days',
-    kpis:[
-      {label:'Total Revenue',value:'₹26,42,800',delta:'+31.7%',up:true},
-      {label:'Total Orders',value:'1,980',delta:'+24.5%',up:true},
-      {label:'New Customers',value:'1,340',delta:'+27.1%',up:true},
-      {label:'Conversion Rate',value:'3.8%',delta:'+0.6%',up:true},
-    ],
-    labels:['Jun','Jul','Aug'],
-    revenue:[742000,865000,1035800],
-    orders:[612,678,690],
-  },
+// Real dashboard numbers, computed on the fly from ORDERS + CUSTOMERS
+// for the selected date range — replaces the hardcoded RANGE_DATA
+// mock object this page used to ship with. Cancelled orders are
+// excluded from revenue/order counts (they didn't result in a sale)
+// but a range with zero orders still renders cleanly at ₹0 / 0.
+const RANGE_SPEC={
+  today:{label:'Today',days:1},
+  '7d':{label:'Last 7 days',days:7},
+  '30d':{label:'Last 30 days',days:30},
+  '90d':{label:'Last 90 days',days:90},
 };
+function pctDelta(cur,prev){
+  if(prev===0)return cur>0?{delta:'+100%',up:true}:{delta:'0%',up:true};
+  const pct=((cur-prev)/prev)*100;
+  return {delta:(pct>=0?'+':'')+pct.toFixed(1)+'%',up:pct>=0};
+}
+function computeRangeData(range){
+  const spec=RANGE_SPEC[range]||RANGE_SPEC['7d'];
+  const now=new Date();
+  const rangeEnd=now;
+  const rangeStart=new Date(now);rangeStart.setDate(rangeStart.getDate()-spec.days);
+  const prevStart=new Date(rangeStart);prevStart.setDate(prevStart.getDate()-spec.days);
+
+  const live=ORDERS.filter(o=>o.status!=='cancelled');
+  const inRange=(o,start,end)=>{const t=new Date(o.createdAt);return t>=start&&t<end;};
+  const curOrders=live.filter(o=>inRange(o,rangeStart,rangeEnd));
+  const prevOrders=live.filter(o=>inRange(o,prevStart,rangeStart));
+  const curRevenue=curOrders.reduce((s,o)=>s+o.amount,0);
+  const prevRevenue=prevOrders.reduce((s,o)=>s+o.amount,0);
+  const custInRange=(start,end)=>CUSTOMERS.filter(c=>{const t=c.createdAtRaw?new Date(c.createdAtRaw):null;return t&&t>=start&&t<end;}).length;
+  const curNewCustomers=custInRange(rangeStart,rangeEnd);
+  const prevNewCustomers=custInRange(prevStart,rangeStart);
+  const curAOV=curOrders.length?Math.round(curRevenue/curOrders.length):0;
+  const prevAOV=prevOrders.length?Math.round(prevRevenue/prevOrders.length):0;
+
+  const revDelta=pctDelta(curRevenue,prevRevenue);
+  const ordDelta=pctDelta(curOrders.length,prevOrders.length);
+  const custDelta=pctDelta(curNewCustomers,prevNewCustomers);
+  const aovDelta=pctDelta(curAOV,prevAOV);
+
+  // Bucket labels + per-bucket revenue/order totals for the charts
+  let labels=[],buckets=[];
+  if(range==='today'){
+    labels=['12–4am','4–8am','8–12pm','12–4pm','4–8pm','8pm–12am'];
+    buckets=labels.map(()=>({revenue:0,orders:0}));
+    curOrders.forEach(o=>{const h=new Date(o.createdAt).getHours();const idx=Math.min(5,Math.floor(h/4));buckets[idx].revenue+=o.amount;buckets[idx].orders++;});
+  }else if(range==='7d'){
+    for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);labels.push(d.toLocaleDateString('en-IN',{weekday:'short'}));buckets.push({revenue:0,orders:0,day:d.toDateString()});}
+    curOrders.forEach(o=>{const day=new Date(o.createdAt).toDateString();const b=buckets.find(b=>b.day===day);if(b){b.revenue+=o.amount;b.orders++;}});
+  }else if(range==='30d'){
+    labels=['Wk 1','Wk 2','Wk 3','Wk 4','Wk 5'];
+    buckets=labels.map(()=>({revenue:0,orders:0}));
+    curOrders.forEach(o=>{const daysAgo=Math.floor((now-new Date(o.createdAt))/86400000);const idx=Math.min(4,Math.floor((spec.days-1-daysAgo)/6));if(idx>=0&&idx<5){buckets[idx].revenue+=o.amount;buckets[idx].orders++;}});
+  }else{ // 90d
+    for(let i=2;i>=0;i--){const d=new Date(now);d.setMonth(d.getMonth()-i);labels.push(d.toLocaleDateString('en-IN',{month:'short'}));buckets.push({revenue:0,orders:0,month:d.getMonth(),year:d.getFullYear()});}
+    curOrders.forEach(o=>{const d=new Date(o.createdAt);const b=buckets.find(b=>b.month===d.getMonth()&&b.year===d.getFullYear());if(b){b.revenue+=o.amount;b.orders++;}});
+  }
+
+  return {
+    label:spec.label,
+    kpis:[
+      {label:'Total Revenue',value:fmtINR(curRevenue),...revDelta},
+      {label:'Total Orders',value:String(curOrders.length),...ordDelta},
+      {label:'New Customers',value:String(curNewCustomers),...custDelta},
+      {label:'Avg. Order Value',value:fmtINR(curAOV),...aovDelta},
+    ],
+    labels,
+    revenue:buckets.map(b=>b.revenue),
+    orders:buckets.map(b=>b.orders),
+    channels:curOrders.reduce((acc,o)=>{const k=o.channel||'Other';acc[k]=(acc[k]||0)+1;return acc;},{}),
+  };
+}
 function renderKpis(){
-  const kpis=RANGE_DATA[state.dateRange].kpis;
+  const kpis=computeRangeData(state.dateRange).kpis;
   document.getElementById('kpiGrid').innerHTML=kpis.map(k=>`
     <div class="kpi-card">
       <div class="kpi-label">${k.label}</div>
@@ -1526,9 +1658,21 @@ function renderKpis(){
     </div>`).join('');
 }
 function renderTopDesignsMini(){
-  const top=[...PRODUCTS].sort((a,b)=>b.views-a.views).slice(0,5);
-  document.getElementById('topDesignsMini').innerHTML=top.map(p=>`
-    <div class="mini-row"><img src="${p.img}" alt="${p.title}"><div><div class="mr-title">${p.title}</div><div class="mr-sub">${p.category}</div></div><div class="mr-val">${p.views.toLocaleString('en-IN')} views</div></div>`).join('');
+  // Real order counts per product, computed from actual order items —
+  // this is what "top selling" means, not just page views.
+  const orderCounts={};
+  ORDERS.filter(o=>o.status!=='cancelled').forEach(o=>{
+    o.products.split(',').forEach(t=>{const k=t.trim().toLowerCase();if(!k||k==='—')return;orderCounts[k]=(orderCounts[k]||0)+1;});
+  });
+  const top=[...PRODUCTS].sort((a,b)=>{
+    const ao=orderCounts[a.title.toLowerCase()]||0,bo=orderCounts[b.title.toLowerCase()]||0;
+    return bo-ao||b.views-a.views;
+  }).slice(0,5);
+  document.getElementById('topDesignsMini').innerHTML=top.map(p=>{
+    const oc=orderCounts[p.title.toLowerCase()]||0;
+    const valTxt=oc>0?`${oc} order${oc===1?'':'s'}`:`${p.views.toLocaleString('en-IN')} views`;
+    return `<div class="mini-row"><img src="${p.img}" alt="${p.title}"><div><div class="mr-title">${p.title}</div><div class="mr-sub">${p.category}</div></div><div class="mr-val">${valTxt}</div></div>`;
+  }).join('');
 }
 function renderRecentOrders(){
   const body=document.getElementById('recentOrdersBody');
@@ -1559,9 +1703,21 @@ function skeletonBoot(){
 }
 
 /* ── OVERVIEW CHARTS ── */
+const TRAFFIC_CHANNEL_ORDER=['Website','Instagram','WhatsApp','Other'];
+const TRAFFIC_CHANNEL_COLORS={Website:'#8C3A46',Instagram:'#B0553B',WhatsApp:'#6C7A5E',Other:'#D8C9BC'};
+function trafficChartData(channels){
+  const present=TRAFFIC_CHANNEL_ORDER.filter(k=>channels[k]);
+  if(!present.length)return{labels:['No orders yet'],data:[1],colors:['#EDE4D8']};
+  return{
+    labels:present,
+    data:present.map(k=>channels[k]),
+    colors:present.map(k=>TRAFFIC_CHANNEL_COLORS[k]),
+  };
+}
 function initOverviewCharts(){
   if(charts.revenue)return;
-  const d=RANGE_DATA[state.dateRange];
+  const d=computeRangeData(state.dateRange);
+  const t=trafficChartData(d.channels);
   charts.revenue=new Chart(document.getElementById('chartRevenue'),{
     type:'line',
     data:{labels:d.labels,datasets:[{data:d.revenue,borderColor:'#8C3A46',backgroundColor:'rgba(140,58,70,.10)',fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},
@@ -1569,7 +1725,7 @@ function initOverviewCharts(){
   });
   charts.traffic=new Chart(document.getElementById('chartTraffic'),{
     type:'doughnut',
-    data:{labels:['Instagram','Direct','Google','WhatsApp','Other'],datasets:[{data:[42,21,17,14,6],backgroundColor:['#8C3A46','#B08A55','#6C7A5E','#B0553B','#D8C9BC'],borderWidth:0}]},
+    data:{labels:t.labels,datasets:[{data:t.data,backgroundColor:t.colors,borderWidth:0}]},
     options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,padding:14,font:{size:11.5}}}}}
   });
   charts.orders=new Chart(document.getElementById('chartOrders'),{
@@ -1580,7 +1736,8 @@ function initOverviewCharts(){
   updateOverviewSubtitles();
 }
 function refreshOverviewCharts(){
-  const d=RANGE_DATA[state.dateRange];
+  const d=computeRangeData(state.dateRange);
+  const t=trafficChartData(d.channels);
   if(charts.revenue){
     charts.revenue.data.labels=d.labels;
     charts.revenue.data.datasets[0].data=d.revenue;
@@ -1591,21 +1748,27 @@ function refreshOverviewCharts(){
     charts.orders.data.datasets[0].data=d.orders;
     charts.orders.update();
   }
+  if(charts.traffic){
+    charts.traffic.data.labels=t.labels;
+    charts.traffic.data.datasets[0].data=t.data;
+    charts.traffic.data.datasets[0].backgroundColor=t.colors;
+    charts.traffic.update();
+  }
   updateOverviewSubtitles();
 }
 function updateOverviewSubtitles(){
-  const sub=RANGE_DATA[state.dateRange].label;
+  const sub=RANGE_SPEC[state.dateRange].label;
   const revSub=document.getElementById('revenueSub');
   if(revSub)revSub.textContent=sub+' gross revenue';
   const ordSub=document.getElementById('ordersSub');
   if(ordSub)ordSub.textContent='Order volume — '+sub.toLowerCase();
 }
 function setDateRange(range){
-  if(!RANGE_DATA[range]||state.dateRange===range)return;
+  if(!RANGE_SPEC[range]||state.dateRange===range)return;
   state.dateRange=range;
   renderKpis();
   refreshOverviewCharts();
-  showToast('Showing: '+RANGE_DATA[range].label);
+  showToast('Showing: '+RANGE_SPEC[range].label);
 }
 </script>
 <script>
@@ -2030,8 +2193,70 @@ function openOrderDrawer(id){
   document.getElementById('orderOverlay').classList.add('open');
 }
 function findProductImg(title){const p=PRODUCTS.find(p=>p.title.toLowerCase()===title.toLowerCase());return p?`<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`:'';}
-function updateOrderStatus(id,status){const o=ORDERS.find(o=>o.id===id);if(!o)return;o.status=status;showToast('Order '+id+' marked as '+status);closeOrderDrawer();renderOrders();}
+async function updateOrderStatus(id,status){
+  const o=ORDERS.find(o=>o.id===id);if(!o)return;
+  const prev=o.status;
+  o.status=status; // optimistic UI update
+  closeOrderDrawer();renderOrders();
+  try{
+    await window.sbUpdateOrder(o.dbId,{status});
+    showToast('Order '+id+' marked as '+status);
+    linkOrdersToCustomers();
+    if(document.getElementById('page-customers').classList.contains('active'))renderCustomers();
+    if(document.getElementById('page-overview').classList.contains('active')){renderKpis();refreshOverviewCharts();renderRecentOrders();}
+  }catch(e){
+    o.status=prev; // rollback on failure
+    renderOrders();
+    showToast('Could not update order — check your connection');
+  }
+}
 function closeOrderDrawer(){document.getElementById('orderOverlay').classList.remove('open');}
+
+/* ── ADD ORDER (admin logs a WhatsApp/Instagram order manually) ── */
+function openAddOrderModal(){
+  document.getElementById('addOrderForm').reset();
+  document.getElementById('addOrderError').style.display='none';
+  document.getElementById('aoProductList').innerHTML=PRODUCTS.map(p=>`<option value="${p.title}">`).join('');
+  document.getElementById('addOrderOverlay').classList.add('open');
+}
+function closeAddOrderModal(){document.getElementById('addOrderOverlay').classList.remove('open');}
+async function saveNewOrder(){
+  const name=document.getElementById('aoCustomerName').value.trim();
+  const phone=document.getElementById('aoCustomerPhone').value.trim();
+  const channel=document.getElementById('aoChannel').value;
+  const productTitle=document.getElementById('aoProduct').value.trim();
+  const amount=Number(document.getElementById('aoAmount').value);
+  const address=document.getElementById('aoAddress').value.trim();
+  const notes=document.getElementById('aoNotes').value.trim();
+  const payment=document.getElementById('aoPayment').value;
+  const errEl=document.getElementById('addOrderError');
+  if(!name||!productTitle||!amount||amount<=0){
+    errEl.textContent='Please fill in customer name, product and amount.';errEl.style.display='block';return;
+  }
+  const matched=PRODUCTS.find(p=>p.title.toLowerCase()===productTitle.toLowerCase());
+  const btn=document.getElementById('aoSaveBtn');
+  btn.disabled=true;btn.textContent='Saving…';
+  try{
+    await window.sbInsertOrder({
+      customer_name:name,
+      customer_phone:phone||null,
+      channel:channel,
+      items:[{title:productTitle,img:matched?matched.img:'',price:amount}],
+      amount:amount,
+      payment_status:payment,
+      status:'pending',
+      address:address||null,
+      notes:notes||null,
+    });
+    await loadOrders();
+    renderOrders();renderRecentOrders();renderKpis();refreshOverviewCharts();renderCustomerKpis();renderCustomers();
+    closeAddOrderModal();
+    showToast('Order added');
+  }catch(e){
+    errEl.textContent='Could not save order — check your connection.';errEl.style.display='block';
+  }
+  btn.disabled=false;btn.textContent='Save Order';
+}
 
 /* ============================================================
    CATEGORIES PAGE
@@ -2652,19 +2877,19 @@ function renderCustomers(){
   if(state.customerFilter!=='all')list=list.filter(c=>c.status===state.customerFilter);
   const statusL={vip:'VIP',repeat:'Repeat',new:'New'};
   document.getElementById('customersBody').innerHTML=list.length?list.map(c=>`
-    <tr style="cursor:pointer;" onclick="openCustomerDrawer(${c.id})">
+    <tr style="cursor:pointer;" onclick="openCustomerDrawer('${c.id}')">
       <td><span class="row-avatar">${c.name.charAt(0)}</span><span class="cell-strong">${c.name}</span></td>
       <td class="cell-muted">${c.email}</td>
       <td>${c.orders}</td>
       <td class="cell-strong">${fmtINR(c.spent)}</td>
       <td class="cell-muted">${c.lastOrder}</td>
       <td><span class="pill ${c.status==='vip'?'pill-published':c.status==='new'?'pill-processing':'pill-paid'}">${statusL[c.status]}</span></td>
-      <td><button class="btn-text" onclick="event.stopPropagation();openCustomerDrawer(${c.id})">View</button></td>
+      <td><button class="btn-text" onclick="event.stopPropagation();openCustomerDrawer('${c.id}')">View</button></td>
     </tr>`).join(''):`<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">No customers found.</td></tr>`;
 }
 function openCustomerDrawer(id){
-  const c=CUSTOMERS.find(c=>c.id===id);if(!c)return;
-  const cos=ORDERS.filter(o=>o.customer===c.name);
+  const c=CUSTOMERS.find(c=>String(c.id)===String(id));if(!c)return;
+  const cos=ORDERS.filter(o=>(o.customerId&&o.customerId===c.id)||o.customer.trim().toLowerCase()===c.name.trim().toLowerCase());
   document.getElementById('customerDrawerBody').innerHTML=`
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
       <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(155deg,var(--gold),var(--rosewood));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:600;color:#fff;flex-shrink:0;">${c.name.charAt(0)}</div>
@@ -3118,7 +3343,9 @@ document.addEventListener('DOMContentLoaded', function() {
     await loadProducts(); // pull the real product catalog from the database
     await loadCategories(); // needed before the product form's category dropdown is usable
     await loadStoreSettings(); // store info + owner profile, shared across every device
-    setTimeout(() => { renderKpis(); renderTopDesignsMini(); renderRecentOrders(); initOverviewCharts(); }, 400);
+    await loadCustomers(); // real website signups, not the old sample rows
+    await loadOrders(); // real orders — site checkouts + admin-logged WhatsApp/Instagram orders
+    setTimeout(() => { renderKpis(); renderTopDesignsMini(); renderRecentOrders(); initOverviewCharts(); renderCustomerKpis(); }, 400);
     setTimeout(() => applyRoleRestrictions(role || getCurrentRole()), 500);
     // Close overlays on backdrop click
     ['editorOverlay','customerOverlay','deleteOverlay','discountOverlay','orderOverlay','inviteOverlay','removeMemberOverlay','reelEditorOverlay','deleteReelOverlay','categoryEditorOverlay','deleteCategoryOverlay'].forEach(id => {
