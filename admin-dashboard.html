@@ -175,6 +175,11 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:500;margin:0;color:var(-
 .kpi-delta.down{color:var(--rust);}
 .chart-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:16px;}
 .chart-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-soft);}
+.ga-placeholder{text-align:center;padding:56px 24px;}
+.ga-placeholder-icon{width:52px;height:52px;border-radius:50%;background:var(--line-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+.ga-placeholder-icon svg{width:24px;height:24px;stroke:var(--muted);fill:none;stroke-width:1.6;}
+.ga-placeholder h3{font-size:15px;margin-bottom:8px;}
+.ga-placeholder p{max-width:380px;margin:0 auto 20px;color:var(--muted);font-size:13.5px;line-height:1.65;}
 .chart-card h3{font-size:15px;}
 .chart-card .cc-sub{font-size:12px;color:var(--muted);margin-top:2px;}
 .chart-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
@@ -635,14 +640,11 @@ tbody tr:hover{background:var(--panel-sunk);}
         <button class="tab-btn" data-tab="geo-tab" onclick="switchTab('geo-tab',this)">Geographic</button>
       </div>
       <div class="tab-panel active" id="tab-website">
-        <div class="kpi-grid kpi-grid-6" id="websiteKpis"></div>
-        <div class="chart-grid">
-          <div class="chart-card"><h3>Visitors</h3><div class="cc-sub" style="margin-bottom:12px;">Unique site visitors per day</div><canvas id="chartVisitors" height="210"></canvas></div>
-          <div class="chart-card"><h3>Page views vs Product views</h3><div class="cc-sub" style="margin-bottom:12px;">Engagement depth</div><canvas id="chartPageviews" height="210"></canvas></div>
-        </div>
-        <div class="chart-grid">
-          <div class="chart-card"><h3>Conversion funnel</h3><div class="cc-sub" style="margin-bottom:12px;">Visitors → Orders</div><div id="conversionFunnel"></div></div>
-          <div class="chart-card"><h3>Revenue trend</h3><div class="cc-sub" id="revTrendSub" style="margin-bottom:12px;">30 day overview</div><canvas id="chartRevenueTrend" height="210"></canvas></div>
+        <div class="card pad-lg ga-placeholder">
+          <div class="ga-placeholder-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10M11 19V5M18 19v-7"/><path d="M2 19h20"/></svg></div>
+          <h3>Visitor analytics not connected</h3>
+          <p>Visitors, sessions, page views, and the conversion funnel come from real traffic tracking, which isn't wired up yet. Connect Google Analytics to see live numbers here.</p>
+          <button class="btn btn-primary btn-sm" onclick="showToast('Google Analytics integration coming soon!')">Connect Google Analytics</button>
         </div>
       </div>
       <div class="tab-panel" id="tab-products-tab">
@@ -665,15 +667,19 @@ tbody tr:hover{background:var(--panel-sunk);}
         <div class="three-col" id="customerAnalyticsKpis"></div>
       </div>
       <div class="tab-panel" id="tab-device-tab">
-        <div class="two-col">
-          <div class="chart-card"><h3>Device breakdown</h3><canvas id="chartDevice" height="230"></canvas></div>
-          <div class="chart-card"><h3>Browser breakdown</h3><canvas id="chartBrowser" height="230"></canvas></div>
+        <div class="card pad-lg ga-placeholder">
+          <div class="ga-placeholder-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+          <h3>Device &amp; browser data not connected</h3>
+          <p>Seeing what devices and browsers your visitors use requires real traffic tracking, which isn't wired up yet. Connect Google Analytics to see live numbers here.</p>
+          <button class="btn btn-primary btn-sm" onclick="showToast('Google Analytics integration coming soon!')">Connect Google Analytics</button>
         </div>
       </div>
       <div class="tab-panel" id="tab-geo-tab">
-        <div class="card pad-lg">
-          <h3 style="margin-bottom:16px;">Geographic breakdown</h3>
-          <div class="table-wrap"><table><thead><tr><th>City / Region</th><th>Visitors</th><th>Orders</th><th>Revenue</th><th>Share</th></tr></thead><tbody id="geoBody"></tbody></table></div>
+        <div class="card pad-lg ga-placeholder">
+          <div class="ga-placeholder-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg></div>
+          <h3>Geographic data not connected</h3>
+          <p>Visitor location breakdowns by city and region require real traffic tracking, which isn't wired up yet. Connect Google Analytics to see live numbers here.</p>
+          <button class="btn btn-primary btn-sm" onclick="showToast('Google Analytics integration coming soon!')">Connect Google Analytics</button>
         </div>
       </div>
     </section>
@@ -2958,39 +2964,24 @@ const ANALYTICS_RANGE_DATA={
 function currentAnalyticsData(){return ANALYTICS_RANGE_DATA[state.analyticsRange];}
 
 function initAnalyticsCharts(){
-  if(charts.visitors)return;
-  const d=currentAnalyticsData();
-  charts.visitors=new Chart(document.getElementById('chartVisitors'),{type:'line',data:{labels:d.labels,datasets:[{data:d.visitors,borderColor:'#8C3A46',backgroundColor:'rgba(140,58,70,.08)',fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7}},y:{grid:{color:'#F0E8DC'}}}}});
-  charts.pageviews=new Chart(document.getElementById('chartPageviews'),{type:'bar',data:{labels:d.labels,datasets:[{label:'Page views',data:d.pageviews,backgroundColor:'#E9DFD2',borderRadius:5,maxBarThickness:16},{label:'Product views',data:d.productViews,backgroundColor:'#8C3A46',borderRadius:5,maxBarThickness:16}]},options:{plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,font:{size:11.5}}}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7}},y:{grid:{color:'#F0E8DC'}}}}});
-  charts.device=new Chart(document.getElementById('chartDevice'),{type:'doughnut',data:{labels:['Mobile','Desktop','Tablet'],datasets:[{data:d.device,backgroundColor:['#8C3A46','#B08A55','#6C7A5E'],borderWidth:0}]},options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,padding:14}}}}});
-  charts.browser=new Chart(document.getElementById('chartBrowser'),{type:'doughnut',data:{labels:['Chrome','Safari','Firefox','Other'],datasets:[{data:d.browser,backgroundColor:['#8C3A46','#B08A55','#6C7A5E','#D8C9BC'],borderWidth:0}]},options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,padding:14}}}}});
-  charts.revenueTrend=new Chart(document.getElementById('chartRevenueTrend'),{type:'line',data:{labels:d.labels,datasets:[{data:d.revenueTrend,borderColor:'#B08A55',backgroundColor:'rgba(176,138,85,.10)',fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7}},y:{grid:{color:'#F0E8DC'},ticks:{callback:v=>'₹'+(v/1000)+'k'}}}}});
   renderAnalyticsData();
 }
 function refreshAnalyticsCharts(){
-  const d=currentAnalyticsData();
-  if(charts.visitors){charts.visitors.data.labels=d.labels;charts.visitors.data.datasets[0].data=d.visitors;charts.visitors.update();}
-  if(charts.pageviews){charts.pageviews.data.labels=d.labels;charts.pageviews.data.datasets[0].data=d.pageviews;charts.pageviews.data.datasets[1].data=d.productViews;charts.pageviews.update();}
-  if(charts.device){charts.device.data.datasets[0].data=d.device;charts.device.update();}
-  if(charts.browser){charts.browser.data.datasets[0].data=d.browser;charts.browser.update();}
-  if(charts.revenueTrend){charts.revenueTrend.data.labels=d.labels;charts.revenueTrend.data.datasets[0].data=d.revenueTrend;charts.revenueTrend.update();}
+  /* Visitors, device/browser, and geo charts were removed in favor of a
+     "Connect Google Analytics" placeholder — see tab-website, tab-device-tab,
+     and tab-geo-tab. Nothing left here to refresh until that's wired up. */
 }
 function renderAnalyticsData(){
   const d=currentAnalyticsData();
   const mult=d.multiplier;
-  document.getElementById('websiteKpis').innerHTML=d.wKpis.map(k=>`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value serif-num">${k.value}</div></div>`).join('');
-  const revSub=document.getElementById('revTrendSub');
-  if(revSub)revSub.textContent=d.revenueSubLabel;
   const sorted=[...PRODUCTS].sort((a,b)=>b.views-a.views);
   const mkRow=p=>`<div class="mini-row"><img src="${p.img}" alt="${p.title}" onerror="this.src='Images/Bridal/bridal1.jpg'"><div><div class="mr-title">${p.title}</div><div class="mr-sub">${p.category}</div></div><div class="mr-val">${Math.round(p.views*mult).toLocaleString('en-IN')}</div></div>`;
   document.getElementById('mostViewedList').innerHTML=sorted.slice(0,5).map(mkRow).join('');
   document.getElementById('topRevenueList').innerHTML=sorted.slice(0,5).map(p=>{const rev=p.discounted*Math.round(p.views*mult/100);return`<div class="mini-row"><img src="${p.img}" alt="${p.title}" onerror="this.src='Images/Bridal/bridal1.jpg'"><div><div class="mr-title">${p.title}</div><div class="mr-sub">${p.category}</div></div><div class="mr-val">${fmtINR(rev)}</div></div>`;}).join('');
   document.getElementById('bestPerformingList').innerHTML=sorted.filter(p=>p.featured||p.views>1200).slice(0,4).map(mkRow).join('');
   document.getElementById('lowEngagementList').innerHTML=sorted.slice(-4).map(mkRow).join('');
-  document.getElementById('conversionFunnel').innerHTML=d.funnel.map(f=>`<div class="bar-row"><span class="b-label">${f.label}</span><div class="bar-track"><div class="bar-fill" style="width:${f.pct}%"></div></div><span class="b-val">${f.val.toLocaleString()}</span></div>`).join('');
   document.getElementById('channelClicks').innerHTML=d.channels.map(c=>`<div class="bar-row"><span class="b-label">${c.label}</span><div class="bar-track"><div class="bar-fill" style="width:${c.pct}%;background:${c.color}"></div></div><span class="b-val">${c.val.toLocaleString()}</span></div>`).join('');
   document.getElementById('customerAnalyticsKpis').innerHTML=d.customers.map(c=>`<div class="card pad-lg"><div class="kpi-label">${c.label}</div><div class="kpi-value serif-num">${c.value}</div><div class="kpi-delta ${c.up?'up':'down'}"><svg viewBox="0 0 24 24" stroke-linecap="round">${c.up?'<path d="M6 15l6-6 6 6"/>':'<path d="M6 9l6 6 6-6"/>'}</svg>${c.delta}</div></div>`).join('');
-  document.getElementById('geoBody').innerHTML=GEO_DATA.map(g=>{const vis=Math.round(g.visitors*mult),ord=Math.round(g.orders*mult),rev=Math.round(g.revenue*mult);return`<tr><td class="cell-strong">${g.city}</td><td>${vis.toLocaleString()}</td><td>${ord}</td><td>${fmtINR(rev)}</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="bar-track" style="width:80px;"><div class="bar-fill" style="width:${g.share}%"></div></div><span style="font-size:12px;color:var(--muted);">${g.share}%</span></div></td></tr>`;}).join('');
 }
 function setAnalyticsRange(range){
   if(!ANALYTICS_RANGE_DATA[range]||state.analyticsRange===range)return;
