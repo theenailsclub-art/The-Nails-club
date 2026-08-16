@@ -3252,16 +3252,31 @@ async function changeMemberRole(id, newRole) {
 ============================================================ */
 document.addEventListener('DOMContentLoaded', function() {
   const SESSION_KEY = 'tnc_admin_session';
+  const HASH_CACHE_KEY = 'tnc_admin_hash_cache'; // offline fallback only — Supabase is the source of truth
 
   async function hashPassword(pw) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
   }
 
-  // Store default password hash on first visit
-  if (!localStorage.getItem('tnc_admin_hash')) {
-    hashPassword('NailsClub@Admin2025').then(h => localStorage.setItem('tnc_admin_hash', h));
-  }
+  // The admin password hash now lives in Supabase (admin_auth table) so it's
+  // the same on every device/browser, instead of being stuck in whichever
+  // browser last saved it to localStorage. We fetch it once up front and
+  // keep it in memory; a localStorage copy is kept only so login still
+  // works if Supabase is briefly unreachable.
+  let adminHashReady = (async () => {
+    try {
+      const remote = await window.sbGetAdminPasswordHash();
+      if (remote) { localStorage.setItem(HASH_CACHE_KEY, remote); return remote; }
+    } catch (e) {
+      console.warn('[TNC] Could not reach admin_auth, falling back to cached password:', e);
+    }
+    // Supabase unreachable or the row hasn't been seeded yet — fall back to
+    // whatever this browser last knew, or the original default password.
+    const cached = localStorage.getItem(HASH_CACHE_KEY);
+    if (cached) return cached;
+    return hashPassword('NailsClub@Admin2025');
+  })();
 
   function getSession() {
     try { return JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null'); } catch(e) { return null; }
@@ -3352,7 +3367,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!pw) { errEl.style.display='block'; errEl.textContent='Please enter a password.'; return; }
     btn.textContent = 'Verifying…'; btn.disabled = true;
     const hash = await hashPassword(pw);
-    const storedHash = localStorage.getItem('tnc_admin_hash');
+    const storedHash = await adminHashReady;
     if (hash === storedHash) {
       // Owner login
       const sessionData = { ok: true, ts: Date.now(), role: 'owner' };
@@ -3410,10 +3425,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (nw !== conf) { errEl.style.display='block'; errEl.textContent='New passwords do not match.'; return; }
     if (nw.length < 8) { errEl.style.display='block'; errEl.textContent='Password must be at least 8 characters.'; return; }
     const curHash = await hashPassword(cur);
-    if (curHash !== localStorage.getItem('tnc_admin_hash')) { errEl.style.display='block'; errEl.textContent='Current password is incorrect.'; return; }
-    localStorage.setItem('tnc_admin_hash', await hashPassword(nw));
+    const storedHash = await adminHashReady;
+    if (curHash !== storedHash) { errEl.style.display='block'; errEl.textContent='Current password is incorrect.'; return; }
+    const newHash = await hashPassword(nw);
+    try {
+      await window.sbSetAdminPasswordHash(newHash);
+    } catch (e) {
+      console.warn('[TNC] Could not save new password to Supabase:', e);
+      errEl.style.display='block'; errEl.textContent='Could not save — check your connection.';
+      return;
+    }
+    localStorage.setItem(HASH_CACHE_KEY, newHash);
+    adminHashReady = Promise.resolve(newHash);
     ['secCurPassword','secNewPassword','secConfirmPassword'].forEach(id => { const el=document.getElementById(id); if(el)el.value=''; });
-    okEl.style.display='block'; showToast('Password updated successfully');
+    okEl.style.display='block'; showToast('Password updated successfully — now works on every device');
   };
 
   // Handle invite link in URL — looked up in Supabase (not localStorage)

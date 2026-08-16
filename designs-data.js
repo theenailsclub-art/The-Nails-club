@@ -348,6 +348,19 @@ window.sbSaveStoreSettings = async function(data) {
   return res.data;
 };
 
+window.sbGetAdminPasswordHash = async function() {
+  if (!sb) return null;
+  var res = await sb.from('admin_auth').select('password_hash').eq('id', 1).single();
+  if (res.error) { console.warn('[TNC] Could not load admin password:', res.error.message); return null; }
+  return res.data ? res.data.password_hash : null;
+};
+
+window.sbSetAdminPasswordHash = async function(hash) {
+  var res = await sb.from('admin_auth').update({ password_hash: hash, updated_at: new Date().toISOString() }).eq('id', 1).select().single();
+  if (res.error) throw res.error;
+  return res.data;
+};
+
 window.sbFetchInvites = async function() {
   if (!sb) return [];
   var res = await sb.from('team_invites').select('*').order('created_at', { ascending: false });
