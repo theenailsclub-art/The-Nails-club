@@ -640,11 +640,17 @@ tbody tr:hover{background:var(--panel-sunk);}
         <button class="tab-btn" data-tab="geo-tab" onclick="switchTab('geo-tab',this)">Geographic</button>
       </div>
       <div class="tab-panel active" id="tab-website">
-        <div class="card pad-lg ga-placeholder">
+        <div id="websitePlaceholder" class="card pad-lg ga-placeholder">
           <div class="ga-placeholder-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10M11 19V5M18 19v-7"/><path d="M2 19h20"/></svg></div>
           <h3>Visitor analytics not connected</h3>
           <p>Visitors, sessions, page views, and the conversion funnel come from real traffic tracking, which isn't wired up yet. Connect Google Analytics to see live numbers here.</p>
-          <button class="btn btn-primary btn-sm" onclick="showToast('Google Analytics integration coming soon!')">Connect Google Analytics</button>
+          <button class="btn btn-primary btn-sm" onclick="showToast('See GA4_SETUP.md for the one-time setup steps')">Connect Google Analytics</button>
+        </div>
+        <div id="websiteLive" style="display:none;">
+          <div class="chart-grid">
+            <div class="chart-card"><h3>Visitors</h3><div class="cc-sub" style="margin-bottom:12px;">Unique visitors per day — live from Google Analytics</div><canvas id="chartVisitors" height="210"></canvas></div>
+            <div class="chart-card"><h3>Page views</h3><div class="cc-sub" style="margin-bottom:12px;">Live from Google Analytics</div><canvas id="chartPageviews" height="210"></canvas></div>
+          </div>
         </div>
       </div>
       <div class="tab-panel" id="tab-products-tab">
@@ -667,19 +673,31 @@ tbody tr:hover{background:var(--panel-sunk);}
         <div class="three-col" id="customerAnalyticsKpis"></div>
       </div>
       <div class="tab-panel" id="tab-device-tab">
-        <div class="card pad-lg ga-placeholder">
+        <div id="devicePlaceholder" class="card pad-lg ga-placeholder">
           <div class="ga-placeholder-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
           <h3>Device &amp; browser data not connected</h3>
           <p>Seeing what devices and browsers your visitors use requires real traffic tracking, which isn't wired up yet. Connect Google Analytics to see live numbers here.</p>
-          <button class="btn btn-primary btn-sm" onclick="showToast('Google Analytics integration coming soon!')">Connect Google Analytics</button>
+          <button class="btn btn-primary btn-sm" onclick="showToast('See GA4_SETUP.md for the one-time setup steps')">Connect Google Analytics</button>
+        </div>
+        <div id="deviceLive" style="display:none;">
+          <div class="two-col">
+            <div class="chart-card"><h3>Device breakdown</h3><canvas id="chartDevice" height="230"></canvas></div>
+            <div class="chart-card"><h3>Browser breakdown</h3><canvas id="chartBrowser" height="230"></canvas></div>
+          </div>
         </div>
       </div>
       <div class="tab-panel" id="tab-geo-tab">
-        <div class="card pad-lg ga-placeholder">
+        <div id="geoPlaceholder" class="card pad-lg ga-placeholder">
           <div class="ga-placeholder-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg></div>
           <h3>Geographic data not connected</h3>
           <p>Visitor location breakdowns by city and region require real traffic tracking, which isn't wired up yet. Connect Google Analytics to see live numbers here.</p>
-          <button class="btn btn-primary btn-sm" onclick="showToast('Google Analytics integration coming soon!')">Connect Google Analytics</button>
+          <button class="btn btn-primary btn-sm" onclick="showToast('See GA4_SETUP.md for the one-time setup steps')">Connect Google Analytics</button>
+        </div>
+        <div id="geoLive" style="display:none;">
+          <div class="card pad-lg">
+            <h3 style="margin-bottom:16px;">Geographic breakdown <span style="font-size:11px;font-weight:400;color:var(--muted);">— live from Google Analytics</span></h3>
+            <div class="table-wrap"><table><thead><tr><th>City</th><th>Visitors</th><th>Sessions</th></tr></thead><tbody id="geoBody"></tbody></table></div>
+          </div>
         </div>
       </div>
     </section>
@@ -2965,12 +2983,66 @@ function currentAnalyticsData(){return ANALYTICS_RANGE_DATA[state.analyticsRange
 
 function initAnalyticsCharts(){
   renderAnalyticsData();
+  loadGA4Analytics(state.analyticsRange);
 }
 function refreshAnalyticsCharts(){
-  /* Visitors, device/browser, and geo charts were removed in favor of a
-     "Connect Google Analytics" placeholder — see tab-website, tab-device-tab,
-     and tab-geo-tab. Nothing left here to refresh until that's wired up. */
+  loadGA4Analytics(state.analyticsRange);
 }
+
+// ── REAL Google Analytics data (see supabase/functions/ga4-analytics) ──
+const GA4_FN_URL = SUPABASE_URL + '/functions/v1/ga4-analytics';
+let ga4Cache = {};
+async function loadGA4Analytics(range){
+  if(ga4Cache[range]){applyGA4Data(ga4Cache[range]);return;}
+  try{
+    const res=await fetch(GA4_FN_URL+'?range='+encodeURIComponent(range),{headers:{'Authorization':'Bearer '+SUPABASE_KEY,'apikey':SUPABASE_KEY}});
+    const data=await res.json();
+    if(!res.ok||data.error)throw new Error(data.error?JSON.stringify(data.error):('HTTP '+res.status));
+    ga4Cache[range]=data;
+    applyGA4Data(data);
+  }catch(e){
+    console.warn('[TNC] Google Analytics not connected yet — showing placeholders. Reason:',e);
+    showAnalyticsPlaceholders();
+  }
+}
+function showAnalyticsPlaceholders(){
+  ['website','device','geo'].forEach(k=>{
+    const ph=document.getElementById(k+'Placeholder'),live=document.getElementById(k+'Live');
+    if(ph)ph.style.display='block'; if(live)live.style.display='none';
+  });
+}
+function applyGA4Data(data){
+  document.getElementById('websitePlaceholder').style.display='none';
+  document.getElementById('websiteLive').style.display='block';
+  if(charts.visitors)charts.visitors.destroy();
+  charts.visitors=new Chart(document.getElementById('chartVisitors'),{type:'line',data:{labels:data.labels,datasets:[{data:data.visitors,borderColor:'#8C3A46',backgroundColor:'rgba(140,58,70,.08)',fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7}},y:{grid:{color:'#F0E8DC'}}}}});
+  if(charts.pageviews)charts.pageviews.destroy();
+  charts.pageviews=new Chart(document.getElementById('chartPageviews'),{type:'bar',data:{labels:data.labels,datasets:[{label:'Page views',data:data.pageviews,backgroundColor:'#8C3A46',borderRadius:5,maxBarThickness:16}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7}},y:{grid:{color:'#F0E8DC'}}}}});
+
+  document.getElementById('devicePlaceholder').style.display='none';
+  document.getElementById('deviceLive').style.display='block';
+  if(charts.device)charts.device.destroy();
+  charts.device=new Chart(document.getElementById('chartDevice'),{type:'doughnut',data:{labels:data.device.map(d=>d.label),datasets:[{data:data.device.map(d=>d.value),backgroundColor:['#8C3A46','#B08A55','#6C7A5E','#D8C9BC'],borderWidth:0}]},options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,padding:14}}}}});
+  if(charts.browser)charts.browser.destroy();
+  charts.browser=new Chart(document.getElementById('chartBrowser'),{type:'doughnut',data:{labels:data.browser.map(d=>d.label),datasets:[{data:data.browser.map(d=>d.value),backgroundColor:['#8C3A46','#B08A55','#6C7A5E','#D8C9BC','#C9A9A0','#999'],borderWidth:0}]},options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,padding:14}}}}});
+
+  document.getElementById('geoPlaceholder').style.display='none';
+  document.getElementById('geoLive').style.display='block';
+  document.getElementById('geoBody').innerHTML=data.geo.map(g=>`<tr><td class="cell-strong">${g.city}</td><td>${g.visitors.toLocaleString()}</td><td>${g.sessions.toLocaleString()}</td></tr>`).join('');
+
+  if(data.channels&&data.channels.length){
+    const maxS=Math.max(...data.channels.map(c=>c.sessions),1);
+    const colors=['var(--rosewood)','var(--sage)','var(--gold)','var(--rust)','#999','#B08A55'];
+    document.getElementById('channelClicks').innerHTML='<div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Live from Google Analytics</div>'+data.channels.map((c,i)=>`<div class="bar-row"><span class="b-label">${c.label}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.round(c.sessions/maxS*100)}%;background:${colors[i%colors.length]}"></div></div><span class="b-val">${c.sessions.toLocaleString()}</span></div>`).join('');
+  }
+
+  const newsletter=currentAnalyticsData().customers[2];
+  document.getElementById('customerAnalyticsKpis').innerHTML=
+    `<div class="card pad-lg"><div class="kpi-label">New customers</div><div class="kpi-value serif-num">${data.newUsers.toLocaleString()}</div><div style="font-size:11px;color:var(--muted);margin-top:4px;">Live from Google Analytics</div></div>`+
+    `<div class="card pad-lg"><div class="kpi-label">Returning customers</div><div class="kpi-value serif-num">${data.returningUsers.toLocaleString()}</div><div style="font-size:11px;color:var(--muted);margin-top:4px;">Live from Google Analytics</div></div>`+
+    `<div class="card pad-lg"><div class="kpi-label">Newsletter signups</div><div class="kpi-value serif-num">${newsletter.value}</div><div style="font-size:11px;color:var(--muted);margin-top:4px;">Not tracked automatically yet</div></div>`;
+}
+
 function renderAnalyticsData(){
   const d=currentAnalyticsData();
   const mult=d.multiplier;
