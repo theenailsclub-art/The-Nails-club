@@ -81,6 +81,78 @@ body { background: #fff; color: #322C2C; font-family: 'DM Sans', sans-serif; ove
         
     }
 
+/* ── Cinematic hero (slow, warm, handmade morning feel) ── */
+#hero-cinematic { position: relative; height: 100vh; min-height: 640px; overflow: hidden; background: #322C2C; }
+#hero-cinematic .hero-bg-wrap { position: absolute; inset: 0; overflow: hidden; }
+#hero-cinematic .hero-bg-img {
+  position: absolute; inset: -4% ; width: 108%; height: 108%;
+  object-fit: cover; object-position: center 38%;
+  transform: scale(1.06); filter: saturate(0.96) brightness(0.9);
+  will-change: transform;
+}
+#hero-cinematic .hero-scrim {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(50,44,44,0.55) 0%, rgba(50,44,44,0.18) 32%, rgba(50,44,44,0.30) 62%, rgba(50,44,44,0.86) 100%),
+    linear-gradient(90deg, rgba(50,44,44,0.35) 0%, rgba(50,44,44,0) 30%, rgba(50,44,44,0) 70%, rgba(50,44,44,0.35) 100%);
+}
+#hero-cinematic .hero-grain {
+  position: absolute; inset: 0; opacity: 0.05; mix-blend-mode: overlay; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+#hero-cinematic .hero-content { position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 6vw 12vh; }
+#hero-cinematic .hero-eyebrow {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 22px; opacity: 0; transform: translateY(18px);
+}
+#hero-cinematic .hero-eyebrow .line { width: 34px; height: 1px; background: #C6A35B; }
+#hero-cinematic .hero-eyebrow span {
+  font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.38em; text-transform: uppercase; color: #F5F0ED; opacity: 0.85;
+}
+#hero-cinematic .hero-title { overflow: hidden; }
+#hero-cinematic .hero-title span {
+  display: block; font-family: 'Cormorant Garamond', serif; font-weight: 400; font-style: italic;
+  font-size: clamp(2.6rem, 8vw, 6.4rem); line-height: 1.04; color: #FAF8F5; letter-spacing: -0.01em;
+  transform: translateY(105%); opacity: 0;
+}
+#hero-cinematic .hero-sub {
+  max-width: 480px; margin-top: 26px; font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.75;
+  color: rgba(245,240,237,0.72); opacity: 0; transform: translateY(16px);
+}
+#hero-cinematic .hero-cta-row { display: flex; align-items: center; gap: 22px; margin-top: 38px; opacity: 0; transform: translateY(16px); }
+#hero-cinematic .hero-cta {
+  display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; border-radius: 999px;
+  background: #F5F0ED; color: #322C2C; font-family: 'DM Sans', sans-serif; font-size: 10.5px; letter-spacing: 0.16em;
+  text-transform: uppercase; text-decoration: none; transition: background 0.35s ease, transform 0.35s ease;
+}
+#hero-cinematic .hero-cta:hover { background: #C6A35B; transform: translateY(-2px); }
+#hero-cinematic .hero-cta-ghost {
+  font-family: 'DM Sans', sans-serif; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(245,240,237,0.75); text-decoration: none; border-bottom: 1px solid rgba(245,240,237,0.35); padding-bottom: 4px;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+#hero-cinematic .hero-cta-ghost:hover { color: #F5F0ED; border-color: #F5F0ED; }
+#hero-cinematic .hero-scrollcue { position: absolute; right: 6vw; bottom: 8vh; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; }
+#hero-cinematic .hero-scrollcue .track { width: 1px; height: 54px; background: rgba(245,240,237,0.22); position: relative; overflow: hidden; }
+#hero-cinematic .hero-scrollcue .track i { position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: #C6A35B; animation: hero-cue-drop 2.6s ease-in-out infinite; }
+@keyframes hero-cue-drop { 0% { top: -100%; } 60% { top: 100%; } 100% { top: 100%; } }
+#hero-cinematic .hero-scrollcue span { font-family: 'DM Sans', sans-serif; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(245,240,237,0.55); writing-mode: vertical-rl; }
+#hero-cinematic .hero-ribbon {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; overflow: hidden;
+  border-top: 1px solid rgba(245,240,237,0.14); background: rgba(50,44,44,0.35); backdrop-filter: blur(6px);
+}
+#hero-cinematic .hero-ribbon-track { display: flex; width: max-content; animation: hero-marquee 34s linear infinite; }
+#hero-cinematic .hero-ribbon-track span {
+  font-family: 'DM Sans', sans-serif; font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(245,240,237,0.6); padding: 13px 34px; white-space: nowrap; display: flex; align-items: center; gap: 34px;
+}
+#hero-cinematic .hero-ribbon-track span::after { content: '\2022'; color: #C6A35B; }
+@keyframes hero-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (max-width: 640px) {
+  #hero-cinematic { min-height: 560px; }
+  #hero-cinematic .hero-content { padding: 0 6vw 15vh; }
+  #hero-cinematic .hero-scrollcue { display: none; }
+}
+
 /* Filter buttons */
 .filter-btn {
   padding: 8px 20px; border-radius: 9999px;
@@ -276,24 +348,39 @@ body { background: #fff; color: #322C2C; font-family: 'DM Sans', sans-serif; ove
 
 <div id="toast">Inquiry sent &mdash; we'll DM you shortly! &#128…</div>
 
-<!-- SECTION 1 — HERO -->
-<section id="hero" class="relative flex flex-col items-center justify-center min-h-screen pt-16 overflow-hidden" style="background:#fff;">
-  <div class="absolute inset-0 pointer-events-none" style="background:url('Images/reels_bg.jpg') center center / cover no-repeat; opacity:0.30;"></div>
-  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 90% 80% at 50% 40%,rgba(245,240,237,0.72) 0%,rgba(255,255,255,0.88) 65%,rgba(255,255,255,1) 100%)"></div>
-  <div class="relative z-10 text-center flex flex-col items-center px-6">
-    <p class="gs-up font-sans text-[9px] md:text-[10px] tracking-[0.42em] uppercase text-dark/40 mb-8" style="animation-delay:0.1s">Handcrafted Press-On Nails</p>
-    <h1 class="gs-up font-serif text-[clamp(3rem,12vw,9rem)] tracking-tighter text-dark leading-[0.92] mb-6" style="font-weight:400;animation-delay:0.25s">The Nails Club</h1>
-    <p class="gs-up font-sans text-[10px] md:text-xs tracking-[0.32em] uppercase text-dark/50 mb-12" style="animation-delay:0.4s">Luxury Press-On Nails</p>
-    <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener"
-       class="gs-up inline-flex items-center gap-3 px-8 py-4 border border-dark/22 rounded-full font-sans text-[10px] uppercase tracking-[0.18em] text-dark hover:bg-dark hover:text-white hover:border-dark transition-all duration-300">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-      Order via Instagram DM
-    </a>
+<!-- SECTION 1 — HERO (cinematic, slow-morning style) -->
+<section id="hero" class="pt-16">
+<div id="hero-cinematic">
+  <div class="hero-bg-wrap">
+    <img id="hero-bg-img" class="hero-bg-img" src="Images/reels_bg.jpg" alt="The Nails Club — handcrafted press-on nails">
   </div>
-  <div class="absolute bottom-10 flex flex-col items-center z-10 gap-2.5 cursor-pointer" onclick="document.getElementById('collection').scrollIntoView({behavior:'smooth'})">
-    <span class="font-sans text-[9px] tracking-[0.28em] uppercase text-dark/30">Explore</span>
-    <svg class="bounce-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#BC1423" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+  <div class="hero-scrim"></div>
+  <div class="hero-grain"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow"><span class="line"></span><span>Handcrafted, one set at a time</span></div>
+    <h1 class="hero-title">
+      <span>The Nails Club</span>
+    </h1>
+    <p class="hero-sub">Luxury press-on nails, hand-painted in small batches — bridal, festive, chrome and everything in between.</p>
+    <div class="hero-cta-row">
+      <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener" class="hero-cta">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        Order via Instagram DM
+      </a>
+      <a href="#collection" class="hero-cta-ghost" onclick="event.preventDefault();document.getElementById('collection').scrollIntoView({behavior:'smooth'})">View collection</a>
+    </div>
   </div>
+
+  <div class="hero-scrollcue"><span>Scroll</span><span class="track"><i></i></span></div>
+
+  <div class="hero-ribbon">
+    <div class="hero-ribbon-track">
+      <span>Bridal</span><span>Festive</span><span>Chrome</span><span>Ombré</span><span>Custom sets</span>
+      <span>Bridal</span><span>Festive</span><span>Chrome</span><span>Ombré</span><span>Custom sets</span>
+    </div>
+  </div>
+</div>
 </section>
 
 <!-- SECTION 2 — COLLECTION (Top Products) -->
@@ -1003,6 +1090,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   window._observeAfterRender = observeCards;
   if (window.gsap) {
     gsap.to('.gs-up', { opacity:1, y:0, duration:1, stagger:0.15, ease:'power3.out', delay:0.2 });
+
+    /* ── Cinematic hero: slow, unhurried entrance ── */
+    var heroTl = gsap.timeline({ delay: 0.15, defaults: { ease: 'power3.out' } });
+    heroTl
+      .to('#hero-cinematic .hero-eyebrow', { opacity: 1, y: 0, duration: 1.1 }, 0)
+      .to('#hero-cinematic .hero-title span', { y: '0%', opacity: 1, duration: 1.4, ease: 'power4.out' }, 0.25)
+      .to('#hero-cinematic .hero-sub', { opacity: 1, y: 0, duration: 1.1 }, 0.75)
+      .to('#hero-cinematic .hero-cta-row', { opacity: 1, y: 0, duration: 1.1 }, 0.95)
+      .to('#hero-cinematic .hero-scrollcue', { opacity: 1, duration: 1.2 }, 1.2);
+
+    /* slow Ken Burns drift on the hero image */
+    gsap.to('#hero-bg-img', { scale: 1.16, duration: 16, ease: 'none' });
+
+    /* gentle parallax + fade as the hero scrolls away */
+    gsap.to('#hero-bg-img', {
+      yPercent: 12, scale: 1.22, ease: 'none',
+      scrollTrigger: { trigger: '#hero-cinematic', start: 'top top', end: 'bottom top', scrub: true }
+    });
+    gsap.to('#hero-cinematic .hero-content, #hero-cinematic .hero-eyebrow', {
+      opacity: 0, y: -60, ease: 'none',
+      scrollTrigger: { trigger: '#hero-cinematic', start: 'top top', end: '65% top', scrub: true }
+    });
   }
   window.addEventListener('scroll', () => {
     document.getElementById('site-header').style.boxShadow =
