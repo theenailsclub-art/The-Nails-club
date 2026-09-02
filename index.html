@@ -1090,13 +1090,26 @@ function submitPopupEmail() {
   document.getElementById('popup-success').style.display = 'block';
   localStorage.setItem('tnc_subscribed', '1');
 
-  // Send to Google Sheet
+  // Send to Google Sheet (existing record-keeping — kept as a backup log)
   fetch(SHEET_URL, {
     method: 'POST',
     mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: email, source: 'popup', time: new Date().toISOString() })
   }).catch(() => {}); // silent fail — success already shown
+
+  // Sync to Mailchimp so the subscriber actually receives your campaigns
+  if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_KEY !== 'undefined') {
+    fetch(SUPABASE_URL + '/functions/v1/mailchimp-subscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({ email: email, source: 'website-popup' })
+    }).catch(() => {}); // silent fail — success already shown to the user
+  }
 
   // Auto close after 3s
   setTimeout(closePopup, 3000);
