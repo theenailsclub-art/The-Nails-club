@@ -1540,6 +1540,35 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 
+<script>
+/* Approved customer reviews from Supabase -> shown before the Google cards */
+(function loadSiteReviews() {
+  if (typeof sb === 'undefined' || !sb) return;
+  var box = document.getElementById('google-review-cards');
+  if (!box) return;
+  function esc(t) { var d = document.createElement('div'); d.textContent = String(t == null ? '' : t); return d.innerHTML; }
+  var star = '<svg width="12" height="12" viewBox="0 0 24 24" fill="#FBBC05"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  var starEmpty = star.replace('#FBBC05', '#e0e0e0');
+  sb.from('reviews').select('name,rating,review,created_at').eq('approved', true)
+    .order('created_at', { ascending: false }).limit(12)
+    .then(function(res) {
+      if (res.error || !res.data || !res.data.length) return;
+      var html = res.data.map(function(r) {
+        var stars = '';
+        for (var i = 1; i <= 5; i++) stars += (i <= r.rating ? star : starEmpty);
+        var when = new Date(r.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+        return '<div style="background:#fff;border-radius:18px;padding:24px;box-shadow:0 2px 16px rgba(50,44,44,0.06);">'
+          + '<div style="display:flex;justify-content:space-between;margin-bottom:10px;"><div style="display:flex;gap:2px;">' + stars + '</div>'
+          + '<span style="font-family:\'DM Sans\',sans-serif;font-size:10px;color:rgba(50,44,44,0.35);">' + esc(when) + '</span></div>'
+          + '<p style="font-family:\'Cormorant Garamond\',serif;font-size:16px;font-style:italic;color:#322C2C;line-height:1.65;margin-bottom:16px;">&ldquo;' + esc(r.review) + '&rdquo;</p>'
+          + '<p style="font-family:\'DM Sans\',sans-serif;font-size:12px;font-weight:600;color:#322C2C;margin:0;">' + esc(r.name) + ' <span style="font-weight:400;color:rgba(50,44,44,0.45);">&middot; Customer review</span></p>'
+          + '</div>';
+      }).join('');
+      box.insertAdjacentHTML('afterbegin', html);
+    });
+})();
+</script>
+
 <!-- ═══ WRITE A REVIEW — floating button + modal form ═══ -->
 <button id="review-fab" onclick="openReviewModal()"
   style="position:fixed;bottom:28px;right:22px;z-index:450;display:inline-flex;align-items:center;gap:8px;padding:13px 22px;background:#BC1423;color:#fff;border:none;border-radius:99px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;box-shadow:0 6px 20px rgba(188,20,35,0.35);transition:transform 0.2s ease,box-shadow 0.2s ease;"
@@ -1624,6 +1653,11 @@ function submitReview() {
 
   document.getElementById('review-form-wrap').style.display = 'none';
   document.getElementById('review-success').style.display = 'block';
+
+  if (typeof sb !== 'undefined' && sb) {
+    sb.from('reviews').insert([{ name: name, rating: reviewRating, review: text }])
+      .then(function(r){ if (r.error) console.warn('[TNC] review save failed:', r.error.message); });
+  }
 
   fetch(SHEET_URL, {
     method: 'POST',
