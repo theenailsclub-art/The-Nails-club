@@ -171,16 +171,8 @@
                         <div class="flex flex-col gap-3">
                             <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Rose Gloss Press-On Nails</h1>
                             <div class="flex items-center gap-3 text-sm">
-                                <div class="flex text-black">
-                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                </div>
-                                <span class="font-medium underline cursor-pointer hover:text-gray-600 transition-colors">
-                                    5.0 (50+ Reviews)
-                                </span>
+                                <div id="top-stars" class="flex"></div>
+                                <a href="#reviews-section" id="top-rating-text" class="font-medium underline cursor-pointer hover:text-gray-600 transition-colors" onclick="var e=document.getElementById('reviews-section');if(e){e.scrollIntoView({behavior:'smooth'});}return false;">5.0 (50+ Reviews)</a>
                             </div>
                             <div id="main-price" class="text-2xl font-medium mt-2">₹899</div>
                             <!-- NAI Code — Nail Art Identifier -->
@@ -486,156 +478,56 @@
                 </div>
             </section>
 
-            <section class="py-24 border-b border-borderGray">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
-                    <div>
-                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Customer Reviews</h2>
-                        <div class="flex items-center gap-3">
-                            <div class="flex text-black">
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            </div>
-                            <span class="font-medium text-lg">5.0</span>
-                            <span class="text-gray-500">Based on 50+ reviews</span>
-                        </div>
-                    </div>
-                    <button onclick="openReviewModal()" class="px-6 py-3 border border-borderGray rounded-lg font-medium hover:bg-black hover:text-white hover:border-black transition-colors">
-                        Write a Review
-                    </button>
-                </div>
+            <section id="reviews-section" class="py-24 border-b border-borderGray">
+<style>
+  .rv-stars{position:relative;display:inline-block;font-size:var(--s,16px);letter-spacing:2px;line-height:1;color:#d6d6d6;white-space:nowrap}
+  .rv-stars::before{content:'\2605\2605\2605\2605\2605'}
+  .rv-stars>i{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;width:var(--p,0%);color:#111;font-style:normal}
+  .rv-stars>i::before{content:'\2605\2605\2605\2605\2605'}
+  .rv-bar-row{display:flex;align-items:center;gap:10px;width:100%;padding:4px 6px;border-radius:8px;background:none;border:none;cursor:pointer;font-size:13px;color:#444;text-align:left}
+  .rv-bar-row:hover{background:#f6f6f6}
+  .rv-bar-row.active{background:#111;color:#fff}
+  .rv-bar-row.active .rv-track{background:rgba(255,255,255,.25)}
+  .rv-bar-row.active .rv-fill{background:#fff}
+  .rv-track{flex:1;height:8px;border-radius:99px;background:#ececec;overflow:hidden}
+  .rv-fill{height:100%;background:#111;border-radius:99px}
+  .rv-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid #ececec;border-radius:99px;font-size:12px;background:#fff;cursor:pointer}
+  .rv-chip.on{background:#111;color:#fff;border-color:#111}
+  .rv-thumb{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid #ececec;cursor:zoom-in}
+  .rv-badge{font-size:11px;color:#2f7a4d;background:#edf7f1;padding:2px 8px;border-radius:99px}
+  .rv-badge.g{color:#555;background:#f2f2f2}
+  .rv-help{font-size:12px;color:#666;border:1px solid #ececec;border-radius:99px;padding:5px 12px;background:#fff;cursor:pointer}
+  .rv-help:hover{border-color:#111;color:#111}
+  .rv-help[disabled]{cursor:default;color:#2f7a4d;border-color:#cfe8d9;background:#f6fbf8}
+  .rv-clamp{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+</style>
 
-                <div id="reviews-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Review — Rajvi Bharucha (Google) -->
-                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
-                        <div class="flex justify-between items-start">
-                            <div class="flex text-black">
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            </div>
-                            <span class="text-sm text-gray-400">3 months ago</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-semibold">Rajvi Bharucha</span>
-                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Google Review · 1 photo</span>
-                        </div>
-                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
-                            "I'm honestly so happy with how my nails turned out! The design is even prettier in person — the soft blue tones and little 3D details make them look really unique without being too much. The shape is perfect and they feel really well done."
-                        </p>
-                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
-                    </div>
-                    <!-- Review — Tisha Jariwala (Google) -->
-                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
-                        <div class="flex justify-between items-start">
-                            <div class="flex text-black">
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            </div>
-                            <span class="text-sm text-gray-400">1 month ago</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-semibold">Tisha Jariwala</span>
-                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Google Review</span>
-                        </div>
-                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
-                            "Great quality nails at a really good price — ₹500–1,000. Totally worth it!"
-                        </p>
-                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
-                    </div>
-                    <!-- Review — Harsh Jariwala (Google) -->
-                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
-                        <div class="flex justify-between items-start">
-                            <div class="flex text-black">
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            </div>
-                            <span class="text-sm text-gray-400">3 months ago</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-semibold">Harsh Jariwala</span>
-                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Google Review · 4 reviews · 1 photo</span>
-                        </div>
-                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
-                            "Availed the nail extensions service — really happy with the results. Professional work and beautiful finish. Highly recommend!"
-                        </p>
-                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
-                    </div>
-                    <!-- Review — Priya S. -->
-                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
-                        <div class="flex justify-between items-start">
-                            <div class="flex text-black">
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            </div>
-                            <span class="text-sm text-gray-400">Jul 12, 2026</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-semibold">Priya S.</span>
-                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Verified Buyer</span>
-                        </div>
-                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
-                            "Absolutely stunning! My bridal nails were exactly what I dreamed of. Everyone at the wedding was asking where I got them!"
-                        </p>
-                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
-                    </div>
-                    <!-- Review — Dhara M. -->
-                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
-                        <div class="flex justify-between items-start">
-                            <div class="flex text-black">
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            </div>
-                            <span class="text-sm text-gray-400">Jun 28, 2026</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-semibold">Dhara M.</span>
-                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Verified Buyer</span>
-                        </div>
-                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
-                            "The chrome nails I ordered for Navratri were absolutely gorgeous. So many compliments! Will definitely order again."
-                        </p>
-                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
-                    </div>
-                    <!-- Review — Neha R. -->
-                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
-                        <div class="flex justify-between items-start">
-                            <div class="flex text-black">
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            </div>
-                            <span class="text-sm text-gray-400">Jun 15, 2026</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-semibold">Neha R.</span>
-                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Verified Buyer</span>
-                        </div>
-                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
-                            "Super easy to apply, lasted my whole trip! The press-on nails look completely real. Amazing quality and packaging."
-                        </p>
-                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
-                    </div>
-                    <!-- Review 4 -->
-                    <div class="p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow">
-                        <div class="flex justify-between items-start">
-                            <div class="flex text-black">
-                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            </div>
-                            <span class="text-sm text-gray-400">May 02, 2026</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-semibold">Shruti K.</span>
-                            <span class="text-xs flex items-center gap-1 text-gray-500"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M12 3l7 3v6c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6l7-3Z"/><polyline points="9 12 11 14 15 10"/></svg> Verified Buyer</span>
-                        </div>
-                        <p class="text-gray-600 text-sm leading-relaxed flex-1">
-                            "Ordered the floral set for my baby shower and it was perfect. The nails matched my outfit beautifully. Highly recommend!"
-                        </p>
-                        <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-black w-max mt-2"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> Helpful</button>
-                    </div>
-                </div>
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+    <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Customer Reviews</h2>
+    <button type="button" data-rv="write" class="px-6 py-3 border border-borderGray rounded-lg font-medium hover:bg-black hover:text-white hover:border-black transition-colors">Write a Review</button>
+  </div>
 
-                
-                <div class="flex justify-center mt-10">
-                    <button class="text-sm font-medium border-b border-black pb-1 hover:text-gray-500 transition-colors">
-                        Load More Reviews
-                    </button>
-                </div>
-            </section>
+  <div id="rv-summary" style="display:flex;flex-wrap:wrap;gap:32px 64px;padding-bottom:32px;margin-bottom:24px;border-bottom:1px solid #ececec;"></div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div id="rv-filters" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;"></div>
+    <label style="font-size:13px;color:#555;display:flex;align-items:center;gap:8px;">Sort by
+      <select id="rv-sort" style="border:1px solid #ececec;border-radius:8px;padding:7px 10px;font-size:13px;background:#fff;">
+        <option value="recent">Most recent</option>
+        <option value="helpful">Most helpful</option>
+        <option value="high">Highest rated</option>
+        <option value="low">Lowest rated</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="reviews-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+  <div id="rv-more-wrap" class="flex justify-center mt-10" style="display:none;">
+    <button type="button" data-rv="more" class="text-sm font-medium border-b border-black pb-1 hover:text-gray-500 transition-colors">Load More Reviews</button>
+  </div>
+</section>
+
 
         </div>
     </main>
@@ -1208,99 +1100,288 @@ function submitFooterEmail() {
 </div>
 
 
-<!-- ===== WRITE A REVIEW: modal + Supabase save/load ===== -->
-<div id="review-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;padding:16px;">
-  <div style="background:#fff;border-radius:16px;max-width:440px;width:100%;padding:28px;position:relative;">
-    <button type="button" onclick="closeReviewModal()" aria-label="Close" style="position:absolute;top:12px;right:14px;border:none;background:none;font-size:24px;cursor:pointer;line-height:1;">&times;</button>
-    <div id="review-form-wrap">
-      <h3 style="font-size:22px;font-weight:700;margin-bottom:4px;">Write a Review</h3>
-      <p id="review-product-name" style="font-size:13px;color:#777;margin-bottom:16px;"></p>
-      <div id="review-stars" style="display:flex;gap:6px;margin-bottom:16px;"></div>
-      <input id="review-name" type="text" maxlength="80" placeholder="Your name" style="width:100%;border:1px solid #ECECEC;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:14px;">
-      <textarea id="review-text" rows="4" maxlength="1000" placeholder="Tell us what you loved..." style="width:100%;border:1px solid #ECECEC;border-radius:8px;padding:10px 12px;margin-bottom:16px;font-size:14px;resize:vertical;"></textarea>
-      <button type="button" onclick="submitProductReview()" style="width:100%;background:#000;color:#fff;border:none;border-radius:8px;padding:12px;font-weight:600;cursor:pointer;">Submit Review</button>
+<!-- ===== REVIEWS: write-a-review modal + logic ===== -->
+<div id="rv-modal" role="dialog" aria-modal="true" aria-labelledby="rv-modal-title" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="background:#fff;border-radius:16px;max-width:480px;width:100%;max-height:calc(100vh - 32px);overflow-y:auto;padding:28px;position:relative;">
+    <button type="button" data-rv="close" aria-label="Close" style="position:absolute;top:10px;right:14px;border:none;background:none;font-size:26px;cursor:pointer;line-height:1;">&times;</button>
+    <div id="rv-form">
+      <h3 id="rv-modal-title" style="font-size:22px;font-weight:700;margin-bottom:2px;">Write a Review</h3>
+      <p id="rv-prod" style="font-size:13px;color:#777;margin-bottom:18px;"></p>
+
+      <label style="font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#555;">Overall rating *</label>
+      <div style="display:flex;align-items:center;gap:10px;margin:6px 0 4px;">
+        <div id="rv-pick" style="display:flex;gap:4px;"></div>
+        <span id="rv-pick-label" style="font-size:13px;color:#777;"></span>
+      </div>
+      <p id="rv-err-rating" style="display:none;color:#c0392b;font-size:12px;margin-bottom:8px;">Please select a star rating.</p>
+
+      <label for="rv-title" style="display:block;margin-top:14px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#555;">Review title</label>
+      <input id="rv-title" type="text" maxlength="100" placeholder="Sum it up in a few words" style="width:100%;border:1px solid #ececec;border-radius:8px;padding:10px 12px;margin-top:6px;font-size:14px;">
+
+      <label for="rv-text" style="display:block;margin-top:14px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#555;">Your review *</label>
+      <textarea id="rv-text" rows="4" maxlength="1000" placeholder="What did you like or dislike? How was the fit and finish?" style="width:100%;border:1px solid #ececec;border-radius:8px;padding:10px 12px;margin-top:6px;font-size:14px;resize:vertical;"></textarea>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:4px;">
+        <span id="rv-err-text" style="display:none;color:#c0392b;">Please write at least 10 characters.</span>
+        <span id="rv-count" style="color:#999;margin-left:auto;">0 / 1000</span>
+      </div>
+
+      <label for="rv-name" style="display:block;margin-top:14px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#555;">Your name *</label>
+      <input id="rv-name" type="text" maxlength="80" placeholder="e.g. Priya S." style="width:100%;border:1px solid #ececec;border-radius:8px;padding:10px 12px;margin-top:6px;font-size:14px;">
+      <p id="rv-err-name" style="display:none;color:#c0392b;font-size:12px;margin-top:4px;">Please enter your name.</p>
+
+      <label style="display:block;margin-top:14px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#555;">Add photos <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#999;">(optional, up to 3)</span></label>
+      <div id="rv-photos" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center;">
+        <label id="rv-add-photo" style="width:64px;height:64px;border:1.5px dashed #bbb;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:26px;color:#999;">+
+          <input id="rv-file" type="file" accept="image/*" multiple style="display:none;">
+        </label>
+      </div>
+
+      <input id="rv-hp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+
+      <p id="rv-err-submit" style="display:none;color:#c0392b;font-size:13px;margin-top:12px;"></p>
+      <button id="rv-submit" type="button" data-rv="submit" style="width:100%;margin-top:18px;background:#000;color:#fff;border:none;border-radius:8px;padding:13px;font-weight:600;cursor:pointer;">Submit Review</button>
+      <p style="font-size:11px;color:#999;margin-top:10px;text-align:center;">Reviews are checked by our team before they go live.</p>
     </div>
-    <div id="review-success" style="display:none;text-align:center;padding:24px 0 8px;">
-      <h3 style="font-size:20px;font-weight:700;margin-bottom:6px;">Thank you!</h3>
-      <p style="font-size:13px;color:#777;">Your review will appear here once we approve it.</p>
+    <div id="rv-done" style="display:none;text-align:center;padding:28px 0 8px;">
+      <div style="font-size:34px;margin-bottom:8px;">&#10003;</div>
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:6px;">Thank you for your review!</h3>
+      <p id="rv-done-msg" style="font-size:13px;color:#777;">It will appear here once our team approves it.</p>
     </div>
   </div>
 </div>
+<div id="rv-lightbox" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.85);align-items:center;justify-content:center;cursor:zoom-out;padding:20px;"><img alt="Review photo" style="max-width:100%;max-height:100%;border-radius:8px;"></div>
 <script>
 (function () {
-  var rating = 0;
-  var designParam = new URLSearchParams(window.location.search).get('design');
-  var starSvg = function (fill) { return '<svg width="26" height="26" viewBox="0 0 24 24" fill="' + fill + '" stroke="#000" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'; };
-  function drawStars() {
-    var w = document.getElementById('review-stars'); w.innerHTML = ''; w.style.outline = 'none';
-    for (var i = 1; i <= 5; i++) {
-      var b = document.createElement('button'); b.type = 'button';
-      b.style.cssText = 'background:none;border:none;padding:0;cursor:pointer;';
-      b.innerHTML = starSvg(i <= rating ? '#000' : 'none');
-      b.onclick = (function (n) { return function () { rating = n; drawStars(); }; })(i);
-      w.appendChild(b);
+  var STATIC = [{"id": "s1", "db": false, "name": "Rajvi Bharucha", "title": "", "rating": 5, "text": "I'm honestly so happy with how my nails turned out! The design is even prettier in person — the soft blue tones and little 3D details make them look really unique without being too much. The shape is perfect and they feel really well done.", "photos": [], "helpful": 0, "ts": 1781481600000, "dateLabel": "3 months ago", "badge": "Google Review"}, {"id": "s2", "db": false, "name": "Tisha Jariwala", "title": "", "rating": 5, "text": "Great quality nails at a really good price — ₹500–1,000. Totally worth it!", "photos": [], "helpful": 0, "ts": 1786752000000, "dateLabel": "1 month ago", "badge": "Google Review"}, {"id": "s3", "db": false, "name": "Harsh Jariwala", "title": "", "rating": 5, "text": "Availed the nail extensions service — really happy with the results. Professional work and beautiful finish. Highly recommend!", "photos": [], "helpful": 0, "ts": 1781481600000, "dateLabel": "3 months ago", "badge": "Google Review"}, {"id": "s4", "db": false, "name": "Priya S.", "title": "", "rating": 5, "text": "Absolutely stunning! My bridal nails were exactly what I dreamed of. Everyone at the wedding was asking where I got them!", "photos": [], "helpful": 0, "ts": 1783814400000, "dateLabel": "Jul 12, 2026", "badge": "Verified Buyer"}, {"id": "s5", "db": false, "name": "Dhara M.", "title": "", "rating": 5, "text": "The chrome nails I ordered for Navratri were absolutely gorgeous. So many compliments! Will definitely order again.", "photos": [], "helpful": 0, "ts": 1782604800000, "dateLabel": "Jun 28, 2026", "badge": "Verified Buyer"}, {"id": "s6", "db": false, "name": "Neha R.", "title": "", "rating": 5, "text": "Super easy to apply, lasted my whole trip! The press-on nails look completely real. Amazing quality and packaging.", "photos": [], "helpful": 0, "ts": 1781481600000, "dateLabel": "Jun 15, 2026", "badge": "Verified Buyer"}, {"id": "s7", "db": false, "name": "Shruti K.", "title": "", "rating": 5, "text": "Ordered the floral set for my baby shower and it was perfect. The nails matched my outfit beautifully. Highly recommend!", "photos": [], "helpful": 0, "ts": 1777680000000, "dateLabel": "May 02, 2026", "badge": "Verified Buyer"}];
+  var designParam = new URLSearchParams(location.search).get('design');
+  var PAGE = 5, MAX_PHOTOS = 3;
+  var LABELS = ['', 'Poor', 'Fair', 'Good', 'Very good', 'Excellent'];
+  var ALL = STATIC.slice(), st = { sort: 'recent', star: 0, photos: false, shown: PAGE };
+  var rating = 0, files = [];
+
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { var d = document.createElement('div'); d.textContent = String(t == null ? '' : t); return d.innerHTML; }
+  function safeUrl(u) { return /^https:\/\//i.test(u || '') ? esc(u) : ''; }
+  function stars(val, size) { var p = Math.max(0, Math.min(5, val)) / 5 * 100; return '<span class="rv-stars" style="--p:' + p + '%;--s:' + (size || 16) + 'px" aria-label="' + val + ' out of 5"><i></i></span>'; }
+  function fmtDate(ts) { return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }); }
+  function voted() { try { return JSON.parse(localStorage.getItem('tnc_helpful') || '[]'); } catch (e) { return []; } }
+  function saveVote(id) { try { var v = voted(); v.push(id); localStorage.setItem('tnc_helpful', JSON.stringify(v)); } catch (e) {} }
+
+  /* ---------- render ---------- */
+  function render() {
+    var n = ALL.length, sum = 0, counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    ALL.forEach(function (r) { sum += r.rating; counts[r.rating]++; });
+    var avg = n ? sum / n : 0;
+
+    var top = $('top-rating-text'); if (top) top.textContent = avg.toFixed(1) + ' (' + n + (n === 1 ? ' Review' : ' Reviews') + ')';
+    var ts = $('top-stars'); if (ts) ts.innerHTML = stars(avg, 16);
+
+    var bars = '';
+    for (var s = 5; s >= 1; s--) {
+      var pct = n ? Math.round(counts[s] / n * 100) : 0;
+      bars += '<button type="button" class="rv-bar-row' + (st.star === s ? ' active' : '') + '" data-rv="star" data-star="' + s + '" aria-label="Show ' + s + ' star reviews">'
+        + '<span style="width:28px;">' + s + ' &#9733;</span><span class="rv-track"><span class="rv-fill" style="display:block;width:' + pct + '%"></span></span>'
+        + '<span style="width:34px;text-align:right;">' + pct + '%</span></button>';
     }
-  }
-  window.openReviewModal = function () {
-    rating = 0; drawStars();
-    document.getElementById('review-name').value = '';
-    document.getElementById('review-text').value = '';
-    var h1 = document.querySelector('h1');
-    document.getElementById('review-product-name').textContent = h1 ? h1.textContent : '';
-    document.getElementById('review-form-wrap').style.display = 'block';
-    document.getElementById('review-success').style.display = 'none';
-    document.getElementById('review-modal').style.display = 'flex';
-  };
-  window.closeReviewModal = function () { document.getElementById('review-modal').style.display = 'none'; };
-  document.getElementById('review-modal').addEventListener('click', function (e) { if (e.target === this) closeReviewModal(); });
+    $('rv-summary').innerHTML =
+      '<div style="min-width:170px;"><div style="font-size:56px;font-weight:700;line-height:1;">' + avg.toFixed(1) + '</div>'
+      + '<div style="margin:10px 0 6px;">' + stars(avg, 20) + '</div>'
+      + '<div style="font-size:13px;color:#777;">Based on ' + n + (n === 1 ? ' review' : ' reviews') + '</div></div>'
+      + '<div style="flex:1;min-width:240px;max-width:420px;">' + bars + '</div>';
 
-  window.submitProductReview = function () {
-    var nameEl = document.getElementById('review-name'), textEl = document.getElementById('review-text');
-    var name = nameEl.value.trim(), text = textEl.value.trim();
-    if (!name) { nameEl.style.borderColor = 'red'; nameEl.focus(); return; }
-    if (!rating) { var st = document.getElementById('review-stars'); st.style.outline = '1.5px solid red'; st.style.borderRadius = '8px'; return; }
-    if (!text) { textEl.style.borderColor = 'red'; textEl.focus(); return; }
-    if (typeof sb === 'undefined' || !sb) { alert('Could not send your review right now. Please try again later.'); return; }
-    sb.from('reviews').insert([{ name: name, rating: rating, review: text, design: designParam }]).then(function (r) {
-      if (r.error) { console.warn('[TNC] review save failed:', r.error.message); alert('Sorry, your review could not be saved. Please try again.'); return; }
-      document.getElementById('review-form-wrap').style.display = 'none';
-      document.getElementById('review-success').style.display = 'block';
-      if (typeof SHEET_URL !== 'undefined') {
-        fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ source: 'site-review', page: 'product-page', title: document.title, name: name, rating: rating, review: text,
-            time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) }) }).catch(function () {});
-      }
-      setTimeout(closeReviewModal, 2500);
+    var chips = '';
+    if (st.star) chips += '<span class="rv-chip on" data-rv="clearstar">' + st.star + ' star &times;</span>';
+    chips += '<span class="rv-chip' + (st.photos ? ' on' : '') + '" data-rv="photos">With photos</span>';
+    $('rv-filters').innerHTML = chips;
+
+    var list = ALL.filter(function (r) { return (!st.star || r.rating === st.star) && (!st.photos || (r.photos && r.photos.length)); });
+    list.sort(function (a, b) {
+      if (st.sort === 'high') return b.rating - a.rating || b.ts - a.ts;
+      if (st.sort === 'low') return a.rating - b.rating || b.ts - a.ts;
+      if (st.sort === 'helpful') return (b.helpful || 0) - (a.helpful || 0) || b.ts - a.ts;
+      return b.ts - a.ts;
     });
-  };
 
-  // Show approved reviews for THIS product, above the existing cards
-  function loadProductReviews() {
-    var grid = document.getElementById('reviews-grid');
-    if (!grid || designParam === null || typeof sb === 'undefined' || !sb) return;
-    sb.from('reviews').select('name,rating,review,created_at').eq('approved', true).eq('design', designParam)
-      .order('created_at', { ascending: false }).limit(20).then(function (res) {
-        if (res.error || !res.data || !res.data.length) return;
-        res.data.forEach(function (r) {
-          var card = document.createElement('div');
-          card.className = 'p-6 border border-borderGray rounded-xl flex flex-col gap-4 hover:shadow-sm transition-shadow';
-          var top = document.createElement('div'); top.className = 'flex justify-between items-start';
-          var stars = document.createElement('div'); stars.className = 'flex text-black';
-          for (var i = 1; i <= 5; i++) stars.insertAdjacentHTML('beforeend', '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="' + (i <= r.rating ? 'currentColor' : '#e0e0e0') + '" style="display:inline-block;vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>');
-          var date = document.createElement('span'); date.className = 'text-sm text-gray-400';
-          date.textContent = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
-          top.appendChild(stars); top.appendChild(date);
-          var who = document.createElement('div'); who.className = 'flex items-center gap-2';
-          var nm = document.createElement('span'); nm.className = 'font-semibold'; nm.textContent = r.name;
-          var tag = document.createElement('span'); tag.className = 'text-xs text-gray-500'; tag.textContent = '\u00b7 Customer review';
-          who.appendChild(nm); who.appendChild(tag);
-          var p = document.createElement('p'); p.className = 'text-gray-600 text-sm leading-relaxed flex-1'; p.textContent = '\u201c' + r.review + '\u201d';
-          card.appendChild(top); card.appendChild(who); card.appendChild(p);
-          grid.insertBefore(card, grid.firstChild);
+    var grid = $('reviews-grid');
+    if (!list.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:#777;font-size:14px;">No reviews match this filter. <button type="button" data-rv="reset" style="text-decoration:underline;">Clear filters</button></div>';
+    } else {
+      var vs = voted();
+      grid.innerHTML = list.slice(0, st.shown).map(function (r) {
+        var photos = (r.photos || []).map(function (u) { var su = safeUrl(u); return su ? '<img class="rv-thumb" data-rv="zoom" src="' + su + '" alt="Customer photo" loading="lazy">' : ''; }).join('');
+        var helpful = r.db
+          ? (vs.indexOf(r.id) > -1
+            ? '<button class="rv-help" disabled>&#10003; Helpful (' + (r.helpful || 0) + ')</button>'
+            : '<button class="rv-help" data-rv="helpful" data-id="' + esc(r.id) + '">Helpful' + (r.helpful ? ' (' + r.helpful + ')' : '') + '</button>')
+          : '';
+        return '<div class="p-6 border border-borderGray rounded-xl flex flex-col gap-3 hover:shadow-sm transition-shadow">'
+          + '<div class="flex justify-between items-start">' + stars(r.rating, 15) + '<span class="text-sm text-gray-400">' + esc(r.dateLabel) + '</span></div>'
+          + (r.title ? '<div class="font-semibold">' + esc(r.title) + '</div>' : '')
+          + '<p class="text-gray-600 text-sm leading-relaxed flex-1" style="white-space:pre-wrap;">' + esc(r.text) + '</p>'
+          + (photos ? '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + photos + '</div>' : '')
+          + '<div class="flex items-center gap-2 flex-wrap"><span class="font-semibold text-sm">' + esc(r.name) + '</span><span class="rv-badge' + (r.badge === 'Google Review' ? ' g' : '') + '">' + esc(r.badge) + '</span></div>'
+          + (helpful ? '<div>' + helpful + '</div>' : '')
+          + '</div>';
+      }).join('');
+    }
+    $('rv-more-wrap').style.display = list.length > st.shown ? 'flex' : 'none';
+  }
+
+  /* ---------- load from Supabase ---------- */
+  function load() {
+    if (designParam === null || typeof sb === 'undefined' || !sb) return;
+    sb.from('reviews').select('id,name,title,rating,review,photo_urls,helpful_count,created_at')
+      .eq('approved', true).eq('design', designParam).order('created_at', { ascending: false }).limit(300)
+      .then(function (res) {
+        if (res.error) { console.warn('[TNC] reviews load failed:', res.error.message); return; }
+        var rows = (res.data || []).map(function (r) {
+          var ts = new Date(r.created_at).getTime();
+          return { id: r.id, db: true, name: r.name, title: r.title, rating: r.rating, text: r.review, photos: r.photo_urls || [],
+                   helpful: r.helpful_count || 0, ts: ts, dateLabel: fmtDate(ts), badge: 'Customer review' };
         });
+        ALL = rows.concat(STATIC); render();
       });
   }
-  document.addEventListener('DOMContentLoaded', loadProductReviews);
+
+  /* ---------- events (delegated) ---------- */
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-rv]'); if (!t) return;
+    var a = t.getAttribute('data-rv');
+    if (a === 'write') openModal();
+    else if (a === 'close') closeModal();
+    else if (a === 'more') { st.shown += PAGE; render(); }
+    else if (a === 'star') { var s = +t.getAttribute('data-star'); st.star = st.star === s ? 0 : s; st.shown = PAGE; render(); }
+    else if (a === 'clearstar') { st.star = 0; st.shown = PAGE; render(); }
+    else if (a === 'photos') { st.photos = !st.photos; st.shown = PAGE; render(); }
+    else if (a === 'reset') { st.star = 0; st.photos = false; st.shown = PAGE; render(); }
+    else if (a === 'zoom') { var lb = $('rv-lightbox'); lb.querySelector('img').src = t.src; lb.style.display = 'flex'; }
+    else if (a === 'submit') submit();
+    else if (a === 'helpful') {
+      var id = t.getAttribute('data-id'); if (voted().indexOf(id) > -1) return;
+      var r = ALL.filter(function (x) { return x.id === id; })[0]; if (!r) return;
+      saveVote(id); r.helpful = (r.helpful || 0) + 1; render();
+      if (typeof sb !== 'undefined' && sb) sb.rpc('increment_review_helpful', { rid: id }).then(function (res) { if (res.error) console.warn('[TNC] helpful vote failed:', res.error.message); });
+    }
+  });
+  $('rv-sort').addEventListener('change', function () { st.sort = this.value; st.shown = PAGE; render(); });
+  $('rv-lightbox').addEventListener('click', function () { this.style.display = 'none'; });
+  $('rv-modal').addEventListener('mousedown', function (e) { if (e.target === this) closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { $('rv-lightbox').style.display = 'none'; closeModal(); } });
+  $('rv-text').addEventListener('input', function () { $('rv-count').textContent = this.value.length + ' / 1000'; });
+  $('rv-file').addEventListener('change', function () {
+    Array.prototype.slice.call(this.files).forEach(function (f) { if (/^image\//.test(f.type) && files.length < MAX_PHOTOS) files.push(f); });
+    this.value = ''; drawPhotos();
+  });
+
+  /* ---------- modal ---------- */
+  function paintPick(n) {
+    var bs = $('rv-pick').children;
+    for (var i = 0; i < bs.length; i++) bs[i].style.color = (i + 1) <= n ? '#111' : '#d0d0d0';
+  }
+  function drawPick() {
+    var w = $('rv-pick');
+    if (!w.children.length) {
+      for (var i = 1; i <= 5; i++) {
+        var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', i + ' star'); b.textContent = '\u2605';
+        b.style.cssText = 'background:none;border:none;padding:0;cursor:pointer;font-size:30px;line-height:1;color:#d0d0d0';
+        b.onmouseenter = (function (n) { return function () { paintPick(n); $('rv-pick-label').textContent = LABELS[n]; }; })(i);
+        b.onclick = (function (n) { return function () { rating = n; $('rv-err-rating').style.display = 'none'; paintPick(n); $('rv-pick-label').textContent = LABELS[n]; }; })(i);
+        w.appendChild(b);
+      }
+      w.onmouseleave = function () { paintPick(rating); $('rv-pick-label').textContent = LABELS[rating]; };
+    }
+    paintPick(rating);
+  }
+  function drawPhotos() {
+    var box = $('rv-photos');
+    Array.prototype.slice.call(box.querySelectorAll('.rv-prev')).forEach(function (n) { n.remove(); });
+    var add = $('rv-add-photo');
+    files.forEach(function (f, i) {
+      var wrap = document.createElement('div'); wrap.className = 'rv-prev'; wrap.style.cssText = 'position:relative;width:64px;height:64px;';
+      var img = document.createElement('img'); img.src = URL.createObjectURL(f); img.style.cssText = 'width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid #ececec;';
+      var x = document.createElement('button'); x.type = 'button'; x.textContent = '\u00d7'; x.setAttribute('aria-label', 'Remove photo');
+      x.style.cssText = 'position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#111;color:#fff;border:none;cursor:pointer;font-size:13px;line-height:1;';
+      x.onclick = function () { files.splice(i, 1); drawPhotos(); };
+      wrap.appendChild(img); wrap.appendChild(x); box.insertBefore(wrap, add);
+    });
+    add.style.display = files.length >= MAX_PHOTOS ? 'none' : 'flex';
+  }
+  function openModal() {
+    rating = 0; files = []; drawPick(); drawPhotos();
+    $('rv-pick-label').textContent = '';
+    $('rv-title').value = ''; $('rv-text').value = ''; $('rv-count').textContent = '0 / 1000';
+    try { $('rv-name').value = localStorage.getItem('tnc_reviewer_name') || ''; } catch (e) { $('rv-name').value = ''; }
+    ['rating', 'text', 'name', 'submit'].forEach(function (k) { $('rv-err-' + k).style.display = 'none'; });
+    var h1 = document.querySelector('h1'); $('rv-prod').textContent = h1 ? h1.textContent : '';
+    $('rv-form').style.display = 'block'; $('rv-done').style.display = 'none';
+    var btn = $('rv-submit'); btn.disabled = false; btn.textContent = 'Submit Review';
+    $('rv-modal').style.display = 'flex'; document.body.style.overflow = 'hidden';
+  }
+  function closeModal() { $('rv-modal').style.display = 'none'; document.body.style.overflow = ''; }
+  window.openReviewModal = openModal;
+
+  function compress(file) {
+    return new Promise(function (resolve) {
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        var sc = Math.min(1, 1200 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+        c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(function (b) { URL.revokeObjectURL(url); resolve(b); }, 'image/jpeg', 0.82);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); resolve(null); };
+      img.src = url;
+    });
+  }
+  function uploadPhotos() {
+    var urls = [], failed = 0;
+    return files.reduce(function (p, f) {
+      return p.then(function () {
+        return compress(f).then(function (blob) {
+          if (!blob) { failed++; return; }
+          var path = 'reviews/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.jpg';
+          return sb.storage.from('product-images').upload(path, blob, { contentType: 'image/jpeg' }).then(function (res) {
+            if (res.error) { failed++; console.warn('[TNC] photo upload failed:', res.error.message); return; }
+            urls.push(sb.storage.from('product-images').getPublicUrl(path).data.publicUrl);
+          });
+        });
+      });
+    }, Promise.resolve()).then(function () { return { urls: urls, failed: failed }; });
+  }
+
+  function submit() {
+    var name = $('rv-name').value.trim(), title = $('rv-title').value.trim(), text = $('rv-text').value.trim(), ok = true;
+    $('rv-err-rating').style.display = rating ? 'none' : 'block'; if (!rating) ok = false;
+    $('rv-err-text').style.display = text.length >= 10 ? 'none' : 'inline'; if (text.length < 10) ok = false;
+    $('rv-err-name').style.display = name ? 'none' : 'block'; if (!name) ok = false;
+    var err = $('rv-err-submit'); err.style.display = 'none';
+    if (!ok) return;
+    if ($('rv-hp').value) { $('rv-form').style.display = 'none'; $('rv-done').style.display = 'block'; return; } // bot
+    var key = 'tnc_reviewed_' + designParam;
+    try { if (localStorage.getItem(key)) { err.textContent = 'You have already reviewed this product from this device. Thank you!'; err.style.display = 'block'; return; } } catch (e) {}
+    if (typeof sb === 'undefined' || !sb) { err.textContent = 'Could not reach the server. Please try again later.'; err.style.display = 'block'; return; }
+
+    var btn = $('rv-submit'); btn.disabled = true; btn.textContent = files.length ? 'Uploading photos...' : 'Submitting...';
+    (files.length ? uploadPhotos() : Promise.resolve({ urls: [], failed: 0 })).then(function (up) {
+      btn.textContent = 'Submitting...';
+      return sb.from('reviews').insert([{ name: name, title: title || null, rating: rating, review: text, design: designParam, photo_urls: up.urls }]).then(function (res) {
+        if (res.error) { console.warn('[TNC] review save failed:', res.error.message); err.textContent = 'Sorry, your review could not be saved. Please try again.'; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Submit Review'; return; }
+        try { localStorage.setItem(key, '1'); localStorage.setItem('tnc_reviewer_name', name); } catch (e) {}
+        if (typeof SHEET_URL !== 'undefined') {
+          fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ source: 'site-review', page: 'product-page', title: document.title, name: name, rating: rating, review: text,
+              time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) }) }).catch(function () {});
+        }
+        $('rv-done-msg').textContent = 'It will appear here once our team approves it.' + (up.failed ? ' (Some photos could not be uploaded.)' : '');
+        $('rv-form').style.display = 'none'; $('rv-done').style.display = 'block';
+        setTimeout(closeModal, 3500);
+      });
+    });
+  }
+
+  render();
+  document.addEventListener('DOMContentLoaded', load);
+  if (document.readyState !== 'loading') load();
 })();
 </script>
 </body>

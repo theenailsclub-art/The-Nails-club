@@ -3607,9 +3607,11 @@ function renderReviews(){
           <strong style="font-size:14px;">${rvEsc(r.name)}</strong>
           <span class="pill ${r.approved?'pill-active':'pill-pending'}">${r.approved?'Approved':'Pending'}</span>
         </div>
-        <span style="font-size:11.5px;color:var(--muted);">${rvEsc(reviewProductLabel(r))} &middot; ${rvEsc(when)}</span>
+        <span style="font-size:11.5px;color:var(--muted);">${rvEsc(reviewProductLabel(r))} &middot; ${rvEsc(when)}${r.helpful_count?' &middot; '+r.helpful_count+' found helpful':''}</span>
       </div>
-      <p style="font-size:13.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 14px;white-space:pre-wrap;">${rvEsc(r.review)}</p>
+      ${r.title?`<div style="font-weight:600;font-size:14px;margin-bottom:4px;">${rvEsc(r.title)}</div>`:''}
+      <p style="font-size:13.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 12px;white-space:pre-wrap;">${rvEsc(r.review)}</p>
+      ${(r.photo_urls&&r.photo_urls.length)?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">${r.photo_urls.filter(u=>/^https:\/\//i.test(u)).map(u=>`<a href="${rvEsc(u)}" target="_blank" rel="noopener"><img src="${rvEsc(u)}" alt="Review photo" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--line);"></a>`).join('')}</div>`:''}
       <div style="display:flex;gap:8px;${rvViewer()?'display:none;':''}">
         ${r.approved ? `<button class="btn btn-ghost btn-sm" onclick='setReviewApproved(${id},false)'>Unpublish</button>` : `<button class="btn btn-primary btn-sm" onclick='setReviewApproved(${id},true)'>Approve</button>`}
         <button class="btn btn-ghost btn-sm" style="color:var(--rust);" onclick='deleteReview(${id})'>Delete</button>
