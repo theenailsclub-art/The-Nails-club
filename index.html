@@ -331,6 +331,35 @@ body { background: #fff; color: #322C2C; font-family: 'DM Sans', sans-serif; ove
   </div>
 </section>
 
+<!-- SECTION -- MAKE IT YOURS + RECENTLY VIEWED -->
+<section id="play" style="background:#FAF8F5;padding:72px 20px 64px;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <p style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.32em;text-transform:uppercase;color:#C6A35B;text-align:center;margin:0 0 10px;">Make it yours</p>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,6vw,3rem);font-weight:400;color:#322C2C;text-align:center;margin:0 0 30px;">Play with your nails</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;">
+      <a href="nail-quiz.html" style="display:block;background:#fff;border-radius:22px;padding:30px 26px;text-decoration:none;color:#322C2C;box-shadow:0 8px 30px rgba(50,44,44,0.06);transition:transform .2s;" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform='none'">
+        <div style="font-size:34px;margin-bottom:10px;">&#128133;</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;margin:0 0 6px;">Find your perfect set</h3>
+        <p style="font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.7;color:rgba(50,44,44,0.6);margin:0 0 14px;">Answer 4 quick questions and we will match you with the nails that suit your occasion, vibe and budget.</p>
+        <span style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#BC1423;font-weight:600;">Take the quiz &rarr;</span>
+      </a>
+      <a href="build-your-set.html" style="display:block;background:#fff;border-radius:22px;padding:30px 26px;text-decoration:none;color:#322C2C;box-shadow:0 8px 30px rgba(50,44,44,0.06);transition:transform .2s;" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform='none'">
+        <div style="font-size:34px;margin-bottom:10px;">&#127912;</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;margin:0 0 6px;">Build your own set</h3>
+        <p style="font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.7;color:rgba(50,44,44,0.6);margin:0 0 14px;">Mix designs finger by finger, then send your creation to us on WhatsApp.</p>
+        <span style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#BC1423;font-weight:600;">Start building &rarr;</span>
+      </a>
+    </div>
+    <div id="recent-wrap" style="display:none;margin-top:56px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;">
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:#322C2C;margin:0;">Recently viewed</h3>
+        <button type="button" id="recent-clear" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(50,44,44,0.4);text-decoration:underline;cursor:pointer;">Clear</button>
+      </div>
+      <div id="recent-row" style="display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;"></div>
+    </div>
+  </div>
+</section>
+
 <!-- SECTION 3 — REELS -->
 <section id="reels" class="pt-24 pb-16 px-5 md:px-10 overflow-hidden relative" style="background:linear-gradient(rgba(250,248,245,0.82),rgba(245,240,237,0.88)),url('Images/reels_bg.jpg') center center/cover no-repeat;background-color:#F5F0ED;">
   <div class="max-w-screen-2xl mx-auto">
@@ -1678,6 +1707,146 @@ function submitReview() {
 document.addEventListener('DOMContentLoaded', renderReviewStars);
 </script>
 
+
+<!-- ===== SPIN & WIN ===== -->
+<button type="button" id="spin-fab" style="position:fixed;bottom:28px;left:18px;z-index:450;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;background:#322C2C;color:#fff;border:none;border-radius:99px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:500;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.22);">&#127873; <span id="spin-fab-label">Spin &amp; Win</span></button>
+<div id="spin-modal" style="display:none;position:fixed;inset:0;z-index:720;background:rgba(30,25,25,0.65);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="background:#fff;border-radius:24px;width:100%;max-width:400px;position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.3);">
+    <div style="height:6px;background:linear-gradient(90deg,#BC1423,#C6A35B,#BC1423);"></div>
+    <button type="button" id="spin-x" aria-label="Close" style="position:absolute;top:14px;right:14px;background:rgba(50,44,44,0.08);border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;line-height:1;">&times;</button>
+    <div style="padding:30px 26px 28px;text-align:center;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(50,44,44,0.4);margin:0 0 6px;">Spin &amp; Win</p>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:400;color:#322C2C;margin:0 0 16px;line-height:1.1;">Try your <em style="color:#BC1423;">luck!</em></h3>
+      <div style="position:relative;width:260px;height:260px;margin:0 auto 18px;">
+        <div style="position:absolute;top:-6px;left:50%;transform:translateX(-50%);z-index:3;width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:20px solid #322C2C;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));"></div>
+        <canvas id="spin-canvas" width="520" height="520" style="width:260px;height:260px;border-radius:50%;box-shadow:0 0 0 6px #fff,0 0 0 8px #C6A35B,0 10px 30px rgba(0,0,0,.2);transition:transform 5s cubic-bezier(.12,.7,.1,1);"></canvas>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25);z-index:2;"></div>
+      </div>
+      <div id="spin-form">
+        <input id="spin-email" type="email" placeholder="Enter your email to spin" autocomplete="email" style="width:100%;padding:13px 16px;border:1.5px solid rgba(50,44,44,0.15);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;outline:none;box-sizing:border-box;margin-bottom:10px;">
+        <button type="button" id="spin-go" style="width:100%;padding:13px;background:#BC1423;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;font-weight:600;">Spin the wheel</button>
+        <p style="font-family:'DM Sans',sans-serif;font-size:10.5px;color:rgba(50,44,44,0.4);margin:10px 0 0;line-height:1.6;">One spin per person. We will also send you new-drop and offer emails.</p>
+      </div>
+      <div id="spin-result" style="display:none;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(50,44,44,0.45);margin:0 0 4px;">You won</p>
+        <div id="spin-prize" style="font-family:'Cormorant Garamond',serif;font-size:38px;color:#BC1423;line-height:1.1;margin-bottom:10px;"></div>
+        <div style="display:inline-block;border:1.5px dashed #C6A35B;border-radius:10px;padding:8px 18px;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:0.18em;color:#322C2C;margin-bottom:6px;" id="spin-code"></div>
+        <p id="spin-valid" style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(50,44,44,0.5);margin:0 0 16px;"></p>
+        <button type="button" id="spin-claim" style="width:100%;padding:13px;background:#25D366;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;font-weight:600;margin-bottom:8px;">Claim on WhatsApp</button>
+        <button type="button" id="spin-copy" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(50,44,44,0.45);cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;text-decoration:underline;">Copy code</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  /* ======= EDIT YOUR PRIZES HERE =======
+     label = text on the wheel, code = what the customer quotes on WhatsApp,
+     w = how likely (higher = more often). Only keep prizes you are happy to honour. */
+  var PRIZES = [
+    { label: '\u20B950 OFF',       code: 'SPIN50',   w: 25, color: '#BC1423' },
+    { label: 'Free Shipping',      code: 'FREESHIP', w: 25, color: '#C6A35B' },
+    { label: '\u20B9100 OFF',      code: 'SPIN100',  w: 12, color: '#322C2C' },
+    { label: 'Free Nail Glue',     code: 'FREEGLUE', w: 20, color: '#BC1423' },
+    { label: '5% OFF',             code: 'SPIN5',    w: 15, color: '#C6A35B' },
+    { label: '\u20B9150 OFF',      code: 'SPIN150',  w: 3,  color: '#322C2C' }
+  ];
+  var VALID_DAYS = 7;       // how long a won prize is valid
+  var COOLDOWN_DAYS = 30;   // one spin per device per this many days
+  var WA = '919913091744', KEY = 'tnc_spin';
+
+  function $(i) { return document.getElementById(i); }
+  var cv = $('spin-canvas'), ctx = cv.getContext('2d'), n = PRIZES.length, arc = 2 * Math.PI / n, rot = 0, spinning = false;
+
+  function drawWheel() {
+    var R = cv.width / 2; ctx.clearRect(0, 0, cv.width, cv.height);
+    PRIZES.forEach(function (p, i) {
+      var a0 = -Math.PI / 2 + i * arc;
+      ctx.beginPath(); ctx.moveTo(R, R); ctx.arc(R, R, R, a0, a0 + arc); ctx.closePath();
+      ctx.fillStyle = p.color; ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.save(); ctx.translate(R, R); ctx.rotate(a0 + arc / 2);
+      ctx.textAlign = 'right'; ctx.fillStyle = '#fff'; ctx.font = '600 30px "DM Sans", sans-serif';
+      ctx.fillText(p.label, R - 34, 10); ctx.restore();
+    });
+  }
+  function saved() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); return s && (Date.now() - s.ts < COOLDOWN_DAYS * 864e5) ? s : null; } catch (e) { return null; } }
+  function fmt(ts) { return new Date(ts + VALID_DAYS * 864e5).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
+  function showResult(s) {
+    $('spin-form').style.display = 'none'; $('spin-result').style.display = 'block';
+    $('spin-prize').textContent = s.label; $('spin-code').textContent = s.code;
+    var left = s.ts + VALID_DAYS * 864e5 - Date.now();
+    $('spin-valid').textContent = left > 0 ? 'Valid until ' + fmt(s.ts) + '. Show this on WhatsApp when you order.' : 'This prize has expired. You can spin again in a few weeks.';
+    $('spin-claim').style.display = left > 0 ? 'block' : 'none';
+    $('spin-fab-label').textContent = 'My Prize';
+  }
+  function openM() {
+    $('spin-modal').style.display = 'flex'; document.body.style.overflow = 'hidden';
+    var s = saved(); if (s) showResult(s);
+  }
+  function closeM() { $('spin-modal').style.display = 'none'; document.body.style.overflow = ''; }
+  function pick() {
+    var tot = PRIZES.reduce(function (a, p) { return a + p.w; }, 0), r = crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * tot;
+    for (var i = 0; i < n; i++) { r -= PRIZES[i].w; if (r < 0) return i; } return n - 1;
+  }
+  function spin() {
+    if (spinning || saved()) return;
+    var em = $('spin-email'), email = em.value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { em.style.borderColor = '#BC1423'; em.focus(); return; }
+    em.style.borderColor = 'rgba(50,44,44,0.15)';
+    spinning = true; $('spin-go').disabled = true; $('spin-go').textContent = 'Spinning...';
+    var i = pick(), p = PRIZES[i];
+    var s = { label: p.label, code: p.code, ts: Date.now(), email: email };
+    try { localStorage.setItem(KEY, JSON.stringify(s)); localStorage.setItem('tnc_subscribed', '1'); } catch (e) {}
+    // add to Mailchimp + Google Sheet backup (silent if they fail)
+    if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_KEY !== 'undefined') {
+      fetch(SUPABASE_URL + '/functions/v1/mailchimp-subscribe', { method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY, 'apikey': SUPABASE_KEY },
+        body: JSON.stringify({ email: email, source: 'spin-wheel' }) }).catch(function () {});
+    }
+    if (typeof SHEET_URL !== 'undefined') {
+      fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, source: 'spin-wheel', prize: p.label + ' (' + p.code + ')', time: new Date().toISOString() }) }).catch(function () {});
+    }
+    var jitter = (Math.random() - .5) * arc * 0.7;
+    rot += 360 * 6 - ((i + 0.5) * arc * 180 / Math.PI) - (rot % 360) + jitter * 180 / Math.PI;
+    cv.style.transform = 'rotate(' + rot + 'deg)';
+    setTimeout(function () { spinning = false; showResult(s); }, 5300);
+  }
+  drawWheel();
+  var s0 = saved(); if (s0) $('spin-fab-label').textContent = 'My Prize';
+  $('spin-fab').onclick = openM; $('spin-x').onclick = function () { if (!spinning) closeM(); };
+  $('spin-modal').addEventListener('mousedown', function (e) { if (e.target === this && !spinning) closeM(); });
+  $('spin-go').onclick = spin;
+  $('spin-email').addEventListener('keydown', function (e) { if (e.key === 'Enter') spin(); });
+  $('spin-claim').onclick = function () {
+    var s = saved(); if (!s) return;
+    var msg = 'Hi The Nails Club! I won "' + s.label + '" (code ' + s.code + ') on the Spin & Win wheel. My email: ' + s.email + '. Please apply it to my order.';
+    window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), '_blank');
+  };
+  $('spin-copy').onclick = function () { var s = saved(); if (!s) return; if (navigator.clipboard) navigator.clipboard.writeText(s.code).then(function () { $('spin-copy').textContent = 'Copied!'; }); };
+})();
+
+/* ===== Recently viewed strip (homepage) ===== */
+(async function () {
+  try { if (window.DESIGNS_READY) await window.DESIGNS_READY; } catch (e) {}
+  var wrap = document.getElementById('recent-wrap'), row = document.getElementById('recent-row');
+  if (!wrap || !row || typeof DESIGNS === 'undefined') return;
+  function key(d) { return d._dbId != null ? String(d._dbId) : null; }
+  function esc(t) { var d = document.createElement('div'); d.textContent = String(t == null ? '' : t); return d.innerHTML; }
+  var keys = []; try { keys = JSON.parse(localStorage.getItem('tnc_recent') || '[]'); } catch (e) {}
+  var items = keys.map(function (k) { for (var i = 0; i < DESIGNS.length; i++) if (key(DESIGNS[i]) === k) return { d: DESIGNS[i], i: i }; return null; }).filter(Boolean);
+  if (!items.length) return;
+  row.innerHTML = items.map(function (x) {
+    var im = encodeImgPath((x.d.photos && x.d.photos[0]) || '');
+    return '<a href="premium_product_page.html?design=' + x.i + '" style="flex:0 0 150px;text-decoration:none;color:#322C2C;">'
+      + '<img src="' + esc(im) + '" alt="' + esc(x.d.title) + '" loading="lazy" style="width:150px;height:150px;object-fit:cover;border-radius:14px;display:block;background:#f1ece8;">'
+      + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:17px;line-height:1.2;margin-top:8px;">' + esc(x.d.title) + '</div>'
+      + '<div style="font-family:\'DM Sans\',sans-serif;font-size:12px;color:rgba(50,44,44,0.5);">&#8377;' + esc(x.d.price) + '</div></a>';
+  }).join('');
+  wrap.style.display = 'block';
+  document.getElementById('recent-clear').onclick = function () { try { localStorage.removeItem('tnc_recent'); } catch (e) {} wrap.style.display = 'none'; };
+})();
+</script>
 </body>
 </html>
 

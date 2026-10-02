@@ -246,6 +246,10 @@
                             <button id="wishlist-btn" class="flex items-center justify-center gap-2 text-sm font-medium text-gray-600 hover:text-black py-2 mt-2 transition-colors">
                                 <i id="wishlist-icon"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline-block;vertical-align:middle;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></i> <span id="wishlist-label">Add to Wishlist</span>
                             </button>
+                            <button id="share-btn" type="button" class="flex items-center justify-center gap-2 text-sm font-medium text-gray-600 hover:text-black py-2 transition-colors">
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
+                                <span>Share on WhatsApp</span>
+                            </button>
                         </div>
 
                         <!-- Info blocks -->
@@ -1382,6 +1386,27 @@ function submitFooterEmail() {
   render();
   document.addEventListener('DOMContentLoaded', load);
   if (document.readyState !== 'loading') load();
+})();
+</script>
+
+<!-- ===== Recently viewed tracking + WhatsApp share ===== -->
+<script>
+(async function () {
+  try { if (window.DESIGNS_READY) await window.DESIGNS_READY; } catch (e) {}
+  var idx = parseInt(new URLSearchParams(location.search).get('design'), 10);
+  var d = (typeof DESIGNS !== 'undefined' && !isNaN(idx)) ? DESIGNS[idx] : null;
+  if (d && d._dbId != null) {
+    try {
+      var k = String(d._dbId), list = JSON.parse(localStorage.getItem('tnc_recent') || '[]').filter(function (x) { return x !== k; });
+      list.unshift(k); localStorage.setItem('tnc_recent', JSON.stringify(list.slice(0, 8)));
+    } catch (e) {}
+  }
+  var b = document.getElementById('share-btn');
+  if (b) b.addEventListener('click', function () {
+    var title = d ? d.title : document.title;
+    var msg = 'Look at this nail set from The Nails Club: ' + title + '\n' + location.href;
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  });
 })();
 </script>
 </body>

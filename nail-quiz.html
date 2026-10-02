@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZLP08PTF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TDZLP08PTF');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nail Quiz | The Nails Club</title>
+<meta name="description" content="Take the 4-question nail quiz and find the press-on nail set that suits your occasion, vibe and budget.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="designs-data.js"></script>
+<style>
+  :root{--ink:#322C2C;--red:#BC1423;--gold:#C6A35B;--cream:#FAF8F5;--line:#ECE7E2}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--cream);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .hd{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+  .hd nav{display:flex;gap:22px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;flex-wrap:wrap;justify-content:flex-end}
+  .hd nav a{text-decoration:none;color:rgba(50,44,44,.6)} .hd nav a:hover,.hd nav a.on{color:var(--ink)}
+  .eyebrow{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+  h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:400;margin:0}
+  .btn{display:inline-block;border:none;border-radius:99px;padding:14px 30px;font:600 11px 'DM Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:none;text-align:center}
+  .btn.red{background:var(--red);color:#fff} .btn.red:hover{background:#9e1020}
+  .btn.line{background:#fff;color:var(--ink);border:1.5px solid rgba(50,44,44,.2)} .btn.line:hover{border-color:var(--ink)}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .ft{background:var(--ink);color:rgba(255,255,255,.55);padding:36px 22px;margin-top:70px;font-size:12px;text-align:center;line-height:1.9}
+  .ft a{color:rgba(255,255,255,.75);text-decoration:none;margin:0 10px} .ft a:hover{color:var(--gold)}
+  
+  .wrap{max-width:760px;margin:0 auto;padding:54px 20px 0}
+  .card{background:#fff;border-radius:24px;padding:38px 28px;box-shadow:0 10px 40px rgba(50,44,44,.07);text-align:center}
+  .card h1{font-size:clamp(2.2rem,7vw,3.2rem);line-height:1.08;margin-bottom:12px} .card h1 em{color:var(--red)}
+  .card p.sub{color:rgba(50,44,44,.6);line-height:1.7;font-size:14px;margin:0 auto 26px;max-width:460px}
+  .dots{display:flex;justify-content:center;gap:8px;margin-bottom:22px}
+  .dots i{width:34px;height:4px;border-radius:9px;background:#e8e2dd} .dots i.on{background:var(--red)}
+  .q{font-size:clamp(1.7rem,5.5vw,2.3rem);margin-bottom:22px}
+  .opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .opt{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 12px;background:#fff;border:1.5px solid var(--line);border-radius:16px;cursor:pointer;font:500 13px 'DM Sans',sans-serif;color:var(--ink);transition:.18s}
+  .opt:hover{border-color:var(--red);transform:translateY(-2px);box-shadow:0 8px 22px rgba(188,20,35,.1)}
+  .opt .e{font-size:30px;line-height:1}
+  .back{background:none;border:none;color:rgba(50,44,44,.5);font:500 11px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;margin-top:22px;text-decoration:underline}
+  .fade{animation:f .35s ease}
+  @keyframes f{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .res{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0}
+  .rc{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;text-decoration:none;text-align:left;display:block;transition:.18s}
+  .rc:hover{box-shadow:0 10px 26px rgba(50,44,44,.1);transform:translateY(-2px)}
+  .rc img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#f1ece8}
+  .rc .t{padding:10px 12px 12px}
+  .rc .n{font:400 17px/1.2 'Cormorant Garamond',serif} .rc .p{font-size:12px;color:rgba(50,44,44,.55);margin-top:3px}
+  .rank{position:absolute;top:8px;left:8px;background:var(--ink);color:#fff;font-size:10px;letter-spacing:.1em;padding:3px 9px;border-radius:99px}
+  .acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  @media(max-width:560px){.res{grid-template-columns:1fr 1fr}.res .rc:nth-child(3){grid-column:1/-1}.opts{gap:10px}}
+
+</style>
+</head>
+<body>
+<header class="hd">
+  <a href="index.html" style="display:flex;align-items:center;"><img src="logo.png" alt="The Nails Club" style="height:36px;width:auto;object-fit:contain;"></a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html#collection">Collection</a>
+    <a href="nail-quiz.html" class="on">Nail Quiz</a>
+    <a href="build-your-set.html">Build Your Set</a>
+  </nav>
+</header>
+<main class="wrap"><div id="app" class="card"></div></main>
+<footer class="ft">
+  <div><a href="index.html">Home</a><a href="index.html#collection">Collection</a><a href="return-policy.html">Return Policy</a><a href="https://wa.me/919913091744" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener">Instagram</a></div>
+  <div style="margin-top:8px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3)">&copy; 2026 The Nails Club. All rights reserved.</div>
+</footer>
+<script>
+
+(async function () {
+  var app = document.getElementById('app');
+  try { if (window.DESIGNS_READY) await window.DESIGNS_READY; } catch (e) {}
+  function esc(t) { var d = document.createElement('div'); d.textContent = String(t == null ? '' : t); return d.innerHTML; }
+  function key(d) { return d._dbId != null ? String(d._dbId) : 'i' + DESIGNS.indexOf(d); }
+  function img(d) { return encodeImgPath((d.photos && d.photos[0]) || ''); }
+
+  var Q = [
+    { t: 'What are the nails for?', o: [
+      { l: 'A wedding or engagement', e: '\uD83D\uDC8D', cats: { bridal: 5, french: 2, floral: 1 }, kw: ['pearl', 'bridal', 'lace', 'white'] },
+      { l: 'A festival or puja', e: '\uD83E\uDE94', cats: { festive: 5, chrome: 2, cateye: 1 }, kw: ['gold', 'festive', 'red'] },
+      { l: 'Party or date night', e: '\uD83E\uDD42', cats: { chrome: 4, cateye: 3, gloss: 2 }, kw: ['glam', 'shine', 'sparkle', 'glitter'] },
+      { l: 'Everyday and office', e: '\u2615', cats: { french: 4, gloss: 4, manicure: 2, polka: 1 }, kw: ['nude', 'minimal', 'soft', 'sheer'] },
+      { l: 'Baby shower or brunch', e: '\uD83C\uDF80', cats: { babyshower: 5, floral: 2, polka: 2, gloss: 1 }, kw: ['pastel', 'soft', 'floral', 'pink'] }
+    ] },
+    { t: 'Pick your vibe', o: [
+      { l: 'Soft & minimal', e: '\u2728', cats: { french: 3, gloss: 3, manicure: 2 }, kw: ['minimal', 'sheer', 'soft'], p: 'The Soft Girl Classic' },
+      { l: 'Cute & playful', e: '\uD83C\uDF52', cats: { polka: 4, floral: 3, babyshower: 2 }, kw: ['cute', 'cherry', 'dots', 'heart'], p: 'The Playful Sweetheart' },
+      { l: 'Glam & shiny', e: '\uD83D\uDC8E', cats: { chrome: 4, cateye: 3, bridal: 2 }, kw: ['glam', 'chrome', 'shine', 'stone', '3d'], p: 'The Glam Goddess' },
+      { l: 'Bold & dramatic', e: '\uD83D\uDD25', cats: { festive: 3, chrome: 3, cateye: 3 }, kw: ['bold', 'dark', 'marble', 'gold'], p: 'The Bold Showstopper' }
+    ] },
+    { t: 'Which colours are calling you?', o: [
+      { l: 'Pinks & nudes', e: '\uD83C\uDF38', kw: ['pink', 'nude', 'rose', 'blush', 'peach', 'sheer', 'pastel', 'mocha', 'beige'] },
+      { l: 'Reds & berries', e: '\uD83C\uDF53', kw: ['red', 'cherry', 'berry', 'maroon', 'wine', 'burgundy'] },
+      { l: 'Blues & greens', e: '\uD83C\uDF0A', kw: ['blue', 'green', 'emerald', 'teal', 'navy', 'aqua'] },
+      { l: 'Gold & silver', e: '\uD83C\uDF1F', kw: ['gold', 'silver', 'chrome', 'glitter', 'metallic', 'champagne'] },
+      { l: 'Surprise me', e: '\uD83C\uDFB2', kw: [] }
+    ] },
+    { t: 'What is your budget?', o: [
+      { l: 'Pocket-friendly', e: '\uD83D\uDCB8', budget: 'low' },
+      { l: 'Treat myself', e: '\uD83D\uDECD\uFE0F' }
+    ] }
+  ];
+  var answers = [], step = -1;
+  var prices = DESIGNS.map(function (d) { return d.price || 0; }).sort(function (a, b) { return a - b; });
+  var median = prices.length ? prices[Math.floor(prices.length / 2)] : 0;
+
+  function score(d) {
+    var s = 0, text = ((d.title || '') + ' ' + (d.desc || '') + ' ' + (d.design || '')).toLowerCase();
+    Q.forEach(function (q, i) {
+      if (answers[i] == null) return;
+      var o = q.o[answers[i]];
+      if (o.cats && o.cats[d.cat]) s += o.cats[d.cat];
+      if (o.kw) { var hit = 0; o.kw.forEach(function (w) { if (text.indexOf(w) > -1) hit++; }); s += Math.min(hit, 2) * 2; }
+      if (o.budget === 'low' && (d.price || 0) <= median) s += 3;
+    });
+    if (d.featured) s += 1;
+    return s;
+  }
+
+  function intro() {
+    app.className = 'card fade';
+    app.innerHTML = '<p class="eyebrow">Nail Quiz</p><h1>Find your <em>perfect set</em></h1>'
+      + '<p class="sub">Answer 4 quick questions and we will pick the nail sets that suit your occasion, vibe and budget.</p>'
+      + '<button class="btn red" id="start">Start the quiz</button>';
+    document.getElementById('start').onclick = function () { step = 0; answers = []; ask(); };
+  }
+  function ask() {
+    var q = Q[step];
+    app.className = 'card fade';
+    app.innerHTML = '<div class="dots">' + Q.map(function (_, i) { return '<i class="' + (i <= step ? 'on' : '') + '"></i>'; }).join('') + '</div>'
+      + '<h2 class="q">' + esc(q.t) + '</h2><div class="opts">'
+      + q.o.map(function (o, i) { return '<button class="opt" data-i="' + i + '"><span class="e">' + o.e + '</span>' + esc(o.l) + '</button>'; }).join('')
+      + '</div>' + (step > 0 ? '<button class="back" id="back">&larr; Back</button>' : '');
+    Array.prototype.forEach.call(app.querySelectorAll('.opt'), function (b) {
+      b.onclick = function () { answers[step] = +b.getAttribute('data-i'); step++; step < Q.length ? ask() : result(); };
+    });
+    var bk = document.getElementById('back'); if (bk) bk.onclick = function () { step--; ask(); };
+  }
+  function result() {
+    var ranked = DESIGNS.map(function (d) { return { d: d, s: score(d) }; })
+      .sort(function (a, b) { return b.s - a.s || (b.d.views || 0) - (a.d.views || 0); })
+      .slice(0, 3).map(function (x) { return x.d; });
+    app.className = 'card fade';
+    if (!ranked.length) {
+      app.innerHTML = '<h1>Oops</h1><p class="sub">We could not load the designs right now. Please try again in a moment.</p><button class="btn red" onclick="location.reload()">Try again</button>';
+      return;
+    }
+    var persona = Q[1].o[answers[1]].p, occ = Q[0].o[answers[0]].l.toLowerCase();
+    var cards = ranked.map(function (d, i) {
+      var idx = DESIGNS.indexOf(d);
+      return '<a class="rc" style="position:relative" href="premium_product_page.html?design=' + idx + '"><span class="rank">#' + (i + 1) + '</span>'
+        + '<img src="' + esc(img(d)) + '" alt="' + esc(d.title) + '" loading="lazy"><div class="t"><div class="n">' + esc(d.title) + '</div><div class="p">&#8377;' + esc(d.price) + '</div></div></a>';
+    }).join('');
+    app.innerHTML = '<p class="eyebrow">Your result</p><h1>You are <em>' + esc(persona) + '</em></h1>'
+      + '<p class="sub">Here are our top picks for ' + esc(occ) + '.</p><div class="res">' + cards + '</div>'
+      + '<div class="acts"><a class="btn red" id="mk" href="build-your-set.html">Build a set with these</a>'
+      + '<a class="btn line" id="sh" href="#" target="_blank" rel="noopener">Share on WhatsApp</a>'
+      + '<button class="btn line" id="again">Retake quiz</button></div>';
+    document.getElementById('mk').onclick = function () { try { localStorage.setItem('tnc_build_seed', JSON.stringify(ranked.map(key))); } catch (e) {} };
+    var url = new URL('nail-quiz.html', location.href).href;
+    var msg = 'I got "' + persona + '" on The Nails Club nail quiz! My top matches: ' + ranked.map(function (d) { return d.title; }).join(', ') + '. Take the quiz: ' + url;
+    document.getElementById('sh').href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+    document.getElementById('again').onclick = function () { step = -1; intro(); };
+  }
+  intro();
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZLP08PTF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TDZLP08PTF');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Your Set | The Nails Club</title>
+<meta name="description" content="Mix and match designs finger by finger and send your custom press-on nail set to The Nails Club on WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="designs-data.js"></script>
+<style>
+  :root{--ink:#322C2C;--red:#BC1423;--gold:#C6A35B;--cream:#FAF8F5;--line:#ECE7E2}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--cream);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .hd{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+  .hd nav{display:flex;gap:22px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;flex-wrap:wrap;justify-content:flex-end}
+  .hd nav a{text-decoration:none;color:rgba(50,44,44,.6)} .hd nav a:hover,.hd nav a.on{color:var(--ink)}
+  .eyebrow{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+  h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:400;margin:0}
+  .btn{display:inline-block;border:none;border-radius:99px;padding:14px 30px;font:600 11px 'DM Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:none;text-align:center}
+  .btn.red{background:var(--red);color:#fff} .btn.red:hover{background:#9e1020}
+  .btn.line{background:#fff;color:var(--ink);border:1.5px solid rgba(50,44,44,.2)} .btn.line:hover{border-color:var(--ink)}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .ft{background:var(--ink);color:rgba(255,255,255,.55);padding:36px 22px;margin-top:70px;font-size:12px;text-align:center;line-height:1.9}
+  .ft a{color:rgba(255,255,255,.75);text-decoration:none;margin:0 10px} .ft a:hover{color:var(--gold)}
+  
+  .wrap{max-width:1000px;margin:0 auto;padding:46px 18px 0}
+  .top{text-align:center;margin-bottom:28px}
+  .top h1{font-size:clamp(2.1rem,6.5vw,3.1rem);line-height:1.1} .top h1 em{color:var(--red)}
+  .top p{color:rgba(50,44,44,.6);font-size:14px;line-height:1.7;max-width:520px;margin:10px auto 0}
+  .tools{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+  .tool{background:#fff;border:1.5px solid var(--line);border-radius:99px;padding:9px 16px;font:500 12px 'DM Sans',sans-serif;cursor:pointer;color:var(--ink)}
+  .tool:hover{border-color:var(--ink)}
+  .hands{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .hand{background:#fff;border-radius:22px;padding:22px 14px 18px;box-shadow:0 8px 30px rgba(50,44,44,.06);text-align:center}
+  .hand h3{font-size:22px;margin-bottom:16px}
+  .row{display:flex;justify-content:center;align-items:flex-end;gap:7px}
+  .f{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;max-width:76px}
+  .nail{width:100%;border:2px dashed #cfc7c1;background:#faf7f4 center/cover no-repeat;cursor:pointer;border-radius:50% 50% 38% 38%/60% 60% 40% 40%;color:#b8aea7;font-size:22px;display:flex;align-items:center;justify-content:center;padding:0;transition:.15s}
+  .nail:hover{border-color:var(--red);transform:translateY(-3px)}
+  .nail.set{border:2px solid #fff;box-shadow:0 0 0 1.5px var(--line),0 4px 10px rgba(0,0,0,.12)}
+  .fl{font-size:10px;letter-spacing:.06em;color:rgba(50,44,44,.5)}
+  .sum{background:#fff;border-radius:22px;padding:22px;margin-top:18px;box-shadow:0 8px 30px rgba(50,44,44,.06)}
+  .sum h3{font-size:22px;margin-bottom:12px}
+  .li{display:flex;align-items:center;gap:12px;padding:7px 0;border-top:1px solid var(--line);font-size:13px}
+  .li:first-of-type{border-top:none}
+  .li img{width:38px;height:38px;border-radius:9px;object-fit:cover}
+  .li b{margin-left:auto;font-weight:600;color:rgba(50,44,44,.55)}
+  .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .note{font-size:11.5px;color:rgba(50,44,44,.5);line-height:1.7;margin-top:14px}
+  .note a{color:var(--red)}
+  .ov{display:none;position:fixed;inset:0;background:rgba(30,25,25,.6);z-index:100;align-items:flex-end;justify-content:center}
+  .sheet{background:#fff;width:100%;max-width:760px;max-height:86vh;border-radius:22px 22px 0 0;display:flex;flex-direction:column;overflow:hidden}
+  .sh-h{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .sh-h h3{font-size:22px} .sh-h button{background:none;border:none;font-size:26px;cursor:pointer;line-height:1}
+  .sh-b{overflow-y:auto;padding:14px 20px 24px}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px}
+  .chip{white-space:nowrap;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font:500 12px 'DM Sans',sans-serif;cursor:pointer}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .pg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+  .pc{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;cursor:pointer;padding:0;text-align:left;font-family:inherit}
+  .pc:hover{border-color:var(--red)}
+  .pc img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+  .pc div{padding:8px 10px;font:400 15px/1.2 'Cormorant Garamond',serif}
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:99px;font-size:12px;opacity:0;transition:.25s;z-index:200;pointer-events:none}
+  #toast.on{opacity:1;transform:translateX(-50%)}
+  @media(max-width:720px){.hands{grid-template-columns:1fr}.pg{grid-template-columns:repeat(2,1fr)}}
+
+</style>
+</head>
+<body>
+<header class="hd">
+  <a href="index.html" style="display:flex;align-items:center;"><img src="logo.png" alt="The Nails Club" style="height:36px;width:auto;object-fit:contain;"></a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html#collection">Collection</a>
+    <a href="nail-quiz.html">Nail Quiz</a>
+    <a href="build-your-set.html" class="on">Build Your Set</a>
+  </nav>
+</header>
+<main class="wrap">
+  <div class="top"><p class="eyebrow">Build your own set</p><h1>Mix &amp; match, <em>finger by finger</em></h1>
+  <p>Tap a nail to choose its design. Fill all 10 fingers, then send your creation to us on WhatsApp.</p></div>
+  <div class="tools">
+    <button class="tool" id="t-all">Same design on all</button>
+    <button class="tool" id="t-mirror">Mirror left &rarr; right</button>
+    <button class="tool" id="t-rand">Surprise me</button>
+    <button class="tool" id="t-clear">Clear</button>
+  </div>
+  <div class="hands">
+    <div class="hand"><h3>Left hand</h3><div class="row" id="rowL"></div></div>
+    <div class="hand"><h3>Right hand</h3><div class="row" id="rowR"></div></div>
+  </div>
+  <div class="sum"><h3 id="sum-t">Your set</h3><div id="sum-l"></div>
+    <div class="acts">
+      <button class="btn red" id="order">Order on WhatsApp</button>
+      <button class="btn line" id="copy">Copy share link</button>
+      <a class="btn line" id="wshare" href="#" target="_blank" rel="noopener">Share with a friend</a>
+    </div>
+    <p class="note">Mixed sets are made to order, so we confirm the price and delivery time with you on WhatsApp. Custom sets follow our <a href="return-policy.html">Return Policy</a>.</p>
+  </div>
+</main>
+<div class="ov" id="ov"><div class="sheet"><div class="sh-h"><h3 id="ov-t">Pick a design</h3><button id="ov-x" aria-label="Close">&times;</button></div>
+  <div class="sh-b"><div class="chips" id="chips"></div><div class="pg" id="pg"></div></div></div></div>
+<div id="toast"></div>
+<footer class="ft">
+  <div><a href="index.html">Home</a><a href="index.html#collection">Collection</a><a href="return-policy.html">Return Policy</a><a href="https://wa.me/919913091744" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener">Instagram</a></div>
+  <div style="margin-top:8px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3)">&copy; 2026 The Nails Club. All rights reserved.</div>
+</footer>
+<script>
+
+(async function () {
+  try { if (window.DESIGNS_READY) await window.DESIGNS_READY; } catch (e) {}
+  function $(i) { return document.getElementById(i); }
+  function esc(t) { var d = document.createElement('div'); d.textContent = String(t == null ? '' : t); return d.innerHTML; }
+  function key(d) { return d._dbId != null ? String(d._dbId) : 'i' + DESIGNS.indexOf(d); }
+  function find(k) { for (var i = 0; i < DESIGNS.length; i++) if (key(DESIGNS[i]) === k) return DESIGNS[i]; return null; }
+  function img(d) { return encodeImgPath((d.photos && d.photos[0]) || ''); }
+  function toast(m) { var t = $('toast'); t.textContent = m; t.className = 'on'; clearTimeout(t._h); t._h = setTimeout(function () { t.className = ''; }, 2200); }
+
+  var NAMES = ['Left Pinky', 'Left Ring', 'Left Middle', 'Left Index', 'Left Thumb', 'Right Thumb', 'Right Index', 'Right Middle', 'Right Ring', 'Right Pinky'];
+  var SHORT = ['Pinky', 'Ring', 'Middle', 'Index', 'Thumb', 'Thumb', 'Index', 'Middle', 'Ring', 'Pinky'];
+  var HEIGHTS = [58, 72, 82, 72, 66, 66, 72, 82, 72, 58];
+  var slots = new Array(10).fill(null);   // design keys
+  var target = null;                      // finger index, or 'all'
+
+  if (!DESIGNS.length) { document.querySelector('.hands').innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:40px">We could not load the designs right now. Please refresh in a moment.</p>'; return; }
+
+  function save() { try { localStorage.setItem('tnc_build', JSON.stringify(slots)); } catch (e) {} }
+  function load() {
+    var q = new URLSearchParams(location.search), p = q.get('p'), f = q.get('f');
+    if (p && f) {
+      var pal = p.split('.'), fi = f.split('.');
+      fi.slice(0, 10).forEach(function (n, i) { var k = pal[+n]; if (k && find(k)) slots[i] = k; });
+      return;
+    }
+    try { var s = JSON.parse(localStorage.getItem('tnc_build') || 'null'); if (Array.isArray(s) && s.length === 10) { s.forEach(function (k, i) { slots[i] = (k && find(k)) ? k : null; }); if (slots.some(Boolean)) return; } } catch (e) {}
+    try {
+      var seed = JSON.parse(localStorage.getItem('tnc_build_seed') || '[]').filter(function (k) { return find(k); });
+      if (seed.length) { for (var i = 0; i < 10; i++) slots[i] = seed[i % seed.length]; localStorage.removeItem('tnc_build_seed'); }
+    } catch (e) {}
+  }
+
+  function draw() {
+    ['rowL', 'rowR'].forEach(function (id, h) {
+      $(id).innerHTML = '';
+      for (var j = 0; j < 5; j++) {
+        var i = h * 5 + j, d = slots[i] ? find(slots[i]) : null;
+        var f = document.createElement('div'); f.className = 'f';
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'nail' + (d ? ' set' : '');
+        b.style.height = HEIGHTS[i] + 'px'; b.setAttribute('aria-label', NAMES[i] + (d ? ': ' + d.title : ': choose a design'));
+        if (d) b.style.backgroundImage = 'url("' + img(d).replace(/"/g, '%22') + '")'; else b.textContent = '+';
+        b.onclick = (function (n) { return function () { openPicker(n); }; })(i);
+        var l = document.createElement('span'); l.className = 'fl'; l.textContent = SHORT[i];
+        f.appendChild(b); f.appendChild(l); $(id).appendChild(f);
+      }
+    });
+    var n = slots.filter(Boolean).length, counts = {}, order = [];
+    slots.forEach(function (k) { if (!k) return; if (!counts[k]) { counts[k] = 0; order.push(k); } counts[k]++; });
+    $('sum-t').textContent = 'Your set (' + n + ' of 10 fingers)';
+    $('sum-l').innerHTML = order.length ? order.map(function (k) { var d = find(k); return '<div class="li"><img src="' + esc(img(d)) + '" alt=""><span>' + esc(d.title) + '</span><b>&times; ' + counts[k] + '</b></div>'; }).join('')
+      : '<p style="color:rgba(50,44,44,.5);font-size:13px;margin:0">Nothing yet. Tap a nail above to start.</p>';
+    $('order').disabled = n < 10; $('order').textContent = n < 10 ? 'Fill all 10 fingers to order' : 'Order on WhatsApp';
+    $('copy').disabled = !n; $('wshare').style.opacity = n ? 1 : .45; $('wshare').style.pointerEvents = n ? 'auto' : 'none';
+    $('wshare').href = 'https://wa.me/?text=' + encodeURIComponent('Look at the nail set I designed at The Nails Club! ' + shareLink());
+    save();
+  }
+
+  function shareLink() {
+    var pal = [], f = slots.map(function (k) { if (!k) return 'x'; var i = pal.indexOf(k); if (i < 0) { pal.push(k); i = pal.length - 1; } return i; });
+    var u = new URL('build-your-set.html', location.href); u.search = ''; u.hash = '';
+    return u.href + '?p=' + pal.join('.') + '&f=' + f.join('.');
+  }
+
+  // ----- picker -----
+  var cat = 'all';
+  function openPicker(t) {
+    target = t; cat = 'all';
+    $('ov-t').textContent = t === 'all' ? 'Pick one design for all fingers' : 'Pick a design for ' + NAMES[t];
+    var cats = {}; DESIGNS.forEach(function (d) { cats[d.cat] = (typeof catLabels !== 'undefined' && catLabels[d.cat]) || d.cat; });
+    $('chips').innerHTML = '<button class="chip on" data-c="all">All</button>' + Object.keys(cats).map(function (c) { return '<button class="chip" data-c="' + esc(c) + '">' + esc(cats[c]) + '</button>'; }).join('');
+    Array.prototype.forEach.call($('chips').children, function (b) { b.onclick = function () { cat = b.getAttribute('data-c'); Array.prototype.forEach.call($('chips').children, function (x) { x.classList.toggle('on', x === b); }); drawPicker(); }; });
+    drawPicker(); $('ov').style.display = 'flex'; document.body.style.overflow = 'hidden';
+  }
+  function closePicker() { $('ov').style.display = 'none'; document.body.style.overflow = ''; }
+  function drawPicker() {
+    $('pg').innerHTML = DESIGNS.filter(function (d) { return cat === 'all' || d.cat === cat; }).map(function (d) {
+      return '<button class="pc" data-k="' + esc(key(d)) + '"><img src="' + esc(img(d)) + '" alt="" loading="lazy"><div>' + esc(d.title) + '</div></button>';
+    }).join('');
+    Array.prototype.forEach.call($('pg').children, function (b) {
+      b.onclick = function () {
+        var k = b.getAttribute('data-k');
+        if (target === 'all') slots = slots.map(function () { return k; }); else slots[target] = k;
+        closePicker(); draw();
+      };
+    });
+  }
+  $('ov-x').onclick = closePicker;
+  $('ov').addEventListener('mousedown', function (e) { if (e.target === this) closePicker(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePicker(); });
+
+  // ----- tools -----
+  $('t-all').onclick = function () { openPicker('all'); };
+  $('t-mirror').onclick = function () {
+    if (!slots.slice(0, 5).some(Boolean)) { toast('Pick some designs on the left hand first'); return; }
+    for (var j = 0; j < 5; j++) slots[5 + j] = slots[4 - j]; draw(); toast('Right hand mirrored');
+  };
+  $('t-rand').onclick = function () {
+    var pool = DESIGNS.slice().sort(function () { return Math.random() - .5; }).slice(0, 3).map(key);
+    slots = slots.map(function () { return pool[Math.floor(Math.random() * pool.length)]; }); draw();
+  };
+  $('t-clear').onclick = function () { slots = new Array(10).fill(null); draw(); };
+
+  // ----- order / share -----
+  $('order').onclick = function () {
+    if (slots.some(function (k) { return !k; })) return;
+    var lines = ['Hi The Nails Club! \uD83D\uDC85 I would like a custom mix-and-match set:', '', 'LEFT HAND'];
+    for (var i = 0; i < 10; i++) { if (i === 5) lines.push('', 'RIGHT HAND'); lines.push('- ' + SHORT[i] + ': ' + find(slots[i]).title); }
+    lines.push('', 'My finger sizes: (I will send them)', 'My design: ' + shareLink(), '', 'Please confirm the price and delivery time. Thank you!');
+    window.open('https://wa.me/919913091744?text=' + encodeURIComponent(lines.join('\n')), '_blank');
+  };
+  $('copy').onclick = function () {
+    var link = shareLink();
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(function () { toast('Link copied!'); }, function () { prompt('Copy this link:', link); });
+    else prompt('Copy this link:', link);
+  };
+
+  load(); draw();
+})();
+
+</script>
+</body>
+</html>
