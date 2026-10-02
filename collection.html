@@ -159,6 +159,7 @@ body{background:#fff;color:#322C2C;font-family:'DM Sans',sans-serif;overflow-x:h
           All Categories
         </button>
       </div>
+      <div id="cat-chips" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;"></div>
       <div id="cat-design-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
       <div id="cat-load-more-wrap" class="hidden justify-center mt-8">
         <button onclick="catLoadMore()" class="px-10 py-3.5 border border-dark/20 rounded-full font-sans text-[10px] uppercase tracking-[0.16em] text-dark hover:bg-dark hover:text-white transition-all">Load More</button>
@@ -269,14 +270,32 @@ function renderCategoryCards() {
 let catVisibleCount = 4;
 let currentCat = '';
 
-function openCategory(cat) {
+function openCategory(cat, keepScroll) {
   currentCat = cat;
-  catVisibleCount = 4;
+  // "all" shows every design at once; a single category shows 4 at a time
+  catVisibleCount = cat === 'all' ? Infinity : 4;
   document.getElementById('cat-cards-grid').style.display = 'none';
   document.getElementById('cat-filter-panel').style.display = 'block';
-  document.getElementById('cat-filter-label').textContent = catLabels[cat] || cat;
+  document.getElementById('cat-filter-label').textContent = cat === 'all' ? 'All Designs' : (catLabels[cat] || cat);
+  renderCatChips();
   renderCatDesigns();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (!keepScroll) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderCatChips() {
+  const box = document.getElementById('cat-chips');
+  if (!box) return;
+  box.innerHTML = '';
+  const keys = Object.keys(catLabels).filter(k => DESIGNS.some(d => d.cat === k));
+  ['all'].concat(keys).forEach(k => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = k === 'all' ? 'All' : catLabels[k];
+    const on = currentCat === k;
+    b.style.cssText = "padding:8px 18px;border-radius:99px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border:1.5px solid " + (on ? '#322C2C' : 'rgba(50,44,44,0.2)') + ";background:" + (on ? '#322C2C' : 'transparent') + ";color:" + (on ? '#fff' : '#322C2C') + ";";
+    b.onclick = () => openCategory(k, true);
+    box.appendChild(b);
+  });
 }
 
 function closeCatFilter() {
@@ -289,7 +308,7 @@ function catLoadMore() { catVisibleCount += 4; renderCatDesigns(); }
 
 function renderCatDesigns() {
   const grid = document.getElementById('cat-design-grid');
-  const filtered = DESIGNS.filter(d => d.cat === currentCat);
+  const filtered = currentCat === 'all' ? DESIGNS.slice() : DESIGNS.filter(d => d.cat === currentCat);
   document.getElementById('cat-filter-count').textContent = filtered.length + ' designs';
   grid.innerHTML = '';
   filtered.slice(0, catVisibleCount).forEach((d, i) => {
