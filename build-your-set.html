@@ -72,6 +72,9 @@
   .pc:hover{border-color:var(--red)}
   .pc img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
   .pc div{padding:8px 10px;font:400 15px/1.2 'Cormorant Garamond',serif}
+  .upl{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1.5px dashed var(--red);border-radius:14px;cursor:pointer;margin-bottom:14px;background:#fff8f8;font-size:13px;line-height:1.45}
+  .upl small{color:rgba(50,44,44,.55);font-size:11.5px}
+  .up-h{font:600 11px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(50,44,44,.5);margin:14px 0 8px}
   #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:99px;font-size:12px;opacity:0;transition:.25s;z-index:200;pointer-events:none}
   #toast.on{opacity:1;transform:translateX(-50%)}
   @media(max-width:720px){.hands{grid-template-columns:1fr}.pg{grid-template-columns:repeat(2,1fr)}}
@@ -90,7 +93,7 @@
 </header>
 <main class="wrap">
   <div class="top"><p class="eyebrow">Build your own set</p><h1>Mix &amp; match, <em>finger by finger</em></h1>
-  <p>Tap a nail to choose its design. Fill all 10 fingers, then send your creation to us on WhatsApp.</p></div>
+  <p>Tap a nail to choose its design: pick from our collection or upload your own photo from your phone. Fill all 10 fingers, then send your creation to us on WhatsApp.</p></div>
   <div class="tools">
     <button class="tool" id="t-all">Same design on all</button>
     <button class="tool" id="t-mirror">Mirror left &rarr; right</button>
@@ -107,11 +110,11 @@
       <button class="btn line" id="copy">Copy share link</button>
       <a class="btn line" id="wshare" href="#" target="_blank" rel="noopener">Share with a friend</a>
     </div>
-    <p class="note">Mixed sets are made to order, so we confirm the price and delivery time with you on WhatsApp. Custom sets follow our <a href="return-policy.html">Return Policy</a>.</p>
+    <p class="note">Mixed sets are made to order, so we confirm the price and delivery time with you on WhatsApp. Custom sets follow our <a href="return-policy.html">Return Policy</a>. Photos you upload are only sent to us when you tap Order.</p>
   </div>
 </main>
 <div class="ov" id="ov"><div class="sheet"><div class="sh-h"><h3 id="ov-t">Pick a design</h3><button id="ov-x" aria-label="Close">&times;</button></div>
-  <div class="sh-b"><div class="chips" id="chips"></div><div class="pg" id="pg"></div></div></div></div>
+  <div class="sh-b"><div id="up-box"></div><div class="chips" id="chips"></div><div class="pg" id="pg"></div></div></div></div>
 <div id="toast"></div>
 <footer class="ft">
   <div><a href="index.html">Home</a><a href="index.html#collection">Collection</a><a href="return-policy.html">Return Policy</a><a href="https://wa.me/919913091744" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener">Instagram</a></div>
@@ -124,8 +127,13 @@
   function $(i) { return document.getElementById(i); }
   function esc(t) { var d = document.createElement('div'); d.textContent = String(t == null ? '' : t); return d.innerHTML; }
   function key(d) { return d._dbId != null ? String(d._dbId) : 'i' + DESIGNS.indexOf(d); }
-  function find(k) { for (var i = 0; i < DESIGNS.length; i++) if (key(DESIGNS[i]) === k) return DESIGNS[i]; return null; }
-  function img(d) { return encodeImgPath((d.photos && d.photos[0]) || ''); }
+  var uploads = [], MAX_UP = 5;           // photos from the customer's phone: { blob, url }
+  function isCustom(k) { return typeof k === 'string' && k.indexOf('u:') === 0; }
+  function find(k) {
+    if (isCustom(k)) { var n = +k.slice(2), u = uploads[n]; return u ? { title: 'Your photo ' + (n + 1), photos: [u.url], custom: true, cat: 'custom' } : null; }
+    for (var i = 0; i < DESIGNS.length; i++) if (key(DESIGNS[i]) === k) return DESIGNS[i]; return null;
+  }
+  function img(d) { var p = (d.photos && d.photos[0]) || ''; return /^(blob:|data:)/.test(p) ? p : encodeImgPath(p); }
   function toast(m) { var t = $('toast'); t.textContent = m; t.className = 'on'; clearTimeout(t._h); t._h = setTimeout(function () { t.className = ''; }, 2200); }
 
   var NAMES = ['Left Pinky', 'Left Ring', 'Left Middle', 'Left Index', 'Left Thumb', 'Right Thumb', 'Right Index', 'Right Middle', 'Right Ring', 'Right Pinky'];
@@ -136,7 +144,7 @@
 
   if (!DESIGNS.length) { document.querySelector('.hands').innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:40px">We could not load the designs right now. Please refresh in a moment.</p>'; return; }
 
-  function save() { try { localStorage.setItem('tnc_build', JSON.stringify(slots)); } catch (e) {} }
+  function save() { try { localStorage.setItem('tnc_build', JSON.stringify(slots.map(function (k) { return isCustom(k) ? null : k; }))); } catch (e) {} }
   function load() {
     var q = new URLSearchParams(location.search), p = q.get('p'), f = q.get('f');
     if (p && f) {
@@ -177,7 +185,7 @@
   }
 
   function shareLink() {
-    var pal = [], f = slots.map(function (k) { if (!k) return 'x'; var i = pal.indexOf(k); if (i < 0) { pal.push(k); i = pal.length - 1; } return i; });
+    var pal = [], f = slots.map(function (k) { if (!k || isCustom(k)) return 'x'; var i = pal.indexOf(k); if (i < 0) { pal.push(k); i = pal.length - 1; } return i; });
     var u = new URL('build-your-set.html', location.href); u.search = ''; u.hash = '';
     return u.href + '?p=' + pal.join('.') + '&f=' + f.join('.');
   }
@@ -190,7 +198,49 @@
     var cats = {}; DESIGNS.forEach(function (d) { cats[d.cat] = (typeof catLabels !== 'undefined' && catLabels[d.cat]) || d.cat; });
     $('chips').innerHTML = '<button class="chip on" data-c="all">All</button>' + Object.keys(cats).map(function (c) { return '<button class="chip" data-c="' + esc(c) + '">' + esc(cats[c]) + '</button>'; }).join('');
     Array.prototype.forEach.call($('chips').children, function (b) { b.onclick = function () { cat = b.getAttribute('data-c'); Array.prototype.forEach.call($('chips').children, function (x) { x.classList.toggle('on', x === b); }); drawPicker(); }; });
-    drawPicker(); $('ov').style.display = 'flex'; document.body.style.overflow = 'hidden';
+    drawUploadBox(); drawPicker(); $('ov').style.display = 'flex'; document.body.style.overflow = 'hidden';
+  }
+  function assign(k) {
+    if (target === 'all') slots = slots.map(function () { return k; }); else slots[target] = k;
+    closePicker(); draw();
+  }
+  function prep(file) {   // shrink a phone photo to something light, keep it in memory only
+    return new Promise(function (resolve) {
+      var im = new Image(), src = URL.createObjectURL(file);
+      im.onload = function () {
+        var sc = Math.min(1, 1200 / Math.max(im.width, im.height)), c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(im.width * sc)); c.height = Math.max(1, Math.round(im.height * sc));
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        c.toBlob(function (b) { URL.revokeObjectURL(src); resolve(b ? { blob: b, url: URL.createObjectURL(b) } : null); }, 'image/jpeg', 0.85);
+      };
+      im.onerror = function () { URL.revokeObjectURL(src); resolve(null); };
+      im.src = src;
+    });
+  }
+  function drawUploadBox() {
+    var h = '<label class="upl"><span style="font-size:24px">\uD83D\uDCF7</span><span><b>Upload your own photo</b><br><small>Choose from your phone gallery or take a new photo</small></span>'
+      + '<input id="up-file" type="file" accept="image/*" multiple style="display:none"></label>';
+    if (uploads.length) {
+      h += '<div class="up-h">Your photos</div><div class="pg">' + uploads.map(function (u, i) {
+        return '<button class="pc" data-k="u:' + i + '"><img src="' + esc(u.url) + '" alt=""><div>Your photo ' + (i + 1) + '</div></button>';
+      }).join('') + '</div><div class="up-h">Our designs</div>';
+    }
+    $('up-box').innerHTML = h;
+    Array.prototype.forEach.call($('up-box').querySelectorAll('.pc'), function (b) { b.onclick = function () { assign(b.getAttribute('data-k')); }; });
+    var input = $('up-file');
+    input.onchange = async function () {
+      var list = Array.prototype.slice.call(input.files); input.value = '';
+      var added = [], bad = 0;
+      for (var i = 0; i < list.length; i++) {
+        if (uploads.length >= MAX_UP) { toast('You can add up to ' + MAX_UP + ' photos'); break; }
+        var r = await prep(list[i]);
+        if (r) { uploads.push(r); added.push('u:' + (uploads.length - 1)); } else bad++;
+      }
+      if (bad) toast('That file could not be read as a photo');
+      if (!added.length) { drawUploadBox(); return; }
+      if (added.length > 1) toast(added.length + ' photos added. Tap other nails to use them.');
+      assign(added[0]);
+    };
   }
   function closePicker() { $('ov').style.display = 'none'; document.body.style.overflow = ''; }
   function drawPicker() {
@@ -199,9 +249,7 @@
     }).join('');
     Array.prototype.forEach.call($('pg').children, function (b) {
       b.onclick = function () {
-        var k = b.getAttribute('data-k');
-        if (target === 'all') slots = slots.map(function () { return k; }); else slots[target] = k;
-        closePicker(); draw();
+        assign(b.getAttribute('data-k'));
       };
     });
   }
@@ -222,15 +270,38 @@
   $('t-clear').onclick = function () { slots = new Array(10).fill(null); draw(); };
 
   // ----- order / share -----
-  $('order').onclick = function () {
+  $('order').onclick = async function () {
     if (slots.some(function (k) { return !k; })) return;
+    var btn = $('order'), label = btn.textContent, custom = [];
+    slots.forEach(function (k) { if (isCustom(k) && custom.indexOf(k) < 0) custom.push(k); });
+    var w = null, urls = {};
+    if (custom.length) {
+      try { w = window.open('about:blank', '_blank'); } catch (e) {}   // opened now so the browser allows it, filled in after the upload
+      btn.disabled = true; btn.textContent = 'Uploading your photos...';
+      for (var c = 0; c < custom.length; c++) {
+        try {
+          var path = 'build-sets/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.jpg';
+          var res = await sb.storage.from('product-images').upload(path, uploads[+custom[c].slice(2)].blob, { contentType: 'image/jpeg' });
+          if (!res.error) urls[custom[c]] = sb.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+          else console.warn('[TNC] photo upload failed:', res.error.message);
+        } catch (e) { console.warn('[TNC] photo upload failed:', e); }
+      }
+      btn.disabled = false; btn.textContent = label;
+    }
+    var name = function (k) { return isCustom(k) ? 'My photo ' + (+k.slice(2) + 1) : find(k).title; };
     var lines = ['Hi The Nails Club! \uD83D\uDC85 I would like a custom mix-and-match set:', '', 'LEFT HAND'];
-    for (var i = 0; i < 10; i++) { if (i === 5) lines.push('', 'RIGHT HAND'); lines.push('- ' + SHORT[i] + ': ' + find(slots[i]).title); }
-    lines.push('', 'My finger sizes: (I will send them)', 'My design: ' + shareLink(), '', 'Please confirm the price and delivery time. Thank you!');
-    window.open('https://wa.me/919913091744?text=' + encodeURIComponent(lines.join('\n')), '_blank');
+    for (var i = 0; i < 10; i++) { if (i === 5) lines.push('', 'RIGHT HAND'); lines.push('- ' + SHORT[i] + ': ' + name(slots[i])); }
+    if (custom.length) {
+      lines.push('', 'MY OWN PHOTOS:');
+      custom.forEach(function (k) { lines.push(name(k) + ': ' + (urls[k] || '(upload failed, I will send it in this chat)')); });
+    } else lines.push('', 'My design: ' + shareLink());
+    lines.push('', 'My finger sizes: (I will send them)', '', 'Please confirm the price and delivery time. Thank you!');
+    var url = 'https://wa.me/919913091744?text=' + encodeURIComponent(lines.join('\n'));
+    if (w) w.location.href = url; else if (!window.open(url, '_blank')) location.href = url;
   };
   $('copy').onclick = function () {
     var link = shareLink();
+    if (slots.some(isCustom)) toast('Your own photos can not be included in a share link');
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(function () { toast('Link copied!'); }, function () { prompt('Copy this link:', link); });
     else prompt('Copy this link:', link);
   };
