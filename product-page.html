@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZLP08PTF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TDZLP08PTF');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Nails Club | Product</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="designs-data.js"></script>
+<style>
+:root{--ink:#111;--muted:#6b6b6b;--line:#ECECEC;--accent:#BC1423;--soft:#f5f5f5}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+a{color:inherit}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:20}
+header img{height:36px;width:auto;object-fit:contain;display:block}
+.navlinks{display:none;gap:28px;font-size:14px;font-weight:500}
+.navlinks a,.hdr-right a{text-decoration:none}
+.navlinks a:hover,.hdr-right a:hover{color:var(--muted)}
+.hdr-right{display:flex;gap:18px;font-size:14px;font-weight:500;align-items:center}
+.wl{position:relative;display:flex;align-items:center}
+#header-wl-count{position:absolute;top:-6px;right:-8px;background:var(--accent);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center}
+@media(min-width:900px){.navlinks{display:flex}}
+
+.wrap{max-width:1280px;margin:0 auto;padding:24px 20px 140px}
+.crumb{font-size:12px;color:var(--muted);margin-bottom:20px}
+.crumb a{text-decoration:none}
+.crumb a:hover{color:var(--ink)}
+.missing{padding:80px 0;text-align:center}
+.missing a{text-decoration:underline}
+
+.pdp{display:grid;grid-template-columns:1fr;gap:32px}
+@media(min-width:900px){
+  .pdp{grid-template-columns:1.15fr 1fr;gap:72px;align-items:start}
+  .buy{position:sticky;top:90px}
+}
+
+.gallery-main{position:relative;aspect-ratio:4/5;background:var(--soft);overflow:hidden;cursor:zoom-in}
+.gallery-main img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s ease}
+.ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#9a9a9a;font-size:13px}
+.thumbs{display:flex;gap:10px;margin-top:10px;overflow-x:auto}
+.thumbs button{flex:0 0 72px;width:72px;height:90px;padding:0;border:2px solid transparent;background:var(--soft);overflow:hidden}
+.thumbs button.on{border-color:var(--ink)}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+
+.cat{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-size:28px;font-weight:600;margin:8px 0 10px;line-height:1.2}
+.rating{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;margin-bottom:0}
+.stars{color:var(--ink);letter-spacing:2px}
+.price{display:flex;align-items:baseline;flex-wrap:wrap;gap:12px;margin:18px 0 4px}
+.now{font-size:24px;font-weight:600}
+.was{font-size:16px;color:var(--muted);text-decoration:line-through}
+.off{font-size:13px;font-weight:600;color:var(--accent)}
+.tax{font-size:12px;color:var(--muted);margin-bottom:24px}
+.label{font-size:13px;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between}
+.label span:last-child{font-weight:400;color:var(--muted)}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.opt{border:1px solid #d6d6d6;background:#fff;padding:10px 16px;font-size:14px;min-width:84px}
+.opt.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.row{display:flex;gap:10px;margin-bottom:12px}
+.qty{display:flex;align-items:center;border:1px solid #d6d6d6;height:52px;flex:0 0 130px}
+.qty button{width:44px;height:100%;background:none;border:none;font-size:18px}
+.qty span{flex:1;text-align:center;font-weight:500}
+.btn{height:52px;flex:1;border:1px solid var(--ink);font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:var(--ink);color:#fff;padding:0 12px}
+.btn:hover{opacity:.9}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn.ghost.on{background:var(--ink);color:#fff}
+.btn.disabled{opacity:.4;pointer-events:none}
+.stock{font-size:13px;color:#2e7d32;margin:6px 0 4px;font-weight:500}
+.stock.out{color:var(--accent)}
+.perks{border-top:1px solid var(--line);margin-top:24px;padding-top:18px;display:grid;gap:12px;font-size:14px}
+
+.acc{border-top:1px solid var(--line)}
+.acc:last-child{border-bottom:1px solid var(--line)}
+.acc summary{list-style:none;padding:18px 0;display:flex;justify-content:space-between;font-weight:600;cursor:pointer;font-size:15px}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:'+';font-weight:400;font-size:20px;line-height:1}
+.acc[open] summary::after{content:'\2212'}
+.acc .body{padding:0 0 18px;color:#444;font-size:14px;line-height:1.7}
+.acc ul{margin:0;padding-left:18px}
+
+.reviews{margin-top:56px;border-top:1px solid var(--line);padding-top:32px}
+.reviews-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.reviews h2{font-size:20px;margin:0}
+.reviews-head a{font-size:14px;font-weight:600;color:var(--ink)}
+.rv-sum{font-size:14px;color:var(--muted);margin-bottom:12px}
+.rv{border-bottom:1px solid var(--line);padding:18px 0}
+.rv b{font-size:14px}
+.rv small{color:var(--muted);margin-left:8px;font-size:12px}
+.rv p{margin:8px 0 0;color:#444;font-size:14px;line-height:1.6}
+.rv-photos{display:flex;gap:8px;margin-top:10px}
+.rv-photos img{width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
+
+.mbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:12px 16px;display:flex;gap:12px;align-items:center;z-index:30}
+.mbar .now{font-size:18px;white-space:nowrap}
+.mbar .btn{height:46px;flex:1}
+@media(min-width:900px){.mbar{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" aria-label="The Nails Club home"><img src="logo.png" alt="The Nails Club"></a>
+  <nav class="navlinks">
+    <a href="index.html#collection">Collection</a>
+    <a href="index.html#reels">Reels</a>
+    <a href="index.html#about">About</a>
+    <a href="https://www.instagram.com/theenaiilsclub" target="_blank" rel="noopener">Instagram</a>
+  </nav>
+  <div class="hdr-right">
+    <a href="https://wa.me/919913091744" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="wishlist.html" title="My Wishlist" class="wl">
+      <svg id="header-wl-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span id="header-wl-count"></span>
+    </a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="crumb"><a href="index.html">Home</a> / <a href="collection.html">Collection</a> / <span id="crumb-title"></span></div>
+
+  <div class="pdp" id="content" hidden>
+    <section>
+      <div class="gallery-main" id="zoom"></div>
+      <div class="thumbs" id="thumbs"></div>
+    </section>
+
+    <section class="buy">
+      <div class="cat" id="p-cat"></div>
+      <h1 id="p-title"></h1>
+      <div class="rating" id="p-rating-row" hidden><span class="stars" id="p-stars"></span><span id="p-rating"></span></div>
+
+      <div class="price">
+        <span class="now" id="p-now"></span>
+        <span class="was" id="p-was"></span>
+        <span class="off" id="p-off"></span>
+      </div>
+      <div class="tax">Inclusive of all taxes</div>
+
+      <div id="size-block">
+        <div class="label"><span>Size</span><span id="size-name"></span></div>
+        <div class="opts" id="opts"></div>
+      </div>
+
+      <div class="label"><span>Quantity</span></div>
+      <div class="row">
+        <div class="qty">
+          <button id="dec" type="button" aria-label="Decrease quantity">&minus;</button>
+          <span id="qty">1</span>
+          <button id="inc" type="button" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <a class="btn" id="order" target="_blank" rel="noopener">Order on WhatsApp</a>
+        <button class="btn ghost" id="wish" type="button">&#9825; Save</button>
+      </div>
+      <div class="stock" id="p-stock"></div>
+
+      <div class="perks" id="perks"></div>
+      <div id="accs"></div>
+    </section>
+  </div>
+
+  <div class="missing" id="missing" hidden>
+    <h1>Product not found</h1>
+    <p><a href="collection.html">Browse the collection</a></p>
+  </div>
+
+  <section class="reviews" id="reviews" hidden>
+    <div class="reviews-head">
+      <h2>Customer reviews</h2>
+      <a id="write-review" href="#">Write a review</a>
+    </div>
+    <div class="rv-sum" id="rv-sum"></div>
+    <div id="revs"></div>
+  </section>
+</main>
+
+<div class="mbar" id="mbar" hidden>
+  <div class="now" id="m-now"></div>
+  <a class="btn" id="m-order" target="_blank" rel="noopener">Order on WhatsApp</a>
+</div>
+
+<script>
+/* =====================================================
+   SITE-WIDE SETTINGS — edit once, applies to every product
+   ===================================================== */
+const SITE = {
+  whatsapp: '919913091744',
+  perks: [                                   // EDIT: use your real policies
+    'Free shipping on orders above ₹499',
+    '7-day easy exchange',
+    'Reusable up to 2 weeks with proper care'
+  ],
+  shippingText: 'EDIT: add your shipping timelines and return or exchange policy.',
+  careText: [
+    'Avoid hot water and harsh chemicals.',
+    'Remove gently with an oil-based remover.'
+  ]
+};
+
+const WISH_KEY = 'tnc_wishlist';   // same key used by wishlist.html and the other pages
+const RECENT_KEY = 'tnc_recent';   // same key used by the other pages
+
+/* ===================== DATA ===================== */
+// Products come from the same DESIGNS array (designs-data.js) that the
+// collection, home page and premium product page use. The page is opened
+// with ?design=<index>, exactly like premium_product_page.html.
+function toModel(d, idx) {
+  const price = Number(d.price) || 999;
+  const original = Number(d.original) || 0;
+  return {
+    idx,
+    dbId: d._dbId != null ? String(d._dbId) : null,
+    catKey: d.cat || '',
+    title: d.title || 'Product',
+    desc: d.desc || '',
+    category: (typeof catLabels !== 'undefined' && catLabels[d.cat]) || d.cat || '',
+    photos: Array.isArray(d.photos) ? d.photos.filter(Boolean) : [],
+    price,
+    original: original > price ? original : 0,
+    sizes: d.size ? String(d.size).split('·').map(s => s.trim()).filter(Boolean) : [],
+    stock: typeof d.stock === 'number' ? d.stock : null
+  };
+}
+
+let P = null;            // current product model
+let reviews = [];        // approved reviews from Supabase
+let selSize = null;
+let qty = 1;
+
+const $ = id => document.getElementById(id);
+const fmt = n => '₹' + Number(n).toLocaleString('en-IN');
+
+/* ===================== RENDER ===================== */
+function renderGallery() {
+  const main = $('zoom');
+  const thumbs = $('thumbs');
+  main.innerHTML = '';
+  thumbs.innerHTML = '';
+
+  if (!P.photos.length) {
+    const ph = document.createElement('div');
+    ph.className = 'ph';
+    ph.textContent = 'No photos yet';
+    main.appendChild(ph);
+    return;
+  }
+
+  const img = document.createElement('img');
+  img.alt = P.title;
+  img.src = P.photos[0];
+  main.appendChild(img);
+
+  P.photos.forEach((src, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = i === 0 ? 'on' : '';
+    b.setAttribute('aria-label', 'Photo ' + (i + 1));
+    const t = document.createElement('img');
+    t.src = src;
+    t.alt = '';
+    b.appendChild(t);
+    b.onclick = () => {
+      img.src = src;
+      thumbs.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+    };
+    thumbs.appendChild(b);
+  });
+
+  main.onmouseenter = () => { img.style.transform = 'scale(2)'; };
+  main.onmouseleave = () => { img.style.transform = ''; img.style.transformOrigin = 'center'; };
+  main.onmousemove = e => {
+    const r = main.getBoundingClientRect();
+    img.style.transformOrigin = `${((e.clientX - r.left) / r.width) * 100}% ${((e.clientY - r.top) / r.height) * 100}%`;
+  };
+}
+
+function renderInfo() {
+  const off = P.original ? Math.round((1 - P.price / P.original) * 100) : 0;
+  $('crumb-title').textContent = P.title;
+  $('p-cat').textContent = P.category;
+  $('p-title').textContent = P.title;
+  $('p-now').textContent = fmt(P.price);
+  $('p-was').textContent = P.original ? fmt(P.original) : '';
+  $('p-off').textContent = off > 0 ? `${off}% off` : '';
+  document.title = `${P.title} | The Nails Club`;
+
+  // Size selector (only when the product has sizes)
+  $('size-block').hidden = !P.sizes.length;
+  if (P.sizes.length) {
+    if (!selSize) selSize = P.sizes[0];
+    $('size-name').textContent = selSize;
+    const opts = $('opts');
+    opts.innerHTML = '';
+    P.sizes.forEach(s => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'opt' + (s === selSize ? ' on' : '');
+      b.textContent = s;
+      b.onclick = () => { selSize = s; renderInfo(); };
+      opts.appendChild(b);
+    });
+  }
+
+  // Stock
+  const outOfStock = P.stock === 0;
+  const stockEl = $('p-stock');
+  stockEl.textContent = outOfStock ? 'Out of stock' : (P.stock != null ? `In stock` : '');
+  stockEl.classList.toggle('out', outOfStock);
+
+  // Perks, accordions
+  $('perks').innerHTML = '';
+  SITE.perks.forEach(p => {
+    const d = document.createElement('div');
+    d.textContent = '✓  ' + p;
+    $('perks').appendChild(d);
+  });
+
+  if (!$('accs').childElementCount) buildAccordions();
+
+  // Quantity + order links
+  $('qty').textContent = qty;
+  const link = orderLink();
+  ['order', 'm-order'].forEach(id => {
+    const a = $(id);
+    a.href = outOfStock ? '#' : link;
+    a.classList.toggle('disabled', outOfStock);
+    a.textContent = outOfStock ? 'Out of stock' : 'Order on WhatsApp';
+  });
+  $('m-now').textContent = fmt(P.price * qty);
+  paintWish();
+}
+
+function buildAccordions() {
+  const items = [];
+  if (P.desc) items.push({ title: 'Description', open: true, body: [P.desc] });
+  items.push({ title: 'Shipping & returns', body: [SITE.shippingText] });
+  items.push({ title: 'Care', body: SITE.careText });
+
+  const accs = $('accs');
+  items.forEach(a => {
+    const d = document.createElement('details');
+    d.className = 'acc';
+    if (a.open) d.open = true;
+    const s = document.createElement('summary');
+    s.textContent = a.title;
+    const body = document.createElement('div');
+    body.className = 'body';
+    if (a.body.length > 1) {
+      const ul = document.createElement('ul');
+      a.body.forEach(t => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+      body.appendChild(ul);
+    } else {
+      body.textContent = a.body[0];
+    }
+    d.appendChild(s);
+    d.appendChild(body);
+    accs.appendChild(d);
+  });
+}
+
+function orderLink() {
+  const sizeLine = selSize ? `\nSize: ${selSize}` : '';
+  const msg = `Hi! I'd like to order:\n${P.title}${sizeLine}\nQty: ${qty}\nTotal: ${fmt(P.price * qty)}\n${location.href.split('#')[0]}`;
+  return `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(msg)}`;
+}
+
+/* ===================== REVIEWS (read-only; writing stays on premium page) ===================== */
+async function loadReviews() {
+  if (typeof sb === 'undefined' || !sb) return;
+  try {
+    const res = await sb.from('reviews')
+      .select('id,name,title,rating,review,photo_urls,created_at')
+      .eq('approved', true).eq('design', String(P.idx))
+      .order('created_at', { ascending: false }).limit(50);
+    if (!res.error) reviews = res.data || [];
+  } catch (e) { reviews = []; }
+}
+
+function renderReviews() {
+  const section = $('reviews');
+  section.hidden = false;
+  $('write-review').href = `premium_product_page.html?design=${P.idx}#write-review`;
+
+  const count = reviews.length;
+  if (count) {
+    const avg = reviews.reduce((s, r) => s + (r.rating || 0), 0) / count;
+    $('rv-sum').textContent = `${avg.toFixed(1)} average from ${count} review${count > 1 ? 's' : ''}`;
+    $('p-stars').textContent = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+    $('p-rating').textContent = `${avg.toFixed(1)} (${count} review${count > 1 ? 's' : ''})`;
+    $('p-rating-row').hidden = false;
+  } else {
+    $('rv-sum').textContent = 'No reviews yet. Be the first to review this set.';
+  }
+
+  const box = $('revs');
+  box.innerHTML = '';
+  reviews.forEach(r => {
+    const d = document.createElement('div');
+    d.className = 'rv';
+    const head = document.createElement('div');
+    const name = document.createElement('b');
+    name.textContent = r.name || 'Customer';
+    const meta = document.createElement('small');
+    const date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+    meta.textContent = `${'★'.repeat(r.rating || 0)}  ·  ${date}`;
+    head.appendChild(name);
+    head.appendChild(meta);
+    d.appendChild(head);
+    if (r.title) {
+      const t = document.createElement('p');
+      t.style.fontWeight = '600';
+      t.textContent = r.title;
+      d.appendChild(t);
+    }
+    if (r.review) {
+      const p = document.createElement('p');
+      p.textContent = r.review;
+      d.appendChild(p);
+    }
+    const photos = (r.photo_urls || []).filter(u => /^https:\/\//.test(u));
+    if (photos.length) {
+      const wrap = document.createElement('div');
+      wrap.className = 'rv-photos';
+      photos.forEach(u => {
+        const im = document.createElement('img');
+        im.src = u;
+        im.alt = 'Customer photo';
+        im.loading = 'lazy';
+        wrap.appendChild(im);
+      });
+      d.appendChild(wrap);
+    }
+    box.appendChild(d);
+  });
+}
+
+/* ===================== WISHLIST (same shape as premium page) ===================== */
+function wlGet() {
+  try { return JSON.parse(localStorage.getItem(WISH_KEY) || '[]'); } catch (e) { return []; }
+}
+function wlSave(list) {
+  try { localStorage.setItem(WISH_KEY, JSON.stringify(list)); } catch (e) {}
+}
+function paintWish() {
+  const on = wlGet().some(x => x.idx === P.idx);
+  $('wish').classList.toggle('on', on);
+  $('wish').innerHTML = on ? '&#9829; Saved' : '&#9825; Save';
+  paintHeaderBadge();
+}
+function paintHeaderBadge() {
+  const n = wlGet().length;
+  const b = $('header-wl-count');
+  b.textContent = n;
+  b.style.display = n ? 'flex' : 'none';
+}
+$('wish').onclick = () => {
+  let list = wlGet();
+  const at = list.findIndex(x => x.idx === P.idx);
+  if (at >= 0) list.splice(at, 1);
+  else list.push({ idx: P.idx, title: P.title, price: P.price, cat: P.catKey, img: P.photos[0] || '' });
+  wlSave(list);
+  paintWish();
+};
+
+/* ===================== QUANTITY ===================== */
+$('dec').onclick = () => { if (qty > 1) { qty--; renderInfo(); } };
+$('inc').onclick = () => { if (qty < 10) { qty++; renderInfo(); } };
+
+/* ===================== RECENTLY VIEWED ===================== */
+function trackRecent() {
+  if (P.dbId == null) return;
+  try {
+    const list = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]').filter(x => x !== P.dbId);
+    list.unshift(P.dbId);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, 8)));
+  } catch (e) {}
+}
+
+/* ===================== INIT ===================== */
+function showMissing() {
+  $('missing').hidden = false;
+  document.title = 'Product not found | The Nails Club';
+}
+
+(async function init() {
+  try { if (window.DESIGNS_READY) await window.DESIGNS_READY; } catch (e) {}
+  const idx = parseInt(new URLSearchParams(location.search).get('design'), 10);
+  const d = (typeof DESIGNS !== 'undefined' && !isNaN(idx) && DESIGNS[idx]) ? DESIGNS[idx] : null;
+  if (!d) { showMissing(); return; }
+
+  P = toModel(d, idx);
+  $('content').hidden = false;
+  $('mbar').hidden = false;
+  renderGallery();
+  renderInfo();
+  trackRecent();
+
+  await loadReviews();
+  renderReviews();
+})();
+</script>
+</body>
+</html>
