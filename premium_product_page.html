@@ -80,7 +80,14 @@
         .image-swap-wrapper:hover img:nth-child(1) {
             opacity: 0;
         }
-    </style>
+    
+        /* ===== Comet-style product layout ===== */
+        #photo-stack img{width:100%;display:block;aspect-ratio:4/5;object-fit:cover;background:#f3f3f3}
+        #ig-order-btn,#wa-order-btn{text-transform:uppercase;letter-spacing:.05em;font-size:14px;font-weight:700;border-radius:4px;min-height:56px}
+        #wa-order-btn{background:#fff!important}
+        #main-price{font-size:26px;font-weight:600;letter-spacing:-.01em}
+        .buy-label{text-transform:uppercase;font-weight:700;letter-spacing:.06em;font-size:12px}
+</style>
 </head>
 <body class="bg-white text-gray-900 selection:bg-black selection:text-white">
 
@@ -106,10 +113,12 @@
     <main class="max-w-[1440px] mx-auto pb-32">
         <div class="max-w-[1380px] mx-auto">
             
-            <section class="flex flex-col lg:flex-row gap-12 xl:gap-24 pt-8 md:pt-12 px-4 md:px-8">
+            <section class="flex flex-col lg:flex-row gap-10 xl:gap-16 pt-8 md:pt-12 px-4 md:px-8">
                 
                 <!-- LEFT COLUMN: Gallery (65%) -->
-                <div class="w-full lg:w-[65%] flex flex-col gap-3 relative">
+                <div id="photo-stack" class="w-full lg:w-[60%] flex flex-col gap-3"></div>
+                <!-- legacy mosaic kept hidden so existing gallery JS still works -->
+                <div id="legacy-gallery" style="display:none" class="w-full lg:w-[65%] flex flex-col gap-3 relative">
 
                     <!-- MOSAIC GRID — wide main photo on top, two tiles below -->
                     <div id="mosaic-grid" class="grid gap-2" style="grid-template-columns:1fr 1fr;grid-template-rows:auto;">
@@ -164,7 +173,7 @@
                 </div>
 
                 <!-- RIGHT COLUMN: Details (35% Sticky) -->
-                <div class="w-full lg:w-[35%] relative">
+                <div class="w-full lg:w-[36%] relative">
                     <div class="lg:sticky lg:top-8 flex flex-col gap-8 pb-12">
                         
                         <!-- Header Info -->
@@ -194,7 +203,7 @@
                             <!-- Size -->
                             <div class="flex flex-col gap-3">
                                 <div class="flex justify-between items-center text-sm font-medium">
-                                    <span>Finger Size</span>
+                                    <span class="buy-label">Finger Size</span>
                                     <button class="text-gray-500 underline hover:text-black transition-colors">Size Chart</button>
                                 </div>
                                 <div class="relative">
@@ -213,7 +222,7 @@
 
                             <!-- Fit -->
                             <div class="flex flex-col gap-3">
-                                <span class="text-sm font-medium">Nail Shape</span>
+                                <span class="text-sm font-medium buy-label">Nail Shape</span>
                                 <div class="flex gap-2 flex-wrap" id="fit-selectors">
                                     <button class="fit-btn px-6 py-2.5 rounded-full border text-sm font-medium transition-colors border-borderGray bg-white text-gray-700 hover:border-gray-400">Almond</button>
                                     <button class="fit-btn px-6 py-2.5 rounded-full border text-sm font-medium transition-colors border-gray-900 bg-gray-900 text-white">Coffin</button>
@@ -1407,6 +1416,34 @@ function submitFooterEmail() {
     var msg = 'Look at this nail set from The Nails Club: ' + title + '\n' + location.href;
     window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
   });
+})();
+</script>
+
+<script>
+/* Vertical photo stack: builds from the same photos as the thumbnail strip.
+   Scrolling the page moves through the photos while the buy panel stays sticky. */
+(function () {
+  var stack = document.getElementById('photo-stack');
+  var thumbs = document.getElementById('thumb-gallery');
+  if (!stack || !thumbs) return;
+  var pending = false;
+  function build() {
+    pending = false;
+    var srcs = Array.prototype.map.call(thumbs.querySelectorAll('img'), function (i) { return i.getAttribute('src'); }).filter(Boolean);
+    if (!srcs.length) return;
+    stack.innerHTML = '';
+    srcs.forEach(function (src, i) {
+      var im = document.createElement('img');
+      im.src = src;
+      im.alt = 'Product photo ' + (i + 1);
+      im.loading = i < 2 ? 'eager' : 'lazy';
+      stack.appendChild(im);
+    });
+  }
+  new MutationObserver(function () {
+    if (!pending) { pending = true; setTimeout(build, 0); }
+  }).observe(thumbs, { childList: true });
+  build();
 })();
 </script>
 </body>
