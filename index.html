@@ -361,6 +361,43 @@ body { background: #fff; color: #322C2C; font-family: 'DM Sans', sans-serif; ove
 </section>
 
 <!-- SECTION 3 — REELS -->
+<!-- ===== MAKE IT YOURS: Nail Quiz + Build Your Own Set ===== -->
+<section id="make-yours" style="background:#FAF8F5;padding:84px 20px;">
+  <style>
+    #make-yours .my-grid{display:grid;gap:24px;grid-template-columns:1fr;max-width:1100px;margin:0 auto;}
+    @media(min-width:860px){#make-yours .my-grid{grid-template-columns:1fr 1fr;}}
+    #make-yours .my-card{background:#fff;border-radius:20px;padding:32px 26px;box-shadow:0 2px 18px rgba(50,44,44,.06);}
+    #make-yours .my-chip{font-family:'DM Sans',sans-serif;font-size:13px;color:#322C2C;background:#fff;border:1px solid #e3d9ce;border-radius:999px;padding:9px 15px;cursor:pointer;transition:all .2s;}
+    #make-yours .my-chip:hover{border-color:#322C2C;}
+    #make-yours .my-chip.on{background:#322C2C;color:#fff;border-color:#322C2C;}
+    #make-yours .my-btn{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:14px;border-radius:12px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;background:#BC1423;color:#fff;transition:opacity .2s;box-sizing:border-box;}
+    #make-yours .my-btn:hover{opacity:.9;}
+    #make-yours .my-btn.ghost{background:#fff;color:#322C2C;border:1px solid #e3d9ce;margin-top:10px;}
+    #make-yours textarea{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #e3d9ce;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;color:#322C2C;resize:vertical;min-height:70px;}
+    #make-yours textarea:focus{outline:none;border-color:#322C2C;}
+  </style>
+
+  <div style="max-width:1100px;margin:0 auto;">
+    <p style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#BC1423;text-align:center;margin:0 0 10px;">New</p>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:400;color:#322C2C;text-align:center;margin:0 0 40px;line-height:1.1;">Make it yours</h2>
+
+    <div class="my-grid">
+      <div class="my-card">
+        <p style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(50,44,44,.5);margin:0 0 6px;">Nail Quiz</p>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:#322C2C;margin:0 0 6px;">Find your perfect set</h3>
+        <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(50,44,44,.6);margin:0 0 22px;">Two quick questions and we will suggest a style.</p>
+        <div id="nq-body"></div>
+      </div>
+
+      <div class="my-card">
+        <p style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(50,44,44,.5);margin:0 0 6px;">Custom order</p>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:#322C2C;margin:0 0 6px;">Build your own set</h3>
+        <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(50,44,44,.6);margin:0 0 22px;">Pick your shape, length and finish, then send it to us on WhatsApp.</p>
+        <div id="bys-body"></div>
+      </div>
+    </div>
+  </div>
+</section>
 <section id="reels" class="pt-24 pb-16 px-5 md:px-10 overflow-hidden relative" style="background:linear-gradient(rgba(250,248,245,0.82),rgba(245,240,237,0.88)),url('Images/reels_bg.jpg') center center/cover no-repeat;background-color:#F5F0ED;">
   <div class="max-w-screen-2xl mx-auto">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
@@ -1845,6 +1882,139 @@ document.addEventListener('DOMContentLoaded', renderReviewStars);
   }).join('');
   wrap.style.display = 'block';
   document.getElementById('recent-clear').onclick = function () { try { localStorage.removeItem('tnc_recent'); } catch (e) {} wrap.style.display = 'none'; };
+})();
+</script>
+<script>
+/* ===== MAKE IT YOURS — Nail Quiz + Build Your Own Set ===== */
+(function () {
+  var WA_NUMBER = '919913091744';
+  var DM = "'DM Sans',sans-serif";
+
+  function label(text) {
+    var p = document.createElement('p');
+    p.style.cssText = "font-family:" + DM + ";font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(50,44,44,.55);margin:0 0 10px;";
+    p.textContent = text;
+    return p;
+  }
+  function chips(options, selected, onPick) {
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;';
+    options.forEach(function (opt) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'my-chip' + (opt.value === selected ? ' on' : '');
+      b.textContent = opt.label;
+      b.onclick = function () { onPick(opt.value); };
+      wrap.appendChild(b);
+    });
+    return wrap;
+  }
+  function button(text, cls, href, onClick) {
+    var el = document.createElement(href ? 'a' : 'button');
+    el.className = 'my-btn' + (cls ? ' ' + cls : '');
+    if (href) { el.href = href; el.target = '_blank'; el.rel = 'noopener'; }
+    else el.type = 'button';
+    el.textContent = text;
+    if (onClick) el.onclick = onClick;
+    return el;
+  }
+
+  /* ---------- NAIL QUIZ ---------- */
+  var NAMES = {
+    bridal: 'Bridal', festive: 'Festive', babyshower: 'Baby Shower',
+    floral: 'Floral', cateye: 'Cat-Eye', polka: 'Polka Dot', french: 'French', gloss: 'Gloss', chrome: 'Chrome'
+  };
+  var OCCASION = [
+    { label: 'Everyday', value: 'everyday' },
+    { label: 'Wedding & bridal', value: 'bridal' },
+    { label: 'Festive & party', value: 'festive' },
+    { label: 'Baby shower', value: 'babyshower' }
+  ];
+  var VIBE = [
+    { label: 'Soft & romantic', value: 'floral' },
+    { label: 'Bold & glam', value: 'cateye' },
+    { label: 'Playful & fun', value: 'polka' },
+    { label: 'Classic & clean', value: 'french' }
+  ];
+
+  var quizBody = document.getElementById('nq-body');
+  function renderQuiz(step, result) {
+    quizBody.innerHTML = '';
+    if (result) {
+      var name = NAMES[result] || result;
+      var h = document.createElement('p');
+      h.style.cssText = "font-family:'Cormorant Garamond',serif;font-size:30px;color:#BC1423;margin:0 0 8px;line-height:1.1;";
+      h.textContent = name;
+      var t = document.createElement('p');
+      t.style.cssText = "font-family:" + DM + ";font-size:14px;color:rgba(50,44,44,.7);margin:0 0 20px;line-height:1.6;";
+      t.textContent = 'Based on your answers, you will probably love our ' + name + ' designs.';
+      quizBody.appendChild(h);
+      quizBody.appendChild(t);
+      var go = document.createElement('a');
+      go.className = 'my-btn';
+      go.href = 'collection.html?cat=' + encodeURIComponent(result);
+      go.textContent = 'Browse ' + name + ' designs';
+      quizBody.appendChild(go);
+      quizBody.appendChild(button('Start again', 'ghost', null, function () { renderQuiz(0, null); }));
+      return;
+    }
+    if (step === 0) {
+      quizBody.appendChild(label('1 of 2 · Occasion'));
+      quizBody.appendChild(chips(OCCASION, null, function (v) {
+        if (v === 'everyday') renderQuiz(1, null);
+        else renderQuiz(0, v);
+      }));
+    } else {
+      quizBody.appendChild(label('2 of 2 · Your vibe'));
+      quizBody.appendChild(chips(VIBE, null, function (v) { renderQuiz(0, v); }));
+    }
+  }
+  renderQuiz(0, null);
+
+  /* ---------- BUILD YOUR OWN SET ---------- */
+  var state = { shape: 'Almond', length: 'Medium', finish: 'Gloss', note: '' };
+  var SHAPES = ['Almond', 'Coffin', 'Square', 'Stiletto', 'Round'];
+  var LENGTHS = ['Short', 'Medium', 'Long'];
+  var FINISHES = ['Gloss', 'Matte', 'Chrome', 'Cat-Eye', 'French', 'Glitter'];
+  var buildBody = document.getElementById('bys-body');
+  function toOpts(list) { return list.map(function (x) { return { label: x, value: x }; }); }
+
+  function message() {
+    var lines = [
+      "Hi! I'd like to order a custom set:",
+      'Shape: ' + state.shape,
+      'Length: ' + state.length,
+      'Finish: ' + state.finish
+    ];
+    if (state.note.trim()) lines.push('Notes: ' + state.note.trim());
+    lines.push('Please share the price and timeline.');
+    return lines.join('\n');
+  }
+
+  function renderBuild() {
+    buildBody.innerHTML = '';
+    buildBody.appendChild(label('Shape'));
+    buildBody.appendChild(chips(toOpts(SHAPES), state.shape, function (v) { state.shape = v; renderBuild(); }));
+    buildBody.appendChild(label('Length'));
+    buildBody.appendChild(chips(toOpts(LENGTHS), state.length, function (v) { state.length = v; renderBuild(); }));
+    buildBody.appendChild(label('Finish'));
+    buildBody.appendChild(chips(toOpts(FINISHES), state.finish, function (v) { state.finish = v; renderBuild(); }));
+
+    var ta = document.createElement('textarea');
+    ta.placeholder = 'Colour ideas or design notes (optional)';
+    ta.value = state.note;
+    ta.oninput = function () { state.note = ta.value; };
+    buildBody.appendChild(ta);
+
+    var summary = document.createElement('p');
+    summary.style.cssText = "font-family:" + DM + ";font-size:13px;color:rgba(50,44,44,.6);margin:16px 0 14px;line-height:1.6;";
+    summary.textContent = state.shape + ' · ' + state.length + ' · ' + state.finish + '. Price is confirmed on WhatsApp.';
+    buildBody.appendChild(summary);
+
+    var href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(message());
+    buildBody.appendChild(button('Send my set on WhatsApp', '', href));
+  }
+  renderBuild();
 })();
 </script>
 </body>
